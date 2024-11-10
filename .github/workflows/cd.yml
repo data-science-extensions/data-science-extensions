@@ -12,6 +12,9 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+permissions:
+  contents: write  #<-- to allow push changes to the repository
+
 jobs:
 
   deploy-docs:
