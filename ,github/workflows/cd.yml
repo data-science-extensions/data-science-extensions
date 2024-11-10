@@ -1,0 +1,76 @@
+name: Website CD
+
+on:
+  schedule:
+    - cron: '0 16 * * *'  # 3am Sydney time (UTC+11)
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+
+  deploy-docs:
+
+    name: Deploy Docs
+    needs: build-docs
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write     #<-- to deploy to Pages
+      id-token: write  #<-- to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
+
+    steps:
+
+      - name: Checkout repository
+        id: checkout-repository
+        uses: actions/checkout@v4
+        with:
+          ref: docs-site
+          fetch-depth: 5
+          show-progress: true
+          set-safe-directory: false
+      
+      - name: Update submodules
+        id: update-submodules
+        run: git submodule update --force --rebase
+
+      - name: Setup Pages
+        id: setup-pages
+        uses: actions/configure-pages@v5
+
+      - name: Add CNAME
+        id: add-cname
+        run: |
+          if [ -f CNAME ]; then rm CNAME; fi;
+          echo "${CNAME_URL}" > CNAME
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git add CNAME
+          git commit -m "Update CNAME file [skip ci]" || echo "No changes to commit"
+          git push origin docs-site || echo "No changes to push"
+        env:
+          CNAME_URL: ${{ vars.CNAME_URL }}
+          GITHUB_ACTOR: ${{ github.actor }}
+
+      - name: Upload artifacts
+        id: upload-artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: web
+          path: '.' #<-- All files in the branch
+          retention-days: 1
+
+      - name: Deploy Pages
+        uses: actions/deploy-pages@v4
+        id: deploy-pages
+        with:
+          artifact_name: web
