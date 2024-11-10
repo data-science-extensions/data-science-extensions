@@ -1,0 +1,4 @@
+[submodule "toolbox-python"]
+	path = toolbox-python
+	url = https://github.com/data-science-extensions/toolbox-python.git
+	branch = docs-site
