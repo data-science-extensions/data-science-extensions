@@ -14,6 +14,8 @@ concurrency:
 
 permissions:
   contents: write  #<-- to allow push changes to the repository
+  pages: write     #<-- to deploy to Pages
+  id-token: write  #<-- to verify the deployment originates from an appropriate source
 
 jobs:
 
@@ -21,10 +23,6 @@ jobs:
 
     name: Deploy Docs
     runs-on: ubuntu-latest
-
-    permissions:
-      pages: write     #<-- to deploy to Pages
-      id-token: write  #<-- to verify the deployment originates from an appropriate source
 
     environment:
       name: github-pages
@@ -40,28 +38,62 @@ jobs:
           fetch-depth: 5
           show-progress: true
           set-safe-directory: false
-      
-      - name: Update submodules
-        id: update-submodules
-        run: git submodule update --force --rebase
 
       - name: Setup Pages
         id: setup-pages
         uses: actions/configure-pages@v5
+  
+      - name: Setup Git
+        id: setup-git
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Add submodules
+        id: add-submodules
+        env:
+          REPOS: ${{ vars.REPOS }}
+        run: |
+          # Loop through each repo
+          for REPO_BRANCH in "${REPOS[@]}"; do
+
+            # Extract the variables
+            read -r REPO BRANCH <<< "${REPO_BRANCH}"
+            REPO_NAME=$(basename -s .git "${REPO}")
+            echo "Cloning branch '${BRANCH}' from '${REPO_NAME}': ${REPO}"
+
+            # Clone the repo to a temporary directory
+            git clone --single-branch --branch "${BRANCH}" "${REPO}" "/tmp/${REPO_NAME}"
+
+            # Copy contents to the desired location in the current repo
+            cp --recursive --update "/tmp/${REPO_NAME}/." "./${REPO_NAME}"
+
+            # Remove the temporary directory
+            rm --recursive --force "/tmp/${REPO_NAME}"
+
+            # Add the changes to git
+            git add "./${REPO_NAME}"
+
+            # Commit the changes
+            git commit -m "Updated files from ${REPO_NAME} [skip ci]" || echo "No changes to commit"
+
+          done
+
+          # Push the changes
+          git push origin docs-site || echo "No changes to push"
 
       - name: Add CNAME
         id: add-cname
         run: |
           if [ -f CNAME ]; then rm CNAME; fi;
           echo "${CNAME_URL}" > CNAME
-          git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git add CNAME
           git commit -m "Update CNAME file [skip ci]" || echo "No changes to commit"
           git push origin docs-site || echo "No changes to push"
         env:
           CNAME_URL: ${{ vars.CNAME_URL }}
-          GITHUB_ACTOR: ${{ github.actor }}
 
       - name: Upload artifacts
         id: upload-artifacts
