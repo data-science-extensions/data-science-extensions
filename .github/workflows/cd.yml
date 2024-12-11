@@ -65,15 +65,8 @@ jobs:
             # Extract the variables
             read -r REPO BRANCH <<< "${line}"
             REPO_NAME=$(basename -s .git "${REPO}")
-            echo "Cloning branch '${BRANCH}' from '${REPO_NAME}': ${REPO}"
-
-            # Debug
-            echo "line: ${line}"
-            echo "REPO_NAME: ${REPO_NAME}"
-            echo "REPO: ${REPO}"
-            echo "BRANCH: '${BRANCH}'"
             BRANCH=$(echo "${BRANCH}" | tr -d '\r' | tr -d '\n' | xargs)  # Trim any leading/trailing whitespace and remove carriage return and newline
-            echo "BRANCH: '${BRANCH}'"
+            echo "--> Cloning branch '${BRANCH}' from '${REPO_NAME}': ${REPO}"
 
             # Clone the repo to a temporary directory
             git clone --single-branch --branch "${BRANCH}" "${REPO}" "/tmp/${REPO_NAME}"
@@ -88,7 +81,7 @@ jobs:
             git add "./${REPO_NAME}"
 
             # Commit the changes
-            git commit -m "Updated files from \`${REPO_NAME}\` (branch: \`${BRANCH}\`) [skip ci]" || echo "No changes to commit"
+            git commit -m "Updated files from \`${REPO_NAME}\` (branch: \`${BRANCH}\`) [skip ci]" || echo "--> No changes to commit"
 
           done
 
