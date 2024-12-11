@@ -62,13 +62,18 @@ jobs:
           # Loop through each repo
           echo "${REPOS}" | while IFS= read -r line; do
 
-            # Debug
-            echo "REPO_BRANCH: ${line}"
-
             # Extract the variables
             read -r REPO BRANCH <<< "${line}"
             REPO_NAME=$(basename -s .git "${REPO}")
             echo "Cloning branch '${BRANCH}' from '${REPO_NAME}': ${REPO}"
+
+            # Debug
+            echo "line: ${line}"
+            echo "REPO_NAME: ${REPO_NAME}"
+            echo "REPO: ${REPO}"
+            echo "BRANCH: ${BRANCH}"
+            BRANCH=$(echo "${BRANCH}" | xargs)  # Trim any leading/trailing whitespace
+            echo "BRANCH: ${BRANCH}"
 
             # Clone the repo to a temporary directory
             git clone --single-branch --branch "${BRANCH}" "${REPO}" "/tmp/${REPO_NAME}"
