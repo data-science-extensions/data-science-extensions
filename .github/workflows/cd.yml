@@ -71,9 +71,9 @@ jobs:
             echo "line: ${line}"
             echo "REPO_NAME: ${REPO_NAME}"
             echo "REPO: ${REPO}"
-            echo "BRANCH: ${BRANCH}"
+            echo "BRANCH: '${BRANCH}'"
             BRANCH=$(echo "${BRANCH}" | xargs)  # Trim any leading/trailing whitespace
-            echo "BRANCH: ${BRANCH}"
+            echo "BRANCH: '${BRANCH}'"
 
             # Clone the repo to a temporary directory
             git clone --single-branch --branch "${BRANCH}" "${REPO}" "/tmp/${REPO_NAME}"
