@@ -62,6 +62,9 @@ jobs:
           # Loop through each repo
           for REPO_BRANCH in "${REPOS[@]}"; do
 
+            # Debug
+            echo "REPO_BRANCH: ${REPO_BRANCH}"
+
             # Extract the variables
             read -r REPO BRANCH <<< "${REPO_BRANCH}"
             REPO_NAME=$(basename -s .git "${REPO}")
