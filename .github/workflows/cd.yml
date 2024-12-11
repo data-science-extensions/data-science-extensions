@@ -72,7 +72,7 @@ jobs:
             echo "REPO_NAME: ${REPO_NAME}"
             echo "REPO: ${REPO}"
             echo "BRANCH: '${BRANCH}'"
-            BRANCH=$(echo "${BRANCH}" | xargs)  # Trim any leading/trailing whitespace
+            BRANCH=$(echo "${BRANCH}" | tr -d '\r' | tr -d '\n' | xargs)  # Trim any leading/trailing whitespace and remove carriage return and newline
             echo "BRANCH: '${BRANCH}'"
 
             # Clone the repo to a temporary directory
