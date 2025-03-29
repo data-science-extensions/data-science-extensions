@@ -1,0 +1,95 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "data-science-extensions"
+version = "0.1.0"
+description = "Data Science Extensions"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name="Chris Mahoney", email="dse@data-science-extensions.com" },
+]
+maintainers = [
+    { name="Chris Mahoney", email="dse@data-science-extensions.com" },
+]
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing :: Unit",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "typeguard==4.*",
+]
+
+[project.urls]
+Homepage = "https://data-science-extensions.com"
+Documentation = "https://data-science-extensions.com"
+Repository = "https://github.com/data-science-extensions/website"
+Changelog = "https://github.com/data-science-extensions/website/releases"
+Issues = "https://github.com/data-science-extensions/website/issues"
+
+[dependency-groups]
+dev = [
+    "black==25.*",
+    "blacken-docs==1.*",
+    "codespell==2.*",
+    "ipykernel==6.*",
+    "isort==6.*",
+    "pre-commit==4.*",
+    "pycln==2.*",
+    "pylint==3.*",
+    "pyupgrade==3.*",
+]
+docs = [
+    "black==25.*",
+    "docstring-inheritance==2.*",
+    "livereload==2.*",
+    "mike==2.*",
+    "mkdocs==1.*",
+    "mkdocs-autorefs==1.*",
+    "mkdocs-coverage==1.*",
+    "mkdocs-material==9.*",
+    "mkdocstrings==0.*",
+    "mkdocstrings-python==1.*",
+]
+
+[tool.black]
+color = true
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | env
+    | venv
+)/
+'''
+
+[tool.codespell]
+ignore-words-list = "demog"
+
+[[tool.poetry_bumpversion.replacements]]
+files = [
+    "src/toolbox_python/__init__.py",
+    "src/tests/test_version.py",
+]
