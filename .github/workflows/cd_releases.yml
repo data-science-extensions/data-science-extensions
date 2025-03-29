@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read  #<-- to allow checkout of the repository
+      contents: write  #<-- to allow mike to push to the repository
 
     steps:
 
@@ -117,7 +117,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.13
+          python-version: '3.13'
 
       - name: Install UV
         id: install-uv
@@ -134,12 +134,12 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -B main --track origin/main
           git remote update
-          git fetch --prune
-          git fetch --prune --tags
+          git fetch --verbose
+          git fetch --verbose --tags
           git pull --verbose
           git status --verbose
           git branch --list --verbose
