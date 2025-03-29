@@ -1,4 +1,4 @@
-name: Website CD
+name: CD for Sub-Pages
 
 on:
   schedule:
@@ -42,7 +42,7 @@ jobs:
       - name: Setup Pages
         id: setup-pages
         uses: actions/configure-pages@v5
-  
+
       - name: Setup Git
         id: setup-git
         env:
