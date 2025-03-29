@@ -115,4 +115,6 @@ plugins:
 
 nav:
   - Home: index.md
-  - Python Extensions: https://www.data-science-extensions.com/toolbox-python
+  - Toolboxes:
+      - Python Toolbox: toolboxes/toolbox-python.md
+      - PySpark Toolbox: toolboxes/toolbox-pyspark.md
