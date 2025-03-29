@@ -9,6 +9,7 @@ repo_url: https://github.com/data-science-extensions/website
 edit_uri: edit/main/docs/
 
 watch:
+  - src/data_science_extensions
   - docs/
   - README.md
 
