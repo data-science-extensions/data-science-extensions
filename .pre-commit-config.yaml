@@ -1,0 +1,58 @@
+# See https://pre-commit.com for more info
+# See https://pre-commit.com/hooks.html for more hooks
+# See https://www.youtube.com/watch?v=psjz6rwzMdk for how-to on pre-commits
+
+repos:
+  # Fixes
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v5.0.0"
+    hooks:
+      # File name fixes
+      - id: check-case-conflict
+
+      # Generic file fixes
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: end-of-file-fixer
+
+      # File-type specific fixes
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+        args:
+          - "--unsafe"
+
+      # Python-specific fixes
+      - id: debug-statements
+        language_version: python3
+
+      # Git fixes
+      - id: no-commit-to-branch
+        args:
+          - "--branch=main"
+
+  # Linter
+  - repo: https://github.com/psf/black
+    rev: "25.1.0"
+    hooks:
+      - id: black
+        language_version: python3.13
+        args:
+          - "--config=pyproject.toml"
+  - repo: https://github.com/adamchainz/blacken-docs
+    rev: "1.19.1"
+    hooks:
+      - id: blacken-docs
+        additional_dependencies:
+          - "black>=23.3"
+
+  # Check spelling
+  - repo: https://github.com/codespell-project/codespell
+    rev: "v2.4.1"
+    hooks:
+    - id: codespell
+      additional_dependencies:
+        - tomli
+      args:
+        - "--toml=pyproject.toml"
+        - "--skip=*.js,*.html,*.css,./docs/assets/coverage/*"
