@@ -140,7 +140,7 @@ jobs:
           git remote update
           git fetch --prune
           git fetch --prune --tags
-          git pull --verobse
+          git pull --verbose
           git status --verbose
           git branch --list --verbose
           git tag --list --sort=-creatordate
