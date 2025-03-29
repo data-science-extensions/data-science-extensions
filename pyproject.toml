@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "data-science-extensions"
-version = "0.1.0"
+version = "0.0.0"
 description = "Data Science Extensions"
 readme = "README.md"
 license = "MIT"
@@ -87,9 +87,3 @@ exclude = '''
 
 [tool.codespell]
 ignore-words-list = "demog"
-
-[[tool.poetry_bumpversion.replacements]]
-files = [
-    "src/toolbox_python/__init__.py",
-    "src/tests/test_version.py",
-]
