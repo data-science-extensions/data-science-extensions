@@ -104,7 +104,7 @@ jobs:
 
     permissions:
       contents: read  #<-- to allow checkout of the repository
-    
+
     steps:
 
       - name: Checkout repository
@@ -128,7 +128,7 @@ jobs:
       - name: Install dependencies
         id: install-dependencies
         run: uv sync --link-mode=copy --no-cache --all-groups
-      
+
       - name: Setup Git
         id: setup-git
         env:
