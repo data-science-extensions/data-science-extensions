@@ -145,6 +145,30 @@ jobs:
           git branch --list --verbose
           git tag --list --sort=-creatordate
 
+      - name: Bump Version
+        id: bump-version
+        env:
+          VERSION: ${{ github.event.release.tag_name }}
+        run: |
+          echo "Bumping version using tag: ${VERSION}"
+
+          # Strip leading 'v' if it exists
+          CLEAN_VERSION=${VERSION#v}
+          echo "Clean version: ${CLEAN_VERSION}"
+
+          # Update version in pyproject.toml
+          sed -i "s/^version = \".*\"/version = \"${CLEAN_VERSION}\"/" pyproject.toml
+
+          # Check if there are changes to commit
+          if git diff --quiet; then
+            echo "No changes to pyproject.toml, version was already set correctly"
+          else
+            # Add, commit and push changes
+            git add pyproject.toml
+            git commit -m "Bump version to \`${CLEAN_VERSION}\` [skip ci]"
+            git push origin main
+            echo "Version bumped to ${CLEAN_VERSION}"
+
       - name: Build Docs
         id: build-docs
         env:
