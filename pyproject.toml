@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "data-science-extensions"
 version = "0.1.0"
-description = "Data Science Extensions"
+description = "The Data Science Extensions provides helpful utilities and extensions for data science projects."
 readme = "README.md"
 license = "MIT"
 authors = [
