@@ -15,8 +15,8 @@ watch:
 
 theme:
   name: material
-  favicon: ./assets/images/beaker3.jpg
-  coverpage_icon: ./assets/images/beaker3.jpg
+  favicon: ./assets/images/1067432.png
+  coverpage_icon: ./assets/images/1067432.png
   custom_dir: docs/overrides
   palette:
     primary: blue grey
@@ -34,7 +34,7 @@ theme:
     - toc.follow
     - content.action.edit
     - content.action.view
-  logo: ./assets/images/beaker3.jpg
+  logo: ./assets/images/1067432.png
   icon:
     repo: material/gitlab
     edit: material/file-edit-outline
