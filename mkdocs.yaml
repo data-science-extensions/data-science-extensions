@@ -1,5 +1,5 @@
 site_name: Data Science Extensions
-site_description: Data Science Extensions
+site_description: The Data Science Extensions provides helpful utilities and extensions for data science projects.
 site_author: "[Chris Mahoney](mailto:chris@mahoneyconsultingservices.com)"
 site_dir: web
 docs_dir: docs
