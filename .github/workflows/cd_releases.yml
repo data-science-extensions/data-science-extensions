@@ -179,5 +179,5 @@ jobs:
           git config --global --list
           git config --local --list
           git remote --verbose
-          uv run mike --debug deploy --update-aliases --branch=docs-site --push $(VERSION) latest
+          uv run mike --debug deploy --update-aliases --branch=docs-site --push ${VERSION} latest
           uv run mike --debug set-default --branch=docs-site --push latest
