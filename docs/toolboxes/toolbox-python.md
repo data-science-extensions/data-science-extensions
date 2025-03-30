@@ -2,9 +2,11 @@
 title: Python Toolbox
 subtitle: Helper files/functions/classes for generic Python processes
 icon: simple/python
+hide:
+    - toc
 ---
 
-<div style="position: relative; width: 100%; height: 400px;">
+<div style="position: relative; width: 100%; height: 450px;">
     <iframe
         src="https://www.data-science-extensions.com/toolbox-python"
         style="zoom: 70%; width: 100%; height: 100%; overflow: hidden !important; pointer-events: none !important;"
