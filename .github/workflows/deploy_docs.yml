@@ -1,4 +1,4 @@
-name: CD for Sub-Pages
+name: Deploy Docs
 
 on:
   schedule:
@@ -63,21 +63,25 @@ jobs:
           echo "${REPOS}" | while IFS= read -r line; do
 
             # Extract the variables
+            echo "--> Extracting variables from line: ${line}"
             read -r REPO BRANCH <<< "${line}"
             REPO_NAME=$(basename -s .git "${REPO}")
             BRANCH=$(echo "${BRANCH}" | tr -d '\r' | tr -d '\n' | xargs)  # Trim any leading/trailing whitespace and remove carriage return and newline
-            echo "--> Cloning branch '${BRANCH}' from '${REPO_NAME}': ${REPO}"
 
             # Clone the repo to a temporary directory
+            echo "--> Cloning branch '${BRANCH}' from '${REPO_NAME}': ${REPO}"
             git clone --single-branch --branch "${BRANCH}" "${REPO}" "/tmp/${REPO_NAME}"
 
             # Copy contents to the desired location in the current repo
+            echo "--> Copying files from '/tmp/${REPO_NAME}' to './${REPO_NAME}'"
             cp --recursive --update "/tmp/${REPO_NAME}/." "./${REPO_NAME}"
 
             # Remove the temporary directory
+            echo "--> Removing temporary directory '/tmp/${REPO_NAME}'"
             rm --recursive --force "/tmp/${REPO_NAME}"
 
             # Add the changes to git
+            echo "--> Adding changes to git"
             git add "./${REPO_NAME}"
 
             # Commit the changes
@@ -90,16 +94,16 @@ jobs:
 
       - name: Add CNAME
         id: add-cname
+        env:
+          CNAME_URL: ${{ vars.CNAME_URL }}
         run: |
           if [ -f CNAME ]; then rm CNAME; fi;
           echo "${CNAME_URL}" > CNAME
           git add CNAME
           git commit -m "Update CNAME file [skip ci]" || echo "No changes to commit"
           git push origin docs-site || echo "No changes to push"
-        env:
-          CNAME_URL: ${{ vars.CNAME_URL }}
 
-      - name: Upload artifacts
+      - name: Upload Artifacts
         id: upload-artifacts
         uses: actions/upload-pages-artifact@v3
         with:

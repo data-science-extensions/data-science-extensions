@@ -1,4 +1,4 @@
-name: CD for Releases
+name: Build Docs
 
 on:
   # Only trigger when release is published
@@ -119,13 +119,15 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install UV
+      - name: Setup UV
         id: install-uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          uv self update
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: 'latest'
+          pyproject-file: 'pyproject.toml'
+          python-version: '3.13'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         id: install-dependencies
         run: uv sync --link-mode=copy --no-cache --all-groups
 
@@ -150,7 +152,7 @@ jobs:
         env:
           VERSION: ${{ github.event.release.tag_name }}
         run: |
-          echo "Bumping version using tag: ${VERSION}"
+          echo "Bumping version using tag: \`${VERSION}\`"
 
           # Strip leading 'v' if it exists
           CLEAN_VERSION=${VERSION#v}
@@ -159,16 +161,12 @@ jobs:
           # Update version in pyproject.toml
           sed -i "s/^version = \".*\"/version = \"${CLEAN_VERSION}\"/" pyproject.toml
 
-          # Check if there are changes to commit
-          if git diff --quiet; then
-            echo "No changes to pyproject.toml, version was already set correctly"
-          else
-            # Add, commit and push changes
-            git add pyproject.toml
-            git commit -m "Bump version to \`${CLEAN_VERSION}\` [skip ci]"
-            git push origin main
-            echo "Version bumped to ${CLEAN_VERSION}"
-          fi
+          # Add, commit and push changes
+          echo "Committing changes to pyproject.toml"
+          git add pyproject.toml
+          git commit -m "Bump version to \`${CLEAN_VERSION}\` [skip ci]" || echo "--> No changes to commit"
+          git push origin main || echo "--> No changes to push"
+          echo "Version bumped to ${CLEAN_VERSION}"
 
       - name: Build Docs
         id: build-docs
@@ -176,8 +174,10 @@ jobs:
           VERSION: ${{ github.event.release.tag_name }}
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
+          echo "Checking the Git configuration..."
           git config --global --list
           git config --local --list
           git remote --verbose
+          echo "Building docs for version: \`${VERSION}\`"
           uv run mike --debug deploy --update-aliases --branch=docs-site --push ${VERSION} latest
           uv run mike --debug set-default --branch=docs-site --push latest
