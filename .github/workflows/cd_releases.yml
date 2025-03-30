@@ -168,6 +168,7 @@ jobs:
             git commit -m "Bump version to \`${CLEAN_VERSION}\` [skip ci]"
             git push origin main
             echo "Version bumped to ${CLEAN_VERSION}"
+          fi
 
       - name: Build Docs
         id: build-docs
