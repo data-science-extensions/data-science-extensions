@@ -6,10 +6,10 @@ hide:
     - toc
 ---
 
-<div style="position: relative; width: 100%; height: 450px;">
+<div style="position: relative; width: 100%; height: 500px;">
     <iframe
         src="https://www.data-science-extensions.com/toolbox-python"
-        style="zoom: 70%; width: 100%; height: 100%; overflow: hidden !important; pointer-events: none !important;"
+        style="zoom: 90%; width: 100%; height: 100%; overflow: hidden !important; pointer-events: none !important;"
     >
     </iframe>
     <a
