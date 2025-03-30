@@ -4,8 +4,8 @@ site_author: "[Chris Mahoney](mailto:chris@mahoneyconsultingservices.com)"
 site_dir: web
 docs_dir: docs
 remote_branch: docs-site
-repo_name: website
-repo_url: https://github.com/data-science-extensions/website
+repo_name: data-science-extensions
+repo_url: https://github.com/data-science-extensions/data-science-extensions
 edit_uri: edit/main/docs/
 
 watch:
