@@ -7,7 +7,7 @@ packages = ["src/data_science_extensions"]
 
 [project]
 name = "data-science-extensions"
-version = "0.2.0"
+version = "1.0.0"
 description = "The Data Science Extensions provides helpful utilities and extensions for data science projects."
 readme = "README.md"
 license = "MIT"
