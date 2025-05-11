@@ -2,9 +2,6 @@
 requires = ["uv_build>=0.7.3,<0.8.0"]
 build-backend = "uv_build"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/data_science_extensions"]
-
 [project]
 name = "data-science-extensions"
 version = "1.0.1"
