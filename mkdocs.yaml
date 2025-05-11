@@ -118,3 +118,4 @@ nav:
   - Toolboxes:
       - Python Toolbox: toolboxes/toolbox-python.md
       - PySpark Toolbox: toolboxes/toolbox-pyspark.md
+      - Synthetic Data Generators: toolboxes/synthetic-data-generators.md
