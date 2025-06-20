@@ -57,14 +57,14 @@ jobs:
           REPOS: ${{ vars.REPOS }}
         run: |
           # Debug
-          echo "REPOS: ${REPOS}"
+          echo -e "REPOS:\n${REPOS}"
 
           # Loop through each repo
           echo "${REPOS}" | while IFS= read -r line; do
 
             # Extract the variables
             echo "--> Extracting variables from line: ${line}"
-            read -r REPO BRANCH <<< "${line}"
+            read -r REPO BRANCH DIRECTORY <<< "${line}"
             REPO_NAME=$(basename -s .git "${REPO}")
             BRANCH=$(echo "${BRANCH}" | tr -d '\r' | tr -d '\n' | xargs)  # Trim any leading/trailing whitespace and remove carriage return and newline
 
@@ -73,8 +73,8 @@ jobs:
             git clone --single-branch --branch "${BRANCH}" "${REPO}" "/tmp/${REPO_NAME}"
 
             # Copy contents to the desired location in the current repo
-            echo "--> Copying files from '/tmp/${REPO_NAME}' to './${REPO_NAME}'"
-            cp --recursive --update "/tmp/${REPO_NAME}/." "./${REPO_NAME}"
+            echo "--> Copying files from '/tmp/${REPO_NAME}' to './${DIRECTORY}/${REPO_NAME}'"
+            cp --recursive --update "/tmp/${REPO_NAME}/." "./${DIRECTORY}/${REPO_NAME}"
 
             # Remove the temporary directory
             echo "--> Removing temporary directory '/tmp/${REPO_NAME}'"
@@ -82,10 +82,10 @@ jobs:
 
             # Add the changes to git
             echo "--> Adding changes to git"
-            git add "./${REPO_NAME}"
+            git add "./${DIRECTORY}/${REPO_NAME}"
 
             # Commit the changes
-            git commit -m "Updated files from \`${REPO_NAME}\` (branch: \`${BRANCH}\`) [skip ci]" || echo "--> No changes to commit"
+            git commit --message "Updated files from \`${REPO_NAME}\` (branch: \`${BRANCH}\`) [skip ci]" || echo "--> No changes to commit"
 
           done
 
