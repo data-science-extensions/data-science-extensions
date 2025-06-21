@@ -71,7 +71,7 @@ jobs:
             # Check if the directory exists, if not create it
             if [ ! -d "./${DIRECTORY}" ]; then
               echo "--> Creating directory './${DIRECTORY}'"
-              mkdir -p "./${DIRECTORY}"
+              mkdir --parents "./${DIRECTORY}"
             else
               echo "--> Directory './${DIRECTORY}' exists"
             fi
