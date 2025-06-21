@@ -34,6 +34,7 @@ theme:
     - toc.follow
     - content.action.edit
     - content.action.view
+    - content.tabs.link
   logo: ./assets/images/1067432.png
   icon:
     repo: material/gitlab
@@ -119,3 +120,6 @@ nav:
       - Python Toolbox: toolboxes/toolbox-python.md
       - PySpark Toolbox: toolboxes/toolbox-pyspark.md
       - Synthetic Data Generators: toolboxes/synthetic-data-generators.md
+  - Guides:
+      - guides/index.md
+      - Querying Data: guides/querying-data.md
