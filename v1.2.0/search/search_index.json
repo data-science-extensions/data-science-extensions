@@ -1,0 +1,1 @@
+{"config":{"lang":["en"],"separator":"[\\s\\-]+","pipeline":["stopWordFilter"]},"docs":[{"location":"toolboxes/synthetic-data-generators/","title":"Synthetic Data Generators","text":""},{"location":"toolboxes/toolbox-pyspark/","title":"PySpark Toolbox","text":""},{"location":"toolboxes/toolbox-python/","title":"Python Toolbox","text":""}]}
