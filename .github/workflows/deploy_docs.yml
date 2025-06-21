@@ -68,6 +68,14 @@ jobs:
             REPO_NAME=$(basename -s .git "${REPO}")
             BRANCH=$(echo "${BRANCH}" | tr -d '\r' | tr -d '\n' | xargs)  # Trim any leading/trailing whitespace and remove carriage return and newline
 
+            # Check if the directory exists, if not create it
+            if [ ! -d "./${DIRECTORY}" ]; then
+              echo "--> Creating directory './${DIRECTORY}'"
+              mkdir --parents "./${DIRECTORY}"
+            else
+              echo "--> Directory './${DIRECTORY}' exists"
+            fi
+
             # Clone the repo to a temporary directory
             echo "--> Cloning branch '${BRANCH}' from '${REPO_NAME}': ${REPO}"
             git clone --single-branch --branch "${BRANCH}" "${REPO}" "/tmp/${REPO_NAME}"
