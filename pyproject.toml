@@ -93,3 +93,14 @@ exclude = '''
 
 [tool.codespell]
 ignore-words-list = "demog"
+
+[tool.isort]
+import_heading_future = "Future Library Imports"
+import_heading_stdlib = "StdLib Imports"
+import_heading_thirdparty = "Third Party Imports"
+import_heading_firstparty = "Local First Party Imports"
+import_heading_localfolder = "Local Module Imports"
+profile = "black"
+split_on_trailing_comma = true
+combine_as_imports = true
+lines_after_imports = 2
