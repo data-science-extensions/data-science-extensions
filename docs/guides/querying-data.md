@@ -30,8 +30,7 @@ Pandas provides a rich set of functionalities for data manipulation, including f
 
 ## Setup
 
-Before we start querying data, we need to set up our environment. This includes importing the necessary libraries, creating sample data, and defining constants that will be used throughout the article. The following sections will guide you through this setup process. The code for this article is also available on GitHub: [querying-data](...).
-
+Before we start querying data, we need to set up our environment. This includes importing the necessary libraries, creating sample data, and defining constants that will be used throughout the article. The following sections will guide you through this setup process. The code for this article is also available on GitHub: [querying-data](...) {==**UPDATE URL**==}.
 
 === "Pandas"
 

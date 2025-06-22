@@ -56,6 +56,7 @@ markdown_extensions:
           - overrides/.icons
   - pymdownx.magiclink
   - pymdownx.details
+  - pymdownx.critic
   - pymdownx.superfences
   - pymdownx.progressbar
   - pymdownx.highlight
