@@ -217,7 +217,7 @@ Now that we have our sample data created, we can proceed to the querying section
 
     To create the dataframes in Pandas, we will use the data we generated earlier. We will parse the dictionaries into Pandas DataFrames, which will allow us to perform various data manipulation tasks.
 
-    ```py {.pandas linenums="1" title="TITLE"}
+    ```py {.pandas linenums="1" title="Create DataFrames"}
     df_sales_pd = pd.DataFrame(sales_data)
     df_product_pd = pd.DataFrame(product_data)
     df_customer_pd = pd.DataFrame(customer_data)
@@ -225,20 +225,86 @@ Now that we have our sample data created, we can proceed to the querying section
 
     Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame.
 
-    ```py {.pandas linenums="1" title="TITLE"}
+    ```py {.pandas linenums="1" title="Check Sample DataFrame"}
     print(f"Sales DataFrame: {len(df_sales_pd)}")
     display(df_sales_pd.head(10))
+    print(df_sales_pd.head(10).to_markdown())
     ```
 
-    ```py {.pandas linenums="1" title="TITLE"}
+    <div class="result" markdown>
+
+    ```txt
+    Sales DataFrame: 100
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 |
+    |    5 | 2023-01-06 00:00:00 |          21 |          1 | Clothing    |       498.95 |        5 |
+    |    6 | 2023-01-07 00:00:00 |          83 |         25 | Books       |       187.03 |        1 |
+    |    7 | 2023-01-08 00:00:00 |          87 |          7 | Food        |        372.8 |        1 |
+    |    8 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    9 | 2023-01-10 00:00:00 |          75 |         24 | Books       |       723.73 |        6 |
+
+    </div>
+
+    ```py {.pandas linenums="1" title="Check Product DataFrame"}
     print(f"Product DataFrame: {len(df_product_pd)}")
     display(df_product_pd.head(10))
+    print(df_product_pd.head(10).to_markdown())
     ```
 
-    ```py {.pandas linenums="1" title="TITLE"}
+    <div class="result" markdown>
+
+    ```txt
+    Product DataFrame: 50
+    ```
+
+    |      | product_id | product_name |  price | category | supplier_id |
+    | ---: | ---------: | :----------- | -----: | :------- | ----------: |
+    |    0 |          1 | Product 1    | 257.57 | Food     |           8 |
+    |    1 |          2 | Product 2    | 414.96 | Clothing |           5 |
+    |    2 |          3 | Product 3    | 166.82 | Clothing |           8 |
+    |    3 |          4 | Product 4    | 448.81 | Food     |           4 |
+    |    4 |          5 | Product 5    | 200.71 | Food     |           8 |
+    |    5 |          6 | Product 6    |  15.31 | Home     |           2 |
+    |    6 |          7 | Product 7    | 453.64 | Home     |           5 |
+    |    7 |          8 | Product 8    |  54.73 | Clothing |           9 |
+    |    8 |          9 | Product 9    | 166.46 | Books    |           4 |
+    |    9 |         10 | Product 10   | 475.53 | Clothing |           6 |
+
+    </div>
+
+    ```py {.pandas linenums="1" title="Check Customer DataFrame"}
     print(f"Customer DataFrame: {len(df_customer_pd)}")
     display(df_customer_pd.head(10))
+    print(df_customer_pd.head(10).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Customer DataFrame: 100
+    ```
+
+    |      | customer_id | customer_name | city        | state | segment     |
+    | ---: | ----------: | :------------ | :---------- | :---- | :---------- |
+    |    0 |           1 | Customer 1    | Phoenix     | NY    | Corporate   |
+    |    1 |           2 | Customer 2    | Phoenix     | CA    | Home Office |
+    |    2 |           3 | Customer 3    | Phoenix     | NY    | Home Office |
+    |    3 |           4 | Customer 4    | Los Angeles | NY    | Consumer    |
+    |    4 |           5 | Customer 5    | Los Angeles | IL    | Home Office |
+    |    5 |           6 | Customer 6    | Chicago     | AZ    | Home Office |
+    |    6 |           7 | Customer 7    | New York    | NY    | Consumer    |
+    |    7 |           8 | Customer 8    | Phoenix     | CA    | Corporate   |
+    |    8 |           9 | Customer 9    | New York    | TX    | Corporate   |
+    |    9 |          10 | Customer 10   | New York    | NY    | Corporate   |
+
+    </div>
 
 === "SQL"
 
@@ -253,16 +319,19 @@ Now that we have our sample data created, we can proceed to the querying section
     ```py {.sql linenums="1" title="TITLE"}
     print("Sales Table:")
     display(pd.read_sql("SELECT * FROM sales LIMIT 5", conn))
+    print(pd.read_sql("SELECT * FROM sales LIMIT 5", conn).to_markdown())
     ```
 
     ```py {.sql linenums="1" title="TITLE"}
     print("Product Table:")
     display(pd.read_sql("SELECT * FROM product LIMIT 5", conn))
+    print(pd.read_sql("SELECT * FROM product LIMIT 5", conn).to_markdown())
     ```
 
     ```py {.sql linenums="1" title="TITLE"}
     print("Customer Table:")
     display(pd.read_sql("SELECT * FROM customer LIMIT 5", conn))
+    print(pd.read_sql("SELECT * FROM customer LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -303,16 +372,19 @@ Now that we have our sample data created, we can proceed to the querying section
     ```py {.polars linenums="1" title="TITLE"}
     print(f"Sales DataFrame: {df_sales_pl.shape[0]}")
     display(df_sales_pl.head(10))
+    print(df_sales_pl.head(10).to_markdown())
     ```
 
     ```py {.polars linenums="1" title="TITLE"}
     print(f"Product DataFrame: {df_product_pl.shape[0]}")
     display(df_product_pl.head(10))
+    print(df_product_pl.head(10).to_markdown())
     ```
 
     ```py {.polars linenums="1" title="TITLE"}
     print(f"Customer DataFrame: {df_customer_pl.shape[0]}")
     display(df_customer_pl.head(10))
+    print(df_customer_pl.head(10).to_markdown())
     ```
 
 
@@ -329,6 +401,7 @@ The first section will demonstrate how to filter and select data from the DataFr
     electronics_sales: pd.DataFrame = df_sales_pd[df_sales_pd["category"] == "Electronics"]
     print(f"Number of Electronics Sales: {len(electronics_sales)}")
     display(electronics_sales.head())
+    print(electronics_sales.head().to_markdown())
     ```
 
 === "SQL"
@@ -343,6 +416,7 @@ The first section will demonstrate how to filter and select data from the DataFr
     electronics_sales: pd.DataFrame = pd.read_sql(electronics_sales_sql, conn)
     print(f"Number of Electronics Sales: {len(electronics_sales)}")
     display(pd.read_sql(electronics_sales_sql + "LIMIT 5", conn))
+    print(pd.read_sql(electronics_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -363,6 +437,7 @@ The first section will demonstrate how to filter and select data from the DataFr
     electronics_sales = df_sales_pl.filter(df_sales_pl["category"] == "Electronics")
     print(f"Number of Electronics Sales: {len(electronics_sales)}")
     display(electronics_sales.head(10))
+    print(electronics_sales.head(10).to_markdown())
     ```
 
 We can also use numerical filtering, as you can see in the next example, where we filter for sales amounts greater than $500.
@@ -374,6 +449,7 @@ We can also use numerical filtering, as you can see in the next example, where w
     high_value_sales: pd.DataFrame = df_sales_pd[df_sales_pd["sales_amount"] > 500]
     print(f"Number of high-value Sales: {len(high_value_sales)}")
     display(high_value_sales.head())
+    print(high_value_sales.head().to_markdown())
     ```
 
 === "SQL"
@@ -388,6 +464,7 @@ We can also use numerical filtering, as you can see in the next example, where w
     high_value_sales: pd.DataFrame = pd.read_sql(high_value_sales_sql, conn)
     print(f"Number of high-value Sales: {len(high_value_sales)}")
     display(pd.read_sql(high_value_sales_sql + "LIMIT 5", conn))
+    print(pd.read_sql(high_value_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -406,6 +483,7 @@ We can also use numerical filtering, as you can see in the next example, where w
     high_value_sales = df_sales_pl.filter(df_sales_pl["sales_amount"] > 500)
     print(f"Number of high-value Sales: {len(high_value_sales)}")
     display(high_value_sales.head(10))
+    print(high_value_sales.head(10).to_markdown())
     ```
 
 When it comes to selecting specific columns, we can use the double square brackets syntax to specify the columns we want to keep in the DataFrame. This allows us to create a new DataFrame with only the relevant columns.
@@ -417,6 +495,7 @@ When it comes to selecting specific columns, we can use the double square bracke
     sales_summary: pd.DataFrame = df_sales_pd[["date", "category", "sales_amount"]]
     print(f"Sales Summary DataFrame: {len(sales_summary)}")
     display(sales_summary.head())
+    print(sales_summary.head().to_markdown())
     ```
 
 === "SQL"
@@ -430,6 +509,7 @@ When it comes to selecting specific columns, we can use the double square bracke
     sales_summary: pd.DataFrame = pd.read_sql(sales_summary_sql, conn)
     print(f"Selected columns in Sales: {len(sales_summary)}")
     display(pd.read_sql(sales_summary_sql + "LIMIT 5", conn))
+    print(pd.read_sql(sales_summary_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -448,6 +528,7 @@ When it comes to selecting specific columns, we can use the double square bracke
     sales_summary = df_sales_pl.select(["date", "category", "sales_amount"])
     print(f"Sales Summary DataFrame: {len(sales_summary)}")
     display(sales_summary.head(10))
+    print(sales_summary.head(10).to_markdown())
     ```
 
 ## 2. Grouping and Aggregation
@@ -468,6 +549,7 @@ The second section will cover grouping and aggregation techniques. These operati
     )
     print(f"Sales Statistics: {len(sales_stats)}")
     display(sales_stats)
+    print(sales_stats.to_markdown())
     ```
 
 === "SQL"
@@ -489,6 +571,7 @@ The second section will cover grouping and aggregation techniques. These operati
     """
     print(f"Sales Statistics: {len(pd.read_sql(sales_stats_sql, conn))}")
     display(pd.read_sql(sales_stats_sql, conn))
+    print(pd.read_sql(sales_stats_sql, conn).to_markdown())
     ```
 
 === "PySpark"
@@ -526,6 +609,7 @@ The second section will cover grouping and aggregation techniques. These operati
     )
     print(f"Sales Statistics: {len(sales_stats)}")
     display(sales_stats)
+    print(sales_stats.to_markdown())
     ```
 
 It is also possible to group data by a specific column and then apply aggregation functions to summarize the data.
@@ -544,6 +628,7 @@ It is also possible to group data by a specific column and then apply aggregatio
     )
     print(f"Category Sales Summary: {len(category_sales)}")
     display(category_sales)
+    print(category_sales.to_markdown())
     ```
 
 === "SQL"
@@ -562,6 +647,7 @@ It is also possible to group data by a specific column and then apply aggregatio
     """
     print(f"Category Sales Summary: {len(pd.read_sql(category_sales_sql, conn))}")
     display(pd.read_sql(category_sales_sql + "LIMIT 5", conn))
+    print(pd.read_sql(category_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -590,6 +676,7 @@ It is also possible to group data by a specific column and then apply aggregatio
     )
     print(f"Category Sales Summary: {len(category_sales)}")
     display(category_sales.head(10))
+    print(category_sales.head(10).to_markdown())
     ```
 
 We can rename the columns for clarity by simply assigning new names.
@@ -608,6 +695,7 @@ We can rename the columns for clarity by simply assigning new names.
     ]
     print(f"Renamed Category Sales Summary: {len(category_sales)}")
     display(category_sales.head(10))
+    print(category_sales.head(10).to_markdown())
     ```
 
 === "SQL"
@@ -645,6 +733,7 @@ We can rename the columns for clarity by simply assigning new names.
     )
     print(f"Renamed Category Sales Summary: {len(category_sales)}")
     display(category_sales.head(10))
+    print(category_sales.head(10).to_markdown())
     ```
 
 Having aggregated the data, we can now visualize the results using [Plotly](https://plotly.com/python/). This allows us to create interactive visualizations that can help us better understand the data.
@@ -730,6 +819,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     )
     print(f"Sales with Product Information: {len(sales_with_product)}")
     display(sales_with_product.head())
+    print(sales_with_product.head().to_markdown())
     ```
 
 === "SQL"
@@ -743,6 +833,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     """
     print(f"Sales with Product Data: {len(pd.read_sql(sales_with_product_sql, conn))}")
     display(pd.read_sql(sales_with_product_sql + "LIMIT 5", conn))
+    print(pd.read_sql(sales_with_product_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -769,6 +860,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     )
     print(f"Sales with Product Information: {len(sales_with_product)}")
     display(sales_with_product.head(10))
+    print(sales_with_product.head(10).to_markdown())
     ```
 
 In the next step, we will join the resulting DataFrame with the `customer` DataFrame to get customer information for each sale. This allows us to create a complete view of the sales data, including product and customer details.
@@ -785,6 +877,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     )
     print(f"Complete Sales Data with Customer Information: {len(complete_sales)}")
     display(complete_sales.head())
+    print(complete_sales.head().to_markdown())
     ```
 
 === "SQL"
@@ -805,6 +898,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     """
     print(f"Complete Sales Data: {len(pd.read_sql(complete_sales_sql, conn))}")
     display(pd.read_sql(complete_sales_sql + "LIMIT 5", conn))
+    print(pd.read_sql(complete_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -833,6 +927,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     )
     print(f"Complete Sales Data with Customer Information: {len(complete_sales)}")
     display(complete_sales.head(10))
+    print(complete_sales.head(10).to_markdown())
     ```
 
 Once we have the complete sales data, we can calculate the revenue for each sale by multiplying the price and quantity (columns from different tables). We can also compare this calculated revenue with the sales amount to identify any discrepancies.
@@ -873,6 +968,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     """
     print(f"Revenue Comparison: {len(pd.read_sql(revenue_comparison_sql, conn))}")
     display(pd.read_sql(revenue_comparison_sql + "LIMIT 5", conn))
+    print(pd.read_sql(revenue_comparison_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -937,6 +1033,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
     )
     print(f"Daily Sales Summary: {len(daily_sales)}")
     display(daily_sales.head())
+    print(daily_sales.head().to_markdown())
     ```
 
 === "SQL"
@@ -953,6 +1050,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
     """
     print(f"Daily Sales Data: {len(pd.read_sql(daily_sales_sql, conn))}")
     display(pd.read_sql(daily_sales_sql + "LIMIT 5", conn))
+    print(pd.read_sql(daily_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -988,6 +1086,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
     )
     print(f"Daily Sales Summary: {len(daily_sales)}")
     display(daily_sales.head(10))
+    print(daily_sales.head(10).to_markdown())
     ```
 
 Next, we will calculate the rolling average of sales over a 7-day window.
@@ -1003,6 +1102,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     )
     print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales)}")
     display(daily_sales.head())
+    print(daily_sales.head().to_markdown())
     ```
 
 === "SQL"
@@ -1024,6 +1124,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     window_df: pd.DataFrame = pd.read_sql(window_sql, conn)
     print(f"Window Functions: {len(window_df)}")
     display(pd.read_sql(window_sql + "LIMIT 5", conn))
+    print(pd.read_sql(window_sql + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -1053,6 +1154,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     )
     print(f"Daily Sales with Day-over-Day Change: {len(daily_sales)}")
     display(daily_sales.head(10))
+    print(daily_sales.head(10).to_markdown())
     ```
 
 Next, we will calculate the lag and lead values for the sales amount. This allows us to compare the current day's sales with the previous and next days' sales.
@@ -1067,6 +1169,7 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     daily_sales["next_day_sales"] = daily_sales["sales_amount"].shift(-1)
     print(f"Daily Sales with Lag and Lead: {len(daily_sales)}")
     display(daily_sales.head())
+    print(daily_sales.head().to_markdown())
     ```
 
 === "SQL"
@@ -1101,6 +1204,7 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     )
     print(f"Daily Sales with Lead and Lag: {len(daily_sales)}")
     display(daily_sales.head(10))
+    print(daily_sales.head(10).to_markdown())
     ```
 
 Now, we can calculate the day-over-day change in sales. This is done by subtracting the previous day's sales from the current day's sales.
@@ -1117,6 +1221,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     daily_sales["pct_change"] = daily_sales["sales_amount"].pct_change() * 100
     print(f"Daily Sales with Day-over-Day Change: {len(daily_sales)}")
     display(daily_sales.head())
+    print(daily_sales.head().to_markdown())
     ```
 
 === "SQL"
@@ -1153,6 +1258,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     )
     print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales)}")
     display(daily_sales.head(10))
+    print(daily_sales.head(10).to_markdown())
     ```
 
 Finally, we can visualize the daily sales data along with the 7-day moving average using Plotly. This allows us to see the trends in sales over time and how the moving average smooths out the fluctuations in daily sales.
@@ -1304,6 +1410,7 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     customer_spending = customer_spending.sort_values("rank")
     print(f"Customer Spending Summary: {len(customer_spending)}")
     display(customer_spending.head(10))
+    print(customer_spending.head(10).to_markdown())
     ```
 
 === "SQL"
@@ -1339,6 +1446,7 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     )
     print(f"Customer Spending Summary: {len(customer_spending)}")
     display(customer_spending.head(10))
+    print(customer_spending.head(10).to_markdown())
     ```
 
 Once we have ranked the customers, we can merge this information with the `customer` DataFrame to get additional details about each customer, such as their name, segment, and city.
@@ -1355,6 +1463,7 @@ Once we have ranked the customers, we can merge this information with the `custo
     )
     print(f"Top Customers Summary: {len(top_customers)}")
     display(top_customers.head(10))
+    print(top_customers.head(10).to_markdown())
     ```
 
 === "SQL"
@@ -1376,6 +1485,7 @@ Once we have ranked the customers, we can merge this information with the `custo
     """
     print(f"Customer Spending: {len(pd.read_sql(customer_spending_sql, conn))}")
     display(pd.read_sql(customer_spending_sql + "LIMIT 10", conn))
+    print(pd.read_sql(customer_spending_sql + "LIMIT 10", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -1403,6 +1513,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     product_popularity = product_popularity.sort_values("rank")
     print(f"Product Popularity Summary: {len(product_popularity)}")
     display(product_popularity.head(10))
+    print(product_popularity.head(10).to_markdown())
     ```
 
 === "SQL"
@@ -1423,6 +1534,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     """
     print(f"Product Popularity: {len(pd.read_sql(product_popularity_sql, conn))}")
     display(pd.read_sql(product_popularity_sql + "LIMIT 10", conn))
+    print(pd.read_sql(product_popularity_sql + "LIMIT 10", conn).to_markdown())
     ```
 
 === "PySpark"
@@ -1453,6 +1565,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     )
     print(f"Product Popularity Summary: {len(product_popularity)}")
     display(product_popularity.head(10))
+    print(product_popularity.head(10).to_markdown())
     ```
 
 As with the customer data, we can merge the product popularity information with the `product` DataFrame to get additional details about each product, such as its name and category.
@@ -1469,6 +1582,7 @@ As with the customer data, we can merge the product popularity information with 
     )
     print(f"Top Products Summary: {len(top_products)}")
     display(top_products.head(10))
+    print(top_products.head(10).to_markdown())
     ```
 
 === "SQL"
