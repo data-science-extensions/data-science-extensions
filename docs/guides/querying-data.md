@@ -10,22 +10,76 @@ Working as a Data Scientist or Data Engineer often involves querying data from v
 This article provides a comprehensive guide on how to query data using different tools and libraries, including Pandas, SQL, PySpark, and Polars. Each section will cover the setup, data creation, and various querying techniques such as filtering, grouping, joining, window functions, ranking, and sorting. The output will be identical across all tools, but the transformations will be implemented using the specific syntax and features of each library. Therefore allowing you to compare the different approaches and understand the nuances of each method.
 
 
-## The Different Libraries
+## Overview of the Different Libraries
 
-### Pandas
+Before we dive into the querying techniques, let's take a moment to understand the different libraries and tools we will be using in this article. Each library has its own strengths and weaknesses, and understanding these can help you choose the right tool for your specific use case.
 
-[Pandas](https://pandas.pydata.org/) is a powerful data manipulation library in Python that provides data structures and functions for working with structured data. It is widely used for data analysis and manipulation tasks.
+Throughout this article, you can easily switch between the different libraries by selecting the appropriate tab. Each section will provide the same functionality, but implemented using the specific syntax and features of each library.
 
-Historically, Pandas was one of the first libraries to provide a DataFrame structure, which is similar to a table in a relational database. It allows for easy data manipulation, filtering, grouping, and aggregation. Pandas is built on top of [NumPy](https://numpy.org/) and provides a high-level interface for working with data. It is particularly well-suited for small to medium-sized datasets and is often used in Data Science and Machine Learning workflows.
+=== "Pandas"
 
-Pandas provides a rich set of functionalities for data manipulation, including filtering, grouping, joining, and window functions. It also integrates well with other libraries such as Matplotlib and Seaborn for data visualization, making it a popular choice among data scientists and analysts.
+    [Pandas][pandas] is a powerful data manipulation library in Python that provides data structures and functions for working with structured data. It is widely used for data analysis and manipulation tasks.
 
+    Historically, Pandas was one of the first libraries to provide a DataFrame structure, which is similar to a table in a relational database. It allows for easy data manipulation, filtering, grouping, and aggregation. Pandas is built on top of [NumPy][numpy] and provides a high-level interface for working with data. It is particularly well-suited for small to medium-sized datasets and is often used in Data Science and Machine Learning workflows.
 
-### SQL
+    Pandas provides a rich set of functionalities for data manipulation, including filtering, grouping, joining, and window functions. It also integrates well with other libraries such as Matplotlib and Seaborn for data visualization, making it a popular choice among data scientists and analysts.
 
-### PySpark
+    While Pandas is both powerful and popular, it is important to note that it operates **in-memory**, which means that it may not be suitable for very large datasets that do not fit into memory. In such cases, other libraries like PySpark or Polars may be more appropriate.
 
-### Polars
+    [pandas]: https://pandas.pydata.org/
+    [numpy]: https://numpy.org/
+
+=== "SQL"
+
+    [SQL][sql-wiki] (Structured Query Language) is a standard language for managing and manipulating relational databases. It is widely used for querying and modifying data in databases. SQL is a declarative language, meaning that you specify what you want to retrieve or manipulate without detailing how to do it. This makes SQL queries concise and expressive. SQL is particularly well-suited for working with large datasets and complex queries. It provides powerful features for filtering, grouping, joining, and aggregating data. SQL is the backbone of many database systems.
+
+    SQL is actually a language (like Python is a language), not a library (like Pandas is a library), and it is used to interact with relational databases. The core of the SQL language is actually an [ISO standard][sql-iso], which means that the basic syntax and functionality are consistent across different database systems. However, each database system may have its own extensions or variations of SQL, which can lead to differences in syntax and features. Each database system can be considered as variations (or dialects) of SQL, with their own specific features and optimizations and syntax ehnancements.
+
+    Some of the more popular SQL dialects include:
+
+    <div class="mdx-three-columns" markdown>
+
+    - [SQLite]
+    - [PostgreSQL]
+    - [MySQL]
+    - [Spark SQL][spark-sql]
+    - [SQL Server (t-SQL)][t-sql]
+    - [Oracle SQL (pl-SQL)][pl-sql]
+
+    </div>
+
+    [sql-wiki]: https://en.wikipedia.org/wiki/SQL
+    [sql-iso]: https://www.iso.org/standard/76583.html
+    [sqlite]: https://sqlite.org/
+    [postgresql]: https://www.postgresql.org/
+    [mysql]: https://www.mysql.com/
+    [t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
+    [pl-sql]: https://www.oracle.com/au/database/technologies/appdev/plsql.html
+    [spark-sql]: https://spark.apache.org/sql/
+
+=== "PySpark"
+
+    [PySpark] is the Python API for Apache Spark, a distributed computing framework that allows for large-scale data processing. PySpark provides a high-level interface for working with Spark, making it easier to write distributed data processing applications in Python. It is particularly well-suited for big data processing and analytics.
+
+    PySpark provides a DataFrame API similar to Pandas, but it is designed to work with large datasets that do not fit into memory. It allows for distributed data processing across a cluster of machines, making it suitable for big data applications. PySpark supports various data sources, including [HDFS], [S3], [ADLS], and [JDBC], and provides powerful features for filtering, grouping, joining, and aggregating data.
+
+    While PySpark is a powerful tool for big data processing, it can be more complex to set up and use compared to Pandas. It requires a Spark cluster and may have a steeper learning curve for those unfamiliar with distributed computing concepts. However, it is an excellent choice for processing large datasets and performing complex data transformations.
+
+    [pyspark]: https://spark.apache.org/docs/latest/api/python/
+    [hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
+    [s3]: https://aws.amazon.com/s3/
+    [adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
+    [jdbc]: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
+
+=== "Polars"
+
+    [Polars] is a fast DataFrame library for Python that is designed for high-performance data manipulation. It is built on top of Rust and provides a DataFrame API similar to Pandas, but with a focus on performance and memory efficiency. Polars is particularly well-suited for large datasets and complex queries.
+
+    Polars supports lazy evaluation, which allows for optimizations in query execution. Polars also provides powerful features for filtering, grouping, joining, and aggregating data, making it a great choice for data analysis tasks.
+
+    While Polars is a relatively new library compared to Pandas, it has gained popularity for its performance and ease of use. It is designed to be a drop-in replacement for Pandas, allowing users to leverage its performance benefits without significant changes to their existing code. It is particularly useful for data scientists and analysts who need to work with large datasets and require fast data manipulation capabilities. The setup is simple and straightforward, similar to Pandas, and less complex than PySpark. It is a great choice for data analysis tasks that require high performance and memory efficiency.
+
+    [polars]: https://www.pola.rs/
 
 
 ## Setup
@@ -34,7 +88,7 @@ Before we start querying data, we need to set up our environment. This includes 
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="Setup"}
     # StdLib Imports
     from typing import Any
 
@@ -52,7 +106,7 @@ Before we start querying data, we need to set up our environment. This includes 
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="Setup"}
     # StdLib Imports
     import sqlite3
     from typing import Any
@@ -65,7 +119,7 @@ Before we start querying data, we need to set up our environment. This includes 
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="Setup"}
     # StdLib Imports
     from typing import Any
 
@@ -89,7 +143,7 @@ Before we start querying data, we need to set up our environment. This includes 
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="Setup"}
     # StdLib Imports
     from typing import Any
 
@@ -111,7 +165,7 @@ For the below data creation steps, we will be defining the tables using Python d
 
 First, we will create a sales fact table. This table will contain information about sales transactions, including the date, customer ID, product ID, category, sales amount, and quantity sold.
 
-```python
+```py {.python linenums="1" title="Create Sales Fact Data"}
 sales_data: dict[str, Any] = {
     "date": pd.date_range(start="2023-01-01", periods=n_records, freq="D"),
     "customer_id": np.random.randint(1, 100, n_records),
@@ -126,7 +180,7 @@ sales_data: dict[str, Any] = {
 
 Next, we will create a product dimension table. This table will contain information about products, including the product ID, name, price, category, and supplier ID.
 
-```python
+```py {.python linenums="1" title="Create Product Dimension Data"}
 # Create product dimension table
 product_data: dict[str, Any] = {
     "product_id": np.arange(1, 51),
@@ -141,7 +195,7 @@ product_data: dict[str, Any] = {
 
 Finally, we will create a customer dimension table. This table will contain information about customers, including the customer ID, name, city, state, and segment.
 
-```python
+```py {.python linenums="1" title="Create Customer Dimension Data"}
 # Create customer dimension table
 customer_data: dict[str, Any] = {
     "customer_id": np.arange(1, 101),
@@ -163,7 +217,7 @@ Now that we have our sample data created, we can proceed to the querying section
 
     To create the dataframes in Pandas, we will use the data we generated earlier. We will parse the dictionaries into Pandas DataFrames, which will allow us to perform various data manipulation tasks.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     df_sales_pd = pd.DataFrame(sales_data)
     df_product_pd = pd.DataFrame(product_data)
     df_customer_pd = pd.DataFrame(customer_data)
@@ -171,24 +225,24 @@ Now that we have our sample data created, we can proceed to the querying section
 
     Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     print(f"Sales DataFrame: {len(df_sales_pd)}")
     display(df_sales_pd.head(10))
     ```
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     print(f"Product DataFrame: {len(df_product_pd)}")
     display(df_product_pd.head(10))
     ```
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     print(f"Customer DataFrame: {len(df_customer_pd)}")
     display(df_customer_pd.head(10))
     ```
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Creates SQLite database and tables
     conn: sqlite3.Connection = sqlite3.connect(":memory:")
     df_sales_pd.to_sql("sales", conn, index=False, if_exists="replace")
@@ -196,67 +250,67 @@ Now that we have our sample data created, we can proceed to the querying section
     df_customer_pd.to_sql("customer", conn, index=False, if_exists="replace")
     ```
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     print("Sales Table:")
     display(pd.read_sql("SELECT * FROM sales LIMIT 5", conn))
     ```
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     print("Product Table:")
     display(pd.read_sql("SELECT * FROM product LIMIT 5", conn))
     ```
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     print("Customer Table:")
     display(pd.read_sql("SELECT * FROM customer LIMIT 5", conn))
     ```
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     spark: SparkSession = SparkSession.builder.appName("SalesAnalysis").getOrCreate()
     ```
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     df_sales_ps: psDataFrame = spark.createDataFrame(df_sales_pd)
     df_product_ps: psDataFrame = spark.createDataFrame(df_product_pd)
     df_customer_ps: psDataFrame = spark.createDataFrame(df_customer_pd)
     ```
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     print(f"Sales DataFrame: {df_sales_ps.count()}")
     df_sales_ps.show(10)
     ```
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     print(f"Product DataFrame: {df_product_ps.count()}")
     df_product_ps.show(10)
     ```
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     print(f"Customer DataFrame: {df_customer_ps.count()}")
     df_customer_ps.show(10)
     ```
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     df_sales_pl: pl.DataFrame = pl.DataFrame(sales_data)
     df_product_pl: pl.DataFrame = pl.DataFrame(product_data)
     df_customer_pl: pl.DataFrame = pl.DataFrame(customer_data)
     ```
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     print(f"Sales DataFrame: {df_sales_pl.shape[0]}")
     display(df_sales_pl.head(10))
     ```
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     print(f"Product DataFrame: {df_product_pl.shape[0]}")
     display(df_product_pl.head(10))
     ```
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     print(f"Customer DataFrame: {df_customer_pl.shape[0]}")
     display(df_customer_pl.head(10))
     ```
@@ -270,7 +324,7 @@ The first section will demonstrate how to filter and select data from the DataFr
 
     In Pandas, we can use boolean indexing to filter rows based on specific conditions. As you can see in this first example, this looks like using square brackets, within which we define a column and a condition. In the below example, we can use string values to filter categorical data.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Filter sales data for specific category
     electronics_sales: pd.DataFrame = df_sales_pd[df_sales_pd["category"] == "Electronics"]
     print(f"Number of Electronics Sales: {len(electronics_sales)}")
@@ -279,7 +333,7 @@ The first section will demonstrate how to filter and select data from the DataFr
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Filter sales for a specific category
     electronics_sales_sql = """
         SELECT *
@@ -293,7 +347,7 @@ The first section will demonstrate how to filter and select data from the DataFr
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Filter sales data for specific category
     electronics_sales: psDataFrame = df_sales_ps.filter(
         df_sales_ps["category"] == "Electronics"
@@ -304,7 +358,7 @@ The first section will demonstrate how to filter and select data from the DataFr
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Filter sales data for specific category
     electronics_sales = df_sales_pl.filter(df_sales_pl["category"] == "Electronics")
     print(f"Number of Electronics Sales: {len(electronics_sales)}")
@@ -315,7 +369,7 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
     high_value_sales: pd.DataFrame = df_sales_pd[df_sales_pd["sales_amount"] > 500]
     print(f"Number of high-value Sales: {len(high_value_sales)}")
@@ -324,7 +378,7 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
     high_value_sales_sql = """
         SELECT *
@@ -338,7 +392,7 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
     high_value_sales: psDataFrame = df_sales_ps.filter("sales_amount > 500")
     print(f"Number of high-value Sales: {high_value_sales.count()}")
@@ -347,7 +401,7 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
     high_value_sales = df_sales_pl.filter(df_sales_pl["sales_amount"] > 500)
     print(f"Number of high-value Sales: {len(high_value_sales)}")
@@ -358,7 +412,7 @@ When it comes to selecting specific columns, we can use the double square bracke
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Select specific columns
     sales_summary: pd.DataFrame = df_sales_pd[["date", "category", "sales_amount"]]
     print(f"Sales Summary DataFrame: {len(sales_summary)}")
@@ -367,7 +421,7 @@ When it comes to selecting specific columns, we can use the double square bracke
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Select specific columns
     sales_summary_sql = """
         SELECT date, category, sales_amount
@@ -380,7 +434,7 @@ When it comes to selecting specific columns, we can use the double square bracke
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Select specific columns
     sales_summary: psDataFrame = df_sales_ps.select("date", "category", "sales_amount")
     print(f"Sales Summary DataFrame: {sales_summary.count()}")
@@ -389,7 +443,7 @@ When it comes to selecting specific columns, we can use the double square bracke
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Select specific columns
     sales_summary = df_sales_pl.select(["date", "category", "sales_amount"])
     print(f"Sales Summary DataFrame: {len(sales_summary)}")
@@ -404,7 +458,7 @@ The second section will cover grouping and aggregation techniques. These operati
 
     In Pandas, we can use the [`.agg()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html) method to perform aggregation operations on DataFrames. This method allows us to apply multiple aggregation functions to different columns in a single operation.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Basic aggregation
     sales_stats: pd.DataFrame = df_sales_pd.agg(
         {
@@ -418,7 +472,7 @@ The second section will cover grouping and aggregation techniques. These operati
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Basic aggregation
     sales_stats_sql = """
         SELECT
@@ -439,7 +493,7 @@ The second section will cover grouping and aggregation techniques. These operati
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Basic aggregation
     sales_stats: psDataFrame = df_sales_ps.agg(
         F.sum("sales_amount").alias("sales_sum"),
@@ -458,7 +512,7 @@ The second section will cover grouping and aggregation techniques. These operati
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Basic aggregation
     sales_stats = df_sales_pl.select(
         pl.col("sales_amount").sum().alias("sales_sum"),
@@ -480,7 +534,7 @@ It is also possible to group data by a specific column and then apply aggregatio
 
     This is done using the [`.groupby()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html) method to group data by one or more columns and then apply aggregation functions to summarize the data, followed by the [`.agg()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html) method.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Group by category and aggregate
     category_sales: pd.DataFrame = df_sales_pd.groupby("category").agg(
         {
@@ -494,7 +548,7 @@ It is also possible to group data by a specific column and then apply aggregatio
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Group by category and aggregate
     category_sales_sql = """
         SELECT
@@ -512,7 +566,7 @@ It is also possible to group data by a specific column and then apply aggregatio
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Group by category and aggregate
     category_sales: psDataFrame = df_sales_ps.groupBy("category").agg(
         F.sum("sales_amount").alias("total_sales"),
@@ -526,7 +580,7 @@ It is also possible to group data by a specific column and then apply aggregatio
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Group by category and aggregate
     category_sales = df_sales_pl.group_by("category").agg(
         pl.col("sales_amount").sum().alias("total_sales"),
@@ -544,7 +598,7 @@ We can rename the columns for clarity by simply assigning new names.
 
     In Pandas, we use the [`.columns`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html) attribute of the DataFrame. This makes it easier to understand the results of the aggregation.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Rename columns for clarity
     category_sales.columns = [
         "total_sales",
@@ -558,12 +612,12 @@ We can rename the columns for clarity by simply assigning new names.
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     ```
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Rename columns for clarity
     category_sales = category_sales.withColumnsRenamed(
         {
@@ -579,7 +633,7 @@ We can rename the columns for clarity by simply assigning new names.
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Rename columns for clarity
     category_sales = category_sales.rename(
         {
@@ -597,7 +651,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Plot the results
     fig: go.Figure = px.bar(
         category_sales.reset_index(),
@@ -612,7 +666,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Plot the results
     fig: go.Figure = px.bar(
         pd.read_sql(category_sales_sql, conn),
@@ -627,7 +681,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Convert to pandas for plotting with plotly
     category_sales_pd: pd.DataFrame = category_sales.toPandas()
     fig: go.Figure = px.bar(
@@ -643,7 +697,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Plot the results
     fig: go.Figure = px.bar(
         category_sales,
@@ -666,7 +720,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
     In Pandas, we can use the [`pd.merge()`](https://pandas.pydata.org/docs/reference/api/pandas.merge.html) method to join DataFrames. This method allows us to specify the columns to join on and the type of join (inner, outer, left, or right).
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Join sales with product data
     sales_with_product: pd.DataFrame = pd.merge(
         left=df_sales_pd,
@@ -680,7 +734,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Join sales with product data
     sales_with_product_sql = """
         SELECT s.*, p.product_name, p.price
@@ -693,7 +747,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Join sales with product data
     sales_with_product: psDataFrame = df_sales_ps.join(
         other=df_product_ps.select("product_id", "product_name", "price"),
@@ -706,7 +760,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Join sales with product data
     sales_with_product = df_sales_pl.join(
         df_product_pl.select(["product_id", "product_name", "price"]),
@@ -721,7 +775,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Join with customer information to get a complete view
     complete_sales: pd.DataFrame = pd.merge(
         sales_with_product,
@@ -735,7 +789,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Join with customer information to get a complete view
     complete_sales_sql = """
         SELECT
@@ -755,7 +809,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Join with customer information to get a complete view
     complete_sales: psDataFrame = sales_with_product.alias("s").join(
         other=df_customer_ps.select("customer_id", "customer_name", "city", "state").alias(
@@ -770,7 +824,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Join with customer information to get a complete view
     complete_sales = sales_with_product.join(
         df_customer_pl.select(["customer_id", "customer_name", "city", "state"]),
@@ -785,7 +839,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Calculate revenue (price * quantity) and compare with sales amount
     complete_sales["calculated_revenue"] = (
         complete_sales["price"] * complete_sales["quantity"]
@@ -805,7 +859,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Calculate revenue and price difference
     revenue_comparison_sql = """
         SELECT
@@ -823,7 +877,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Calculate revenue (price * quantity) and compare with sales amount
     complete_sales = complete_sales.withColumns(
         {
@@ -841,7 +895,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Calculate revenue (price * quantity) and compare with sales amount
     complete_sales = complete_sales.with_columns(
         (pl.col("price") * pl.col("quantity")).alias("calculated_revenue"),
@@ -872,7 +926,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Time-based window function
     df_sales_pd["date"] = pd.to_datetime(df_sales_pd["date"])  # Ensure date type
     daily_sales: pd.DataFrame = (
@@ -887,7 +941,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Time-based window function
     daily_sales_sql = """
         SELECT
@@ -903,7 +957,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Convert date column to date type if not already
     df_sales_ps = df_sales_ps.withColumn("date", F.to_date(df_sales_ps["date"]))
     daily_sales: psDataFrame = (
@@ -919,12 +973,12 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Convert date column to date type if not already
     df_sales_pl = df_sales_pl.with_columns(pl.col("date").cast(pl.Date))
     ```
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     daily_sales = (
         df_sales_pl.group_by("date")
         .agg(
@@ -942,7 +996,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     This is done using the [`.rolling()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) method, which allows us to specify the window size and the minimum number of periods required for the calculation.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Calculate rolling averages (7-day moving average)
     daily_sales["7d_moving_avg"] = (
         daily_sales["sales_amount"].rolling(window=7, min_periods=1).mean()
@@ -953,7 +1007,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Window functions for lead and lag
     window_sql = """
         SELECT
@@ -974,7 +1028,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Calculate day-over-day change
     daily_sales = daily_sales.withColumns(
         {
@@ -990,7 +1044,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Calculate day-over-day change
     daily_sales = daily_sales.with_columns(
         (pl.col("total_sales") - pl.col("previous_day_sales")).alias("day_over_day_change"),
@@ -1007,7 +1061,7 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
     This is done using the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method, which shifts the values in a column by a specified number of periods. Note that the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method simply shifts the values in the column, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered; if you want it to be ordered, you can use the [`.sort_values()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sort_values.html) method before applying [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html).
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Calculate lag and lead
     daily_sales["previous_day_sales"] = daily_sales["sales_amount"].shift(1)
     daily_sales["next_day_sales"] = daily_sales["sales_amount"].shift(-1)
@@ -1017,12 +1071,12 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     ```
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Define a window specification for lead/lag functions
     window_spec = Window.orderBy("date")
 
@@ -1039,7 +1093,7 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Calculate lead and lag
     daily_sales = daily_sales.with_columns(
         pl.col("total_sales").shift(1).alias("previous_day_sales"),
@@ -1055,7 +1109,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
     We can also calculate the percentage change in sales using the [`.pct_change()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html) method, which calculates the percentage change between the current and previous values.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Calculate day-over-day change
     daily_sales["day_over_day_change"] = (
         daily_sales["sales_amount"].pct_change() - daily_sales["previous_day_sales"]
@@ -1067,12 +1121,12 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     ```
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Calculate 7-day moving average
     daily_sales = daily_sales.withColumns(
         {
@@ -1090,7 +1144,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Calculate 7-day moving average
     daily_sales = daily_sales.with_columns(
         pl.col("total_sales")
@@ -1105,7 +1159,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Plot time series with rolling average
     fig = (
         go.Figure()
@@ -1137,7 +1191,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Plot time series with rolling average
     fig = (
         go.Figure()
@@ -1169,7 +1223,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Plot time series with rolling average
     fig = (
         go.Figure()
@@ -1201,7 +1255,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Plot time series with rolling average
     fig = (
         go.Figure()
@@ -1239,7 +1293,7 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
 
     In Pandas, we can use the [`.rank()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rank.html) method to rank values in a DataFrame. This method allows us to specify the ranking method (e.g., dense, average, min, max) and whether to rank in ascending or descending order.
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Rank customers by total spending
     customer_spending: pd.DataFrame = (
         df_sales_pd.groupby("customer_id")["sales_amount"].sum().reset_index()
@@ -1254,12 +1308,12 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     ```
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Rank customers by total spending
     customer_spending: psDataFrame = (
         df_sales_ps.groupBy("customer_id")
@@ -1273,7 +1327,7 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Rank customers by total spending
     customer_spending = (
         df_sales_pl.group_by("customer_id")
@@ -1291,7 +1345,7 @@ Once we have ranked the customers, we can merge this information with the `custo
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Add customer details
     top_customers: pd.DataFrame = pd.merge(
         customer_spending,
@@ -1305,7 +1359,7 @@ Once we have ranked the customers, we can merge this information with the `custo
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Rank customers by total spending
     customer_spending_sql = """
         SELECT
@@ -1326,19 +1380,19 @@ Once we have ranked the customers, we can merge this information with the `custo
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     ```
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     ```
 
 Next, we will rank products based on the quantity sold. This allows us to identify the most popular products in terms of sales volume.
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Rank products by quantity sold
     product_popularity: pd.DataFrame = (
         df_sales_pd.groupby("product_id")["quantity"].sum().reset_index()
@@ -1353,7 +1407,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     # Rank products by quantity sold
     product_popularity_sql = """
         SELECT
@@ -1373,7 +1427,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     # Rank products by quantity sold
     product_popularity: psDataFrame = (
         df_sales_ps.groupBy("product_id")
@@ -1387,7 +1441,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     # Rank products by quantity sold
     product_popularity = (
         df_sales_pl.group_by("product_id")
@@ -1405,7 +1459,7 @@ As with the customer data, we can merge the product popularity information with 
 
 === "Pandas"
 
-    ```python
+    ```py {.pandas linenums="1" title="TITLE"}
     # Add product details
     top_products: pd.DataFrame = pd.merge(
         product_popularity,
@@ -1419,21 +1473,21 @@ As with the customer data, we can merge the product popularity information with 
 
 === "SQL"
 
-    ```python
+    ```py {.sql linenums="1" title="TITLE"}
     ```
 
 === "PySpark"
 
-    ```python
+    ```py {.pyspark linenums="1" title="TITLE"}
     ```
 
 === "Polars"
 
-    ```python
+    ```py {.polars linenums="1" title="TITLE"}
     ```
 
 
 ## Conclusion
 
-    ```python
+    ```py
     ```
