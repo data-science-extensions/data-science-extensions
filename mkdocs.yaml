@@ -79,6 +79,7 @@ extra_css:
   - assets/stylesheets/style.css
   - assets/stylesheets/admonitions.css
   - assets/stylesheets/code_chunks.css
+  - assets/stylesheets/columns.css
   - https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css
 
 plugins:
