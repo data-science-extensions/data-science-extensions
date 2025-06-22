@@ -43,6 +43,9 @@ lint = "cli.scripts:lint"
 check = "cli.scripts:check"
 sync = "cli.scripts:uv_sync"
 check-pytest = "cli.scripts:check_pytest"
+reformat-file = "cli.scripts:reformat_file_cli"
+convert-md-to-ipynb = "cli.scripts:convert_markdown_to_notebook_cli"
+reformat-and-convert-md-to-ipynb = "cli.scripts:format_and_convert_cli"
 
 [dependency-groups]
 dev = [
@@ -67,6 +70,7 @@ docs = [
     "mkdocs-material==9.*",
     "mkdocstrings==0.*",
     "mkdocstrings-python==1.*",
+    "jupytext==1.*",  # <-- Used to convert notebooks to markdown
 ]
 
 [tool.black]
