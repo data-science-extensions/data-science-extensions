@@ -656,11 +656,13 @@ Now that we have our sample data created, we can proceed to the querying section
 
 ## 1. Filtering and Selecting
 
-The first section will demonstrate how to filter and select data from the DataFrames. This is a common operation in data analysis, allowing us to focus on specific subsets of the data.
+This first section will demonstrate how to filter and select data from the DataFrames. This is a common operation in data analysis, allowing us to focus on specific subsets of the data.
 
 === "Pandas"
 
     In Pandas, we can use boolean indexing to filter rows based on specific conditions. As you can see in this first example, this looks like using square brackets, within which we define a column and a condition. In the below example, we can use string values to filter categorical data.
+
+    For more information about filtering in Pandas, see the [Pandas documentation on filtering][pandas-subsetting].
 
     ```py {.pandas linenums="1" title="Filter sales data for specific category"}
     electronics_sales_pd: pd.DataFrame = df_sales_pd[df_sales_pd["category"] == "Electronics"]
@@ -696,7 +698,9 @@ The first section will demonstrate how to filter and select data from the DataFr
 
 === "SQL"
 
-    In SQL, we can use the `WHERE` clause to filter rows based on specific conditions. The syntax should be very familiar to anyone who has worked with SQL before. We can use the `pd.read_sql()` function to execute SQL queries and retrieve the data from the database. The result is a Pandas DataFrame that contains only the rows that match the specified condition. In the below example, we filter for sales in the "Electronics" category.
+    In SQL, we can use the `WHERE` clause to filter rows based on specific conditions. The syntax should be very familiar to anyone who has worked with SQL before. We can use the [`pd.read_sql()`][pandas-read_sql] function to execute SQL queries and retrieve the data from the database. The result is a Pandas DataFrame that contains only the rows that match the specified condition. In the below example, we filter for sales in the "Electronics" category.
+
+    For more information about filtering in SQL, see the [SQL WHERE clause documentation][sqlite-clause].
 
     ```py {.sql linenums="1" title="Filter sales for a specific category"}
     electronics_sales_txt: str = """
@@ -737,7 +741,9 @@ The first section will demonstrate how to filter and select data from the DataFr
 
 === "PySpark"
 
-    In PySpark, we can use the `.filter()` (or the `.where()`) method to filter rows based on specific conditions. This process is effectively doing a boolean indexing operation to filter the DataFrame. The syntax is similar to SQL, where we can specify the condition as a string or using column expressions. In the below example, we filter for sales in the "Electronics" category.
+    In PySpark, we can use the [`.filter()`][pyspark-filter] (or the [`.where()`][pyspark-where]) method to filter rows based on specific conditions. This process is effectively doing a boolean indexing operation to filter the DataFrame. The syntax is similar to SQL, where we can specify the condition as a string or using column expressions. In the below example, we filter for sales in the "Electronics" category.
+
+    For more information about filtering in PySpark, see the [PySpark documentation on filtering][pyspark-filtering].
 
     ```py {.pyspark linenums="1" title="Filter sales for a specific category"}
     electronics_sales_ps: psDataFrame = df_sales_ps.filter(df_sales_ps["category"] == "Electronics")
@@ -777,7 +783,9 @@ The first section will demonstrate how to filter and select data from the DataFr
 
 === "Polars"
 
-    In Polars, we can use the `.filter()` method to filter rows based on specific conditions. The syntax is similar to Pandas, where we can specify the condition using column expressions. In the below example, we filter for sales in the "Electronics" category.
+    In Polars, we can use the [`.filter()`][polars-filter] method to filter rows based on specific conditions. The syntax is similar to Pandas, where we can specify the condition using column expressions. In the below example, we filter for sales in the "Electronics" category.
+
+    For more information about filtering in Polars, see the [Polars documentation on filtering][polars-filtering].
 
     ```py {.polars linenums="1" title="Filter sales for a specific category"}
     electronics_sales_pl: pl.DataFrame = df_sales_pl.filter(df_sales_pl["category"] == "Electronics")
@@ -898,9 +906,9 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "PySpark"
 
-    When it comes to numerical filtering in PySpark, the process is similar to the previous example, where we use the `.filter()` (or `.where()`) method to filter rows based on a given condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
+    When it comes to numerical filtering in PySpark, the process is similar to the previous example, where we use the [`.filter()`][pyspark-filter] (or [`.where()`][pyspark-where]) method to filter rows based on a given condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
 
-    Also note here that we have parsed a string value to the `.filter()` method, instead of using the pure-Python syntax as shown above. This is because the `.filter()` method can accept a SQL-like string expression. This is a common practice in PySpark to parse a SQL-like string to a PySpark method.
+    Also note here that we have parsed a string value to the [`.filter()`][pyspark-filter] method, instead of using the pure-Python syntax as shown above. This is because the [`.filter()`][pyspark-filter] method can accept a SQL-like string expression. This is a common practice in PySpark to parse a SQL-like string to a PySpark method.
 
     ```py {.pyspark linenums="1" title="Filter for high value transactions"}
     high_value_sales_ps: psDataFrame = df_sales_ps.filter("sales_amount > 500")
@@ -940,9 +948,9 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "Polars"
 
-    When it comes to numerical filtering in Polars, the process is similar to the previous example, where we use the `.filter()` method to filter rows based on a given condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
+    When it comes to numerical filtering in Polars, the process is similar to the previous example, where we use the [`.filter()`][polars-filter] method to filter rows based on a given condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
 
-    Also note here that we have used the `pl.col()` function to specify the column we want to filter on. This is different from the previous examples, where we used the column name directly. The use of `pl.col()` is a common practice in Polars to specify the column name in a more readable way.
+    Also note here that we have used the [`pl.col()`][polars-col] function to specify the column we want to filter on. This is different from the previous examples, where we used the column name directly. The use of [`pl.col()`][polars-col] is a common practice in Polars to specify the column name in a more readable way.
 
     ```py {.polars linenums="1" title="Filter for high value transactions"}
     high_value_sales_pl: pl.DataFrame = df_sales_pl.filter(pl.col("sales_amount") > 500)
@@ -982,9 +990,14 @@ We can also use numerical filtering, as you can see in the next example, where w
 
     </div>
 
-When it comes to selecting specific columns, we can use the double square brackets syntax to specify the columns we want to keep in the DataFrame. This allows us to create a new DataFrame with only the relevant columns.
+In addition to subsetting a table by rows (aka _filtering_), we can also subset a table by columns (aka _selecting_). This allows us to create a new DataFrame with only the relevant columns we want to work with. This is useful when we want to focus on specific attributes of the data, such as dates, categories, or sales amounts.
+
 
 === "Pandas"
+
+    To select specific columns in Pandas, we can use the double square brackets syntax to specify the columns we want to keep in the DataFrame. This allows us to create a new DataFrame with only the relevant columns.
+
+    For more information about selecting specific columns, see the [Pandas documentation on selecting columns][pandas-subsetting].
 
     ```py {.pandas linenums="1" title="Select specific columns"}
     sales_summary_pd: pd.DataFrame = df_sales_pd[["date", "category", "sales_amount"]]
@@ -1019,6 +1032,10 @@ When it comes to selecting specific columns, we can use the double square bracke
     </div>
 
 === "SQL"
+
+    To select specific columns in SQL, we can use the `SELECT` statement to specify the columns we want to retrieve from the table. This allows us to create a new DataFrame with only the relevant columns. We can use the [`pd.read_sql()`][pandas-read_sql] function to execute SQL queries and retrieve the data from the database.
+
+    For more information about selecting specific columns in SQL, see the [SQL SELECT statement documentation][sqlite-select].
 
     ```py {.sql linenums="1" title="Select specific columns"}
     sales_summary_txt: str = """
@@ -1058,6 +1075,8 @@ When it comes to selecting specific columns, we can use the double square bracke
 
 === "PySpark"
 
+    To select specific columns in PySpark, we can use the [`.select()`][pyspark-select] method to specify the columns we want to keep in the DataFrame. This allows us to create a new DataFrame with only the relevant columns. The syntax is similar to SQL, where we can specify the column names as strings.
+
     ```py {.pyspark linenums="1" title="Select specific columns"}
     sales_summary_ps: psDataFrame = df_sales_ps.select("date", "category", "sales_amount")
     print(f"Sales Summary DataFrame: {sales_summary_ps.count()}")
@@ -1095,6 +1114,8 @@ When it comes to selecting specific columns, we can use the double square bracke
     </div>
 
 === "Polars"
+
+    To select specific columns in Polars, we can use the [`.select()`][polars-select] method to specify the columns we want to keep in the DataFrame. This allows us to create a new DataFrame with only the relevant columns.
 
     ```py {.polars linenums="1" title="Select specific columns"}
     sales_summary_pl: pl.DataFrame = df_sales_pl.select(["date", "category", "sales_amount"])
@@ -2665,12 +2686,15 @@ As with the customer data, we can merge the product popularity information with 
 [pandas]: https://pandas.pydata.org/
 [pandas-head]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.head.html
 [pandas-read_sql]: https://pandas.pydata.org/docs/reference/api/pandas.read_sql.html
+[pandas-subsetting]: https://pandas.pydata.org/docs/getting_started/intro_tutorials/03_subset_data.html
 [numpy]: https://numpy.org/
 [sql-wiki]: https://en.wikipedia.org/wiki/SQL
 [sql-iso]: https://www.iso.org/standard/76583.html
 [sqlite]: https://sqlite.org/
 [sqlite3]: https://docs.python.org/3/library/sqlite3.html
 [sqlite3-connect]: https://docs.python.org/3/library/sqlite3.html#sqlite3.connect
+[sqlite-where]: https://sqlite.org/lang_select.html#whereclause
+[sqlite-select]: https://sqlite.org/lang_select.html
 [postgresql]: https://www.postgresql.org/
 [mysql]: https://www.mysql.com/
 [t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
@@ -2683,9 +2707,17 @@ As with the customer data, we can merge the product popularity information with 
 [pyspark-createdataframe]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.createDataFrame.html
 [pyspark-show]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html
 [pyspark-create-dataframe-from-dict]: https://sparkbyexamples.com/pyspark/pyspark-create-dataframe-from-dictionary/
+[pyspark-filter]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.filter.html
+[pyspark-where]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.where.html
+[pyspark-filtering]: https://sparkbyexamples.com/pyspark/pyspark-where-filter/
+[pyspark-select]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html
 [hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
 [s3]: https://aws.amazon.com/s3/
 [adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
 [jdbc]: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
 [polars]: https://www.pola.rs/
 [polars-head]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.head.html
+[polars-filter]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.filter.html
+[polars-filtering]: https://docs.pola.rs/user-guide/transformations/time-series/filter/
+[polars-col]: https://docs.pola.rs/api/python/stable/reference/expressions/col.html
+[polars-select]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.select.html
