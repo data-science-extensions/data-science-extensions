@@ -398,46 +398,44 @@ The first section will demonstrate how to filter and select data from the DataFr
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Filter sales data for specific category
-    electronics_sales: pd.DataFrame = df_sales_pd[df_sales_pd["category"] == "Electronics"]
-    print(f"Number of Electronics Sales: {len(electronics_sales)}")
-    display(electronics_sales.head())
-    print(electronics_sales.head().to_markdown())
+    electronics_sales_pd: pd.DataFrame = df_sales_pd[df_sales_pd["category"] == "Electronics"]
+    print(f"Number of Electronics Sales: {len(electronics_sales_pd)}")
+    display(electronics_sales_pd.head())
+    print(electronics_sales_pd.head().to_markdown())
     ```
 
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     # Filter sales for a specific category
-    electronics_sales_sql = """
+    electronics_sales_txt = """
         SELECT *
         FROM sales
         WHERE category = 'Electronics'
     """
-    electronics_sales: pd.DataFrame = pd.read_sql(electronics_sales_sql, conn)
-    print(f"Number of Electronics Sales: {len(electronics_sales)}")
-    display(pd.read_sql(electronics_sales_sql + "LIMIT 5", conn))
-    print(pd.read_sql(electronics_sales_sql + "LIMIT 5", conn).to_markdown())
+    electronics_sales_sql: pd.DataFrame = pd.read_sql(electronics_sales_txt, conn)
+    print(f"Number of Electronics Sales: {len(electronics_sales_sql)}")
+    display(pd.read_sql(electronics_sales_txt + "LIMIT 5", conn))
+    print(pd.read_sql(electronics_sales_txt + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Filter sales data for specific category
-    electronics_sales: psDataFrame = df_sales_ps.filter(
-        df_sales_ps["category"] == "Electronics"
-    )
-    print(f"Number of Electronics Sales: {electronics_sales.count()}")
-    electronics_sales.show(10)
+    electronics_sales_ps: psDataFrame = df_sales_ps.filter(df_sales_ps["category"] == "Electronics")
+    print(f"Number of Electronics Sales: {electronics_sales_ps.count()}")
+    electronics_sales_ps.show(10)
     ```
 
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
     # Filter sales data for specific category
-    electronics_sales = df_sales_pl.filter(df_sales_pl["category"] == "Electronics")
-    print(f"Number of Electronics Sales: {len(electronics_sales)}")
-    display(electronics_sales.head(10))
-    print(electronics_sales.head(10).to_markdown())
+    electronics_sales_pl = df_sales_pl.filter(df_sales_pl["category"] == "Electronics")
+    print(f"Number of Electronics Sales: {len(electronics_sales_pl)}")
+    display(electronics_sales_pl.head(10))
+    print(electronics_sales_pl.head(10).to_markdown())
     ```
 
 We can also use numerical filtering, as you can see in the next example, where we filter for sales amounts greater than $500.
@@ -446,44 +444,44 @@ We can also use numerical filtering, as you can see in the next example, where w
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
-    high_value_sales: pd.DataFrame = df_sales_pd[df_sales_pd["sales_amount"] > 500]
-    print(f"Number of high-value Sales: {len(high_value_sales)}")
-    display(high_value_sales.head())
-    print(high_value_sales.head().to_markdown())
+    high_value_sales_pd: pd.DataFrame = df_sales_pd[df_sales_pd["sales_amount"] > 500]
+    print(f"Number of high-value Sales: {len(high_value_sales_pd)}")
+    display(high_value_sales_pd.head())
+    print(high_value_sales_pd.head().to_markdown())
     ```
 
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
-    high_value_sales_sql = """
+    high_value_sales_txt = """
         SELECT *
         FROM sales
         WHERE sales_amount > 500
     """
-    high_value_sales: pd.DataFrame = pd.read_sql(high_value_sales_sql, conn)
-    print(f"Number of high-value Sales: {len(high_value_sales)}")
-    display(pd.read_sql(high_value_sales_sql + "LIMIT 5", conn))
-    print(pd.read_sql(high_value_sales_sql + "LIMIT 5", conn).to_markdown())
+    high_value_sales_sql: pd.DataFrame = pd.read_sql(high_value_sales_txt, conn)
+    print(f"Number of high-value Sales: {len(high_value_sales_sql)}")
+    display(pd.read_sql(high_value_sales_txt + "LIMIT 5", conn))
+    print(pd.read_sql(high_value_sales_txt + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
-    high_value_sales: psDataFrame = df_sales_ps.filter("sales_amount > 500")
-    print(f"Number of high-value Sales: {high_value_sales.count()}")
-    high_value_sales.show(10)
+    high_value_sales_ps: psDataFrame = df_sales_ps.filter("sales_amount > 500")
+    print(f"Number of high-value Sales: {high_value_sales_ps.count()}")
+    high_value_sales_ps.show(10)
     ```
 
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
-    high_value_sales = df_sales_pl.filter(df_sales_pl["sales_amount"] > 500)
-    print(f"Number of high-value Sales: {len(high_value_sales)}")
-    display(high_value_sales.head(10))
-    print(high_value_sales.head(10).to_markdown())
+    high_value_sales_pl = df_sales_pl.filter(df_sales_pl["sales_amount"] > 500)
+    print(f"Number of high-value Sales: {len(high_value_sales_pl)}")
+    display(high_value_sales_pl.head(10))
+    print(high_value_sales_pl.head(10).to_markdown())
     ```
 
 When it comes to selecting specific columns, we can use the double square brackets syntax to specify the columns we want to keep in the DataFrame. This allows us to create a new DataFrame with only the relevant columns.
@@ -492,43 +490,43 @@ When it comes to selecting specific columns, we can use the double square bracke
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Select specific columns
-    sales_summary: pd.DataFrame = df_sales_pd[["date", "category", "sales_amount"]]
-    print(f"Sales Summary DataFrame: {len(sales_summary)}")
-    display(sales_summary.head())
-    print(sales_summary.head().to_markdown())
+    sales_summary_pd: pd.DataFrame = df_sales_pd[["date", "category", "sales_amount"]]
+    print(f"Sales Summary DataFrame: {len(sales_summary_pd)}")
+    display(sales_summary_pd.head())
+    print(sales_summary_pd.head().to_markdown())
     ```
 
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     # Select specific columns
-    sales_summary_sql = """
+    sales_summary_txt = """
         SELECT date, category, sales_amount
         FROM sales
     """
-    sales_summary: pd.DataFrame = pd.read_sql(sales_summary_sql, conn)
-    print(f"Selected columns in Sales: {len(sales_summary)}")
-    display(pd.read_sql(sales_summary_sql + "LIMIT 5", conn))
-    print(pd.read_sql(sales_summary_sql + "LIMIT 5", conn).to_markdown())
+    sales_summary_sql: pd.DataFrame = pd.read_sql(sales_summary_txt, conn)
+    print(f"Selected columns in Sales: {len(sales_summary_sql)}")
+    display(pd.read_sql(sales_summary_txt + "LIMIT 5", conn))
+    print(pd.read_sql(sales_summary_txt + "LIMIT 5", conn).to_markdown())
     ```
 
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Select specific columns
-    sales_summary: psDataFrame = df_sales_ps.select("date", "category", "sales_amount")
-    print(f"Sales Summary DataFrame: {sales_summary.count()}")
-    sales_summary.show(10)
+    sales_summary_ps: psDataFrame = df_sales_ps.select("date", "category", "sales_amount")
+    print(f"Sales Summary DataFrame: {sales_summary_ps.count()}")
+    sales_summary_ps.show(10)
     ```
 
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
     # Select specific columns
-    sales_summary = df_sales_pl.select(["date", "category", "sales_amount"])
-    print(f"Sales Summary DataFrame: {len(sales_summary)}")
-    display(sales_summary.head(10))
-    print(sales_summary.head(10).to_markdown())
+    sales_summary_pl = df_sales_pl.select(["date", "category", "sales_amount"])
+    print(f"Sales Summary DataFrame: {len(sales_summary_pl)}")
+    display(sales_summary_pl.head(10))
+    print(sales_summary_pl.head(10).to_markdown())
     ```
 
 ## 2. Grouping and Aggregation
