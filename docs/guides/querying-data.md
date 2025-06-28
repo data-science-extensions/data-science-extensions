@@ -692,7 +692,34 @@ The first section will demonstrate how to filter and select data from the DataFr
     print(electronics_sales_pd.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Number of Electronics Sales: 28
+    ```
+
+    ```txt
+             date  customer_id  product_id     category  sales_amount  quantity
+    1  2023-01-02           93          41  Electronics        453.94         5
+    3  2023-01-04           72          15  Electronics        184.17         7
+    8  2023-01-09           75           9  Electronics        746.73         2
+    10 2023-01-11           88           1  Electronics        314.98         9
+    11 2023-01-12           24          44  Electronics        547.11         8
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    8 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |   10 | 2023-01-11 00:00:00 |          88 |          1 | Electronics |       314.98 |        9 |
+    |   11 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+
+    </div>
+
 === "SQL"
+
+    In SQL, we can use the `WHERE` clause to filter rows based on specific conditions. The syntax should be very familiar to anyone who has worked with SQL before. We can use the `pd.read_sql()` function to execute SQL queries and retrieve the data from the database. The result is a Pandas DataFrame that contains only the rows that match the specified condition. In the below example, we filter for sales in the "Electronics" category.
 
     ```py {.sql linenums="1" title="TITLE"}
     # Filter sales for a specific category
@@ -707,7 +734,34 @@ The first section will demonstrate how to filter and select data from the DataFr
     print(pd.read_sql(electronics_sales_txt + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Number of Electronics Sales: 28
+    ```
+
+    ```txt
+                      date  customer_id  product_id     category  sales_amount  quantity  
+    0  2023-01-02 00:00:00           93          41  Electronics        453.94         5  
+    1  2023-01-04 00:00:00           72          15  Electronics        184.17         7  
+    2  2023-01-09 00:00:00           75           9  Electronics        746.73         2  
+    3  2023-01-11 00:00:00           88           1  Electronics        314.98         9  
+    4  2023-01-12 00:00:00           24          44  Electronics        547.11         8  
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    1 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    2 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    3 | 2023-01-11 00:00:00 |          88 |          1 | Electronics |       314.98 |        9 |
+    |    4 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+
+    </div>
+
 === "PySpark"
+
+    In PySpark, we can use the `.filter()` (or the `.where()`) method to filter rows based on specific conditions. This process is effectively doing a boolean indexing operation to filter the DataFrame. The syntax is similar to SQL, where we can specify the condition as a string or using column expressions. In the below example, we filter for sales in the "Electronics" category.
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Filter sales data for specific category
@@ -717,7 +771,38 @@ The first section will demonstrate how to filter and select data from the DataFr
     print(electronics_sales_ps.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Number of Electronics Sales: 28
+    ```
+
+    ```txt
+    +-------------------+-----------+----------+-----------+------------+--------+
+    |               date|customer_id|product_id|   category|sales_amount|quantity|
+    +-------------------+-----------+----------+-----------+------------+--------+
+    |2023-01-02 00:00:00|         93|        41|Electronics|      453.94|       5|
+    |2023-01-04 00:00:00|         72|        15|Electronics|      184.17|       7|
+    |2023-01-09 00:00:00|         75|         9|Electronics|      746.73|       2|
+    |2023-01-11 00:00:00|         88|         1|Electronics|      314.98|       9|
+    |2023-01-12 00:00:00|         24|        44|Electronics|      547.11|       8|
+    +-------------------+-----------+----------+-----------+------------+--------+
+    only showing top 5 rows
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    1 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    2 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    3 | 2023-01-11 00:00:00 |          88 |          1 | Electronics |       314.98 |        9 |
+    |    4 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+
+    </div>
+
 === "Polars"
+
+    In Polars, we can use the `.filter()` method to filter rows based on specific conditions. The syntax is similar to Pandas, where we can specify the condition using column expressions. In the below example, we filter for sales in the "Electronics" category.
 
     ```py {.polars linenums="1" title="TITLE"}
     # Filter sales data for specific category
@@ -726,6 +811,37 @@ The first section will demonstrate how to filter and select data from the DataFr
     print(electronics_sales_pl.head(5))
     print(electronics_sales_pl.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Number of Electronics Sales: 28
+    ```
+
+    ```txt
+    shape: (5, 6)
+    ┌─────────────────────┬─────────────┬────────────┬─────────────┬──────────────┬──────────┐
+    │ date                ┆ customer_id ┆ product_id ┆ category    ┆ sales_amount ┆ quantity │
+    │ ---                 ┆ ---         ┆ ---        ┆ ---         ┆ ---          ┆ ---      │
+    │ datetime[ns]        ┆ i64         ┆ i64        ┆ str         ┆ f64          ┆ i64      │
+    ╞═════════════════════╪═════════════╪════════════╪═════════════╪══════════════╪══════════╡
+    │ 2023-01-02 00:00:00 ┆ 93          ┆ 41         ┆ Electronics ┆ 453.94       ┆ 5        │
+    │ 2023-01-04 00:00:00 ┆ 72          ┆ 15         ┆ Electronics ┆ 184.17       ┆ 7        │
+    │ 2023-01-09 00:00:00 ┆ 75          ┆ 9          ┆ Electronics ┆ 746.73       ┆ 2        │
+    │ 2023-01-11 00:00:00 ┆ 88          ┆ 1          ┆ Electronics ┆ 314.98       ┆ 9        │
+    │ 2023-01-12 00:00:00 ┆ 24          ┆ 44         ┆ Electronics ┆ 547.11       ┆ 8        │
+    └─────────────────────┴─────────────┴────────────┴─────────────┴──────────────┴──────────┘
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    1 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    2 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    3 | 2023-01-11 00:00:00 |          88 |          1 | Electronics |       314.98 |        9 |
+    |    4 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+
+    </div>
 
 We can also use numerical filtering, as you can see in the next example, where we filter for sales amounts greater than $500.
 
@@ -738,6 +854,31 @@ We can also use numerical filtering, as you can see in the next example, where w
     print(high_value_sales_pd.head(5))
     print(high_value_sales_pd.head(5).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Number of high-value Sales: 43
+    ```
+
+    ```txt
+             date  customer_id  product_id     category  sales_amount  quantity
+    2  2023-01-03           15          29         Home        994.51         5
+    8  2023-01-09           75           9  Electronics        746.73         2
+    9  2023-01-10           75          24        Books        723.73         6
+    11 2023-01-12           24          44  Electronics        547.11         8
+    12 2023-01-13            3           8     Clothing        513.73         5
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    8 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    9 | 2023-01-10 00:00:00 |          75 |         24 | Books       |       723.73 |        6 |
+    |   11 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+    |   12 | 2023-01-13 00:00:00 |           3 |          8 | Clothing    |       513.73 |        5 |
+
+    </div>
 
 === "SQL"
 
@@ -754,6 +895,31 @@ We can also use numerical filtering, as you can see in the next example, where w
     print(pd.read_sql(high_value_sales_txt + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Number of high-value Sales: 43
+    ```
+
+    ```txt
+                      date  customer_id  product_id     category  sales_amount  quantity
+    0  2023-01-03 00:00:00           15          29         Home        994.51         5
+    1  2023-01-09 00:00:00           75           9  Electronics        746.73         2
+    2  2023-01-10 00:00:00           75          24        Books        723.73         6
+    3  2023-01-12 00:00:00           24          44  Electronics        547.11         8
+    4  2023-01-13 00:00:00            3           8     Clothing        513.73         5
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    1 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    2 | 2023-01-10 00:00:00 |          75 |         24 | Books       |       723.73 |        6 |
+    |    3 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+    |    4 | 2023-01-13 00:00:00 |           3 |          8 | Clothing    |       513.73 |        5 |
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -764,6 +930,35 @@ We can also use numerical filtering, as you can see in the next example, where w
     print(high_value_sales_ps.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Number of high-value Sales: 43
+    ```
+
+    ```txt
+    +-------------------+-----------+----------+-----------+------------+--------+
+    |               date|customer_id|product_id|   category|sales_amount|quantity|
+    +-------------------+-----------+----------+-----------+------------+--------+
+    |2023-01-03 00:00:00|         15|        29|       Home|      994.51|       5|
+    |2023-01-09 00:00:00|         75|         9|Electronics|      746.73|       2|
+    |2023-01-10 00:00:00|         75|        24|      Books|      723.73|       6|
+    |2023-01-12 00:00:00|         24|        44|Electronics|      547.11|       8|
+    |2023-01-13 00:00:00|          3|         8|   Clothing|      513.73|       5|
+    +-------------------+-----------+----------+-----------+------------+--------+
+    only showing top 5 rows
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    1 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    2 | 2023-01-10 00:00:00 |          75 |         24 | Books       |       723.73 |        6 |
+    |    3 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+    |    4 | 2023-01-13 00:00:00 |           3 |          8 | Clothing    |       513.73 |        5 |
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -773,6 +968,37 @@ We can also use numerical filtering, as you can see in the next example, where w
     print(high_value_sales_pl.head(5))
     print(high_value_sales_pl.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Number of high-value Sales: 43
+    ```
+
+    ```txt
+    shape: (5, 6)
+    ┌─────────────────────┬─────────────┬────────────┬─────────────┬──────────────┬──────────┐
+    │ date                ┆ customer_id ┆ product_id ┆ category    ┆ sales_amount ┆ quantity │
+    │ ---                 ┆ ---         ┆ ---        ┆ ---         ┆ ---          ┆ ---      │
+    │ datetime[ns]        ┆ i64         ┆ i64        ┆ str         ┆ f64          ┆ i64      │
+    ╞═════════════════════╪═════════════╪════════════╪═════════════╪══════════════╪══════════╡
+    │ 2023-01-03 00:00:00 ┆ 15          ┆ 29         ┆ Home        ┆ 994.51       ┆ 5        │
+    │ 2023-01-09 00:00:00 ┆ 75          ┆ 9          ┆ Electronics ┆ 746.73       ┆ 2        │
+    │ 2023-01-10 00:00:00 ┆ 75          ┆ 24         ┆ Books       ┆ 723.73       ┆ 6        │
+    │ 2023-01-12 00:00:00 ┆ 24          ┆ 44         ┆ Electronics ┆ 547.11       ┆ 8        │
+    │ 2023-01-13 00:00:00 ┆ 3           ┆ 8          ┆ Clothing    ┆ 513.73       ┆ 5        │
+    └─────────────────────┴─────────────┴────────────┴─────────────┴──────────────┴──────────┘
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    1 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
+    |    2 | 2023-01-10 00:00:00 |          75 |         24 | Books       |       723.73 |        6 |
+    |    3 | 2023-01-12 00:00:00 |          24 |         44 | Electronics |       547.11 |        8 |
+    |    4 | 2023-01-13 00:00:00 |           3 |          8 | Clothing    |       513.73 |        5 |
+
+    </div>
 
 When it comes to selecting specific columns, we can use the double square brackets syntax to specify the columns we want to keep in the DataFrame. This allows us to create a new DataFrame with only the relevant columns.
 
@@ -785,6 +1011,31 @@ When it comes to selecting specific columns, we can use the double square bracke
     print(sales_summary_pd.head(5))
     print(sales_summary_pd.head(5).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Sales Summary DataFrame: 100
+    ```
+
+    ```txt
+            date     category  sales_amount
+    0 2023-01-01         Food        490.76
+    1 2023-01-02  Electronics        453.94
+    2 2023-01-03         Home        994.51
+    3 2023-01-04  Electronics        184.17
+    4 2023-01-05         Food         27.89
+    ```
+
+    |      | date                | category    | sales_amount |
+    | ---: | :------------------ | :---------- | -----------: |
+    |    0 | 2023-01-01 00:00:00 | Food        |       490.76 |
+    |    1 | 2023-01-02 00:00:00 | Electronics |       453.94 |
+    |    2 | 2023-01-03 00:00:00 | Home        |       994.51 |
+    |    3 | 2023-01-04 00:00:00 | Electronics |       184.17 |
+    |    4 | 2023-01-05 00:00:00 | Food        |        27.89 |
+
+    </div>
 
 === "SQL"
 
@@ -800,6 +1051,31 @@ When it comes to selecting specific columns, we can use the double square bracke
     print(pd.read_sql(sales_summary_txt + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Selected columns in Sales: 100
+    ```
+
+    ```txt
+                      date     category  sales_amount
+    0  2023-01-01 00:00:00         Food        490.76
+    1  2023-01-02 00:00:00  Electronics        453.94
+    2  2023-01-03 00:00:00         Home        994.51
+    3  2023-01-04 00:00:00  Electronics        184.17
+    4  2023-01-05 00:00:00         Food         27.89
+    ```
+
+    |      | date                | category    | sales_amount |
+    | ---: | :------------------ | :---------- | -----------: |
+    |    0 | 2023-01-01 00:00:00 | Food        |       490.76 |
+    |    1 | 2023-01-02 00:00:00 | Electronics |       453.94 |
+    |    2 | 2023-01-03 00:00:00 | Home        |       994.51 |
+    |    3 | 2023-01-04 00:00:00 | Electronics |       184.17 |
+    |    4 | 2023-01-05 00:00:00 | Food        |        27.89 |
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -810,6 +1086,35 @@ When it comes to selecting specific columns, we can use the double square bracke
     print(sales_summary_ps.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Sales Summary DataFrame: 100
+    ```
+
+    ```txt
+    +-------------------+-----------+------------+
+    |               date|   category|sales_amount|
+    +-------------------+-----------+------------+
+    |2023-01-01 00:00:00|       Food|      490.76|
+    |2023-01-02 00:00:00|Electronics|      453.94|
+    |2023-01-03 00:00:00|       Home|      994.51|
+    |2023-01-04 00:00:00|Electronics|      184.17|
+    |2023-01-05 00:00:00|       Food|       27.89|
+    +-------------------+-----------+------------+
+    only showing top 5 rows
+    ```
+
+    |      | date                | category    | sales_amount |
+    | ---: | :------------------ | :---------- | -----------: |
+    |    0 | 2023-01-01 00:00:00 | Food        |       490.76 |
+    |    1 | 2023-01-02 00:00:00 | Electronics |       453.94 |
+    |    2 | 2023-01-03 00:00:00 | Home        |       994.51 |
+    |    3 | 2023-01-04 00:00:00 | Electronics |       184.17 |
+    |    4 | 2023-01-05 00:00:00 | Food        |        27.89 |
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -819,6 +1124,38 @@ When it comes to selecting specific columns, we can use the double square bracke
     print(sales_summary_pl.head(5))
     print(sales_summary_pl.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Sales Summary DataFrame: 100
+    ```
+
+    ```txt
+    shape: (5, 3)
+    ┌─────────────────────┬─────────────┬──────────────┐
+    │ date                ┆ category    ┆ sales_amount │
+    │ ---                 ┆ ---         ┆ ---          │
+    │ datetime[ns]        ┆ str         ┆ f64          │
+    ╞═════════════════════╪═════════════╪══════════════╡
+    │ 2023-01-01 00:00:00 ┆ Food        ┆ 490.76       │
+    │ 2023-01-02 00:00:00 ┆ Electronics ┆ 453.94       │
+    │ 2023-01-03 00:00:00 ┆ Home        ┆ 994.51       │
+    │ 2023-01-04 00:00:00 ┆ Electronics ┆ 184.17       │
+    │ 2023-01-05 00:00:00 ┆ Food        ┆ 27.89        │
+    └─────────────────────┴─────────────┴──────────────┘
+    ```
+
+    |      | date                | category    | sales_amount |
+    | ---: | :------------------ | :---------- | -----------: |
+    |    0 | 2023-01-01 00:00:00 | Food        |       490.76 |
+    |    1 | 2023-01-02 00:00:00 | Electronics |       453.94 |
+    |    2 | 2023-01-03 00:00:00 | Home        |       994.51 |
+    |    3 | 2023-01-04 00:00:00 | Electronics |       184.17 |
+    |    4 | 2023-01-05 00:00:00 | Food        |        27.89 |
+
+    </div>
+
 
 ## 2. Grouping and Aggregation
 
