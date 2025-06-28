@@ -1178,6 +1178,14 @@ The second section will cover grouping and aggregation techniques. These operati
     print(sales_stats.to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
@@ -1200,6 +1208,14 @@ The second section will cover grouping and aggregation techniques. These operati
     print(pd.read_sql(sales_stats_sql, conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -1220,6 +1236,14 @@ The second section will cover grouping and aggregation techniques. These operati
     print(sales_stats.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1238,6 +1262,14 @@ The second section will cover grouping and aggregation techniques. These operati
     print(sales_stats)
     print(sales_stats.to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 It is also possible to group data by a specific column and then apply aggregation functions to summarize the data.
 
@@ -1258,6 +1290,14 @@ It is also possible to group data by a specific column and then apply aggregatio
     print(category_sales.to_pandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
@@ -1277,6 +1317,14 @@ It is also possible to group data by a specific column and then apply aggregatio
     print(pd.read_sql(category_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -1292,6 +1340,14 @@ It is also possible to group data by a specific column and then apply aggregatio
     print(category_sales.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1306,6 +1362,14 @@ It is also possible to group data by a specific column and then apply aggregatio
     print(category_sales.head(5))
     print(category_sales.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 We can rename the columns for clarity by simply assigning new names.
 
@@ -1326,10 +1390,26 @@ We can rename the columns for clarity by simply assigning new names.
     print(category_sales.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -1348,6 +1428,14 @@ We can rename the columns for clarity by simply assigning new names.
     print(category_sales.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1364,6 +1452,14 @@ We can rename the columns for clarity by simply assigning new names.
     print(category_sales.head(5))
     print(category_sales.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 Having aggregated the data, we can now visualize the results using [Plotly](https://plotly.com/python/). This allows us to create interactive visualizations that can help us better understand the data.
 
@@ -1382,6 +1478,14 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
     fig.show()
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
@@ -1396,6 +1500,14 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
     )
     fig.show()
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -1413,6 +1525,14 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
     fig.show()
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1427,6 +1547,14 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
     )
     fig.show()
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 ## 3. Joining
 
@@ -1451,6 +1579,14 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     print(sales_with_product.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
@@ -1464,6 +1600,14 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     print(pd.read_sql(sales_with_product_sql + "LIMIT 5", conn))
     print(pd.read_sql(sales_with_product_sql + "LIMIT 5", conn).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -1479,6 +1623,14 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     print(sales_with_product.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1492,6 +1644,14 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     print(sales_with_product.head(5))
     print(sales_with_product.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 In the next step, we will join the resulting DataFrame with the `customer` DataFrame to get customer information for each sale. This allows us to create a complete view of the sales data, including product and customer details.
 
@@ -1509,6 +1669,14 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     print(complete_sales.head(5))
     print(complete_sales.head(5).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "SQL"
 
@@ -1531,6 +1699,14 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     print(pd.read_sql(complete_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -1544,6 +1720,14 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     complete_sales.show(5)
     print(complete_sales.limit(5).toPandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "Polars"
 
@@ -1559,6 +1743,14 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     print(complete_sales.head(5).to_pandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 Once we have the complete sales data, we can calculate the revenue for each sale by multiplying the price and quantity (columns from different tables). We can also compare this calculated revenue with the sales amount to identify any discrepancies.
 
 === "Pandas"
@@ -1570,6 +1762,14 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     print(f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales)}")
     print(complete_sales[["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]].head(5))
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "SQL"
 
@@ -1590,6 +1790,14 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     print(pd.read_sql(revenue_comparison_sql + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -1605,6 +1813,14 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     print(complete_sales.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference").limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1616,6 +1832,14 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     print(f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales)}")
     print(complete_sales.select(["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]).head(5))
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 ## 4. Window Functions
 
@@ -1641,6 +1865,14 @@ In this section, we will demonstrate how to use window functions to analyze sale
     print(daily_sales.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
@@ -1657,6 +1889,14 @@ In this section, we will demonstrate how to use window functions to analyze sale
     print(pd.read_sql(daily_sales_sql + "LIMIT 5", conn))
     print(pd.read_sql(daily_sales_sql + "LIMIT 5", conn).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -1675,12 +1915,28 @@ In this section, we will demonstrate how to use window functions to analyze sale
     print(daily_sales.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
     # Convert date column to date type if not already
     df_sales_pl: pl.DataFrame = df_sales_pl.with_columns(pl.col("date").cast(pl.Date))
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
     ```py {.polars linenums="1" title="TITLE"}
     daily_sales: pl.DataFrame = (
@@ -1695,6 +1951,14 @@ In this section, we will demonstrate how to use window functions to analyze sale
     print(daily_sales.head(5).to_pandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "Pandas"
@@ -1708,6 +1972,14 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     print(daily_sales.head(5))
     print(daily_sales.head(5).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "SQL"
 
@@ -1731,6 +2003,14 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     print(pd.read_sql(window_sql + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -1746,6 +2026,14 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     print(daily_sales.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1758,6 +2046,14 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     print(daily_sales.head(5))
     print(daily_sales.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 Next, we will calculate the lag and lead values for the sales amount. This allows us to compare the current day's sales with the previous and next days' sales.
 
@@ -1774,10 +2070,26 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     print(daily_sales.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -1797,6 +2109,14 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     print(daily_sales.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1809,6 +2129,14 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     print(daily_sales.head(5))
     print(daily_sales.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 Now, we can calculate the day-over-day change in sales. This is done by subtracting the previous day's sales from the current day's sales.
 
@@ -1825,10 +2153,26 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     print(daily_sales.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -1845,6 +2189,14 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     print(daily_sales.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1856,6 +2208,14 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     print(daily_sales.head(5))
     print(daily_sales.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 Finally, we can visualize the daily sales data along with the 7-day moving average using Plotly. This allows us to see the trends in sales over time and how the moving average smooths out the fluctuations in daily sales.
 
@@ -1891,6 +2251,14 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     fig.show()
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
@@ -1922,6 +2290,14 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     )
     fig.show()
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -1955,6 +2331,14 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     fig.show()
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -1987,6 +2371,14 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     fig.show()
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 ## 5. Ranking and Partitioning
 
 The fifth section will demonstrate how to rank and partition data in Pandas. This is useful for identifying top performers, such as the highest spending customers or the most popular products.
@@ -2005,10 +2397,26 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     print(customer_spending.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
@@ -2025,6 +2433,14 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     print(customer_spending.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -2039,6 +2455,14 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     print(customer_spending.head(5))
     print(customer_spending.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 Once we have ranked the customers, we can merge this information with the `customer` DataFrame to get additional details about each customer, such as their name, segment, and city.
 
@@ -2056,6 +2480,14 @@ Once we have ranked the customers, we can merge this information with the `custo
     print(top_customers.head(5))
     print(top_customers.head(5).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "SQL"
 
@@ -2079,15 +2511,39 @@ Once we have ranked the customers, we can merge this information with the `custo
     print(pd.read_sql(customer_spending_sql + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 Next, we will rank products based on the quantity sold. This allows us to identify the most popular products in terms of sales volume.
 
@@ -2102,6 +2558,14 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     print(product_popularity.head(5))
     print(product_popularity.head(5).to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "SQL"
 
@@ -2124,6 +2588,14 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     print(pd.read_sql(product_popularity_sql + "LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
@@ -2139,6 +2611,14 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     print(product_popularity.limit(5).toPandas().to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
@@ -2153,6 +2633,14 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     print(product_popularity.head(5))
     print(product_popularity.head(5).to_pandas().to_markdown())
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 As with the customer data, we can merge the product popularity information with the `product` DataFrame to get additional details about each product, such as its name and category.
 
@@ -2171,23 +2659,63 @@ As with the customer data, we can merge the product popularity information with 
     print(top_products.head(5).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "SQL"
 
     ```py {.sql linenums="1" title="TITLE"}
     ```
+
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
 
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="TITLE"}
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 === "Polars"
 
     ```py {.polars linenums="1" title="TITLE"}
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+
+    ```
+
+    </div>
+
 
 ## Conclusion
 
-    ```py
-    ```
+```py
+```
+
+<div class="result" markdown>
+
+```txt
+
+```
+
+</div>
