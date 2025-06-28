@@ -219,16 +219,25 @@ Now that we have our sample data created, we can proceed to the querying section
 
     Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame.
 
-    ```py {.pandas linenums="1" title="Check Sample DataFrame"}
+    ```py {.pandas linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {len(df_sales_pd)}")
-    display(df_sales_pd.head(10))
-    print(df_sales_pd.head(10).to_markdown())
+    print(df_sales_pd.head(5))
+    print(df_sales_pd.head(5).to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
     Sales DataFrame: 100
+    ```
+
+    ```txt
+            date  customer_id  product_id     category  sales_amount  quantity
+    0 2023-01-01           52          45         Food        490.76         7
+    1 2023-01-02           93          41  Electronics        453.94         5
+    2 2023-01-03           15          29         Home        994.51         5
+    3 2023-01-04           72          15  Electronics        184.17         7
+    4 2023-01-05           61          45         Food         27.89         9
     ```
 
     |      | date                | customer_id | product_id | category    | sales_amount | quantity |
@@ -238,24 +247,28 @@ Now that we have our sample data created, we can proceed to the querying section
     |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
     |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
     |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 |
-    |    5 | 2023-01-06 00:00:00 |          21 |          1 | Clothing    |       498.95 |        5 |
-    |    6 | 2023-01-07 00:00:00 |          83 |         25 | Books       |       187.03 |        1 |
-    |    7 | 2023-01-08 00:00:00 |          87 |          7 | Food        |        372.8 |        1 |
-    |    8 | 2023-01-09 00:00:00 |          75 |          9 | Electronics |       746.73 |        2 |
-    |    9 | 2023-01-10 00:00:00 |          75 |         24 | Books       |       723.73 |        6 |
 
     </div>
 
     ```py {.pandas linenums="1" title="Check Product DataFrame"}
     print(f"Product DataFrame: {len(df_product_pd)}")
-    display(df_product_pd.head(10))
-    print(df_product_pd.head(10).to_markdown())
+    print(df_product_pd.head(5))
+    print(df_product_pd.head(5).to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
     Product DataFrame: 50
+    ```
+
+    ```txt
+       product_id product_name   price  category  supplier_id
+    0           1    Product 1  257.57      Food            8
+    1           2    Product 2  414.96  Clothing            5
+    2           3    Product 3  166.82  Clothing            8
+    3           4    Product 4  448.81      Food            4
+    4           5    Product 5  200.71      Food            8
     ```
 
     |      | product_id | product_name |  price | category | supplier_id |
@@ -265,24 +278,28 @@ Now that we have our sample data created, we can proceed to the querying section
     |    2 |          3 | Product 3    | 166.82 | Clothing |           8 |
     |    3 |          4 | Product 4    | 448.81 | Food     |           4 |
     |    4 |          5 | Product 5    | 200.71 | Food     |           8 |
-    |    5 |          6 | Product 6    |  15.31 | Home     |           2 |
-    |    6 |          7 | Product 7    | 453.64 | Home     |           5 |
-    |    7 |          8 | Product 8    |  54.73 | Clothing |           9 |
-    |    8 |          9 | Product 9    | 166.46 | Books    |           4 |
-    |    9 |         10 | Product 10   | 475.53 | Clothing |           6 |
 
     </div>
 
     ```py {.pandas linenums="1" title="Check Customer DataFrame"}
     print(f"Customer DataFrame: {len(df_customer_pd)}")
-    display(df_customer_pd.head(10))
-    print(df_customer_pd.head(10).to_markdown())
+    print(df_customer_pd.head(5))
+    print(df_customer_pd.head(5).to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
     Customer DataFrame: 100
+    ```
+
+    ```txt
+       customer_id customer_name         city state      segment
+    0            1    Customer 1      Phoenix    NY    Corporate
+    1            2    Customer 2      Phoenix    CA  Home Office
+    2            3    Customer 3      Phoenix    NY  Home Office
+    3            4    Customer 4  Los Angeles    NY     Consumer
+    4            5    Customer 5  Los Angeles    IL  Home Office
     ```
 
     |      | customer_id | customer_name | city        | state | segment     |
@@ -292,17 +309,12 @@ Now that we have our sample data created, we can proceed to the querying section
     |    2 |           3 | Customer 3    | Phoenix     | NY    | Home Office |
     |    3 |           4 | Customer 4    | Los Angeles | NY    | Consumer    |
     |    4 |           5 | Customer 5    | Los Angeles | IL    | Home Office |
-    |    5 |           6 | Customer 6    | Chicago     | AZ    | Home Office |
-    |    6 |           7 | Customer 7    | New York    | NY    | Consumer    |
-    |    7 |           8 | Customer 8    | Phoenix     | CA    | Corporate   |
-    |    8 |           9 | Customer 9    | New York    | TX    | Corporate   |
-    |    9 |          10 | Customer 10   | New York    | NY    | Corporate   |
 
     </div>
 
 === "SQL"
 
-    ```py {.sql linenums="1" title="TITLE"}
+    ```py {.sql linenums="1" title="Create DataFrames"}
     # Creates SQLite database and tables
     conn: sqlite3.Connection = sqlite3.connect(":memory:")
     df_sales_pd.to_sql("sales", conn, index=False, if_exists="replace")
@@ -310,76 +322,334 @@ Now that we have our sample data created, we can proceed to the querying section
     df_customer_pd.to_sql("customer", conn, index=False, if_exists="replace")
     ```
 
-    ```py {.sql linenums="1" title="TITLE"}
-    print("Sales Table:")
-    display(pd.read_sql("SELECT * FROM sales LIMIT 5", conn))
+    ```py {.sql linenums="1" title="Check Sales DataFrame"}
+    print(f"Sales Table: {len(pd.read_sql('SELECT * FROM sales', conn))}")
+    print(pd.read_sql("SELECT * FROM sales LIMIT 5", conn))
     print(pd.read_sql("SELECT * FROM sales LIMIT 5", conn).to_markdown())
     ```
 
-    ```py {.sql linenums="1" title="TITLE"}
-    print("Product Table:")
-    display(pd.read_sql("SELECT * FROM product LIMIT 5", conn))
+    <div class="result" markdown>
+
+    ```txt
+    Sales Table: 100
+    ```
+
+    ```txt
+                      date  customer_id  product_id     category  sales_amount  quantity
+    0  2023-01-01 00:00:00           52          45         Food        490.76         7
+    1  2023-01-02 00:00:00           93          41  Electronics        453.94         5
+    2  2023-01-03 00:00:00           15          29         Home        994.51         5
+    3  2023-01-04 00:00:00           72          15  Electronics        184.17         7
+    4  2023-01-05 00:00:00           61          45         Food         27.89         9
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 |
+
+    </div>
+
+    ```py {.sql linenums="1" title="Check Product DataFrame"}
+    print(f"Product Table: {len(pd.read_sql('SELECT * FROM product', conn))}")
+    print(pd.read_sql("SELECT * FROM product LIMIT 5", conn))
     print(pd.read_sql("SELECT * FROM product LIMIT 5", conn).to_markdown())
     ```
 
-    ```py {.sql linenums="1" title="TITLE"}
-    print("Customer Table:")
-    display(pd.read_sql("SELECT * FROM customer LIMIT 5", conn))
+    <div class="result" markdown>
+
+    ```txt
+    Product Table: 50
+    ```
+
+    ```txt
+       product_id product_name   price  category  supplier_id
+    0           1    Product 1  257.57      Food            8
+    1           2    Product 2  414.96  Clothing            5
+    2           3    Product 3  166.82  Clothing            8
+    3           4    Product 4  448.81      Food            4
+    4           5    Product 5  200.71      Food            8
+    ```
+
+    |      | product_id | product_name |  price | category | supplier_id |
+    | ---: | ---------: | :----------- | -----: | :------- | ----------: |
+    |    0 |          1 | Product 1    | 257.57 | Food     |           8 |
+    |    1 |          2 | Product 2    | 414.96 | Clothing |           5 |
+    |    2 |          3 | Product 3    | 166.82 | Clothing |           8 |
+    |    3 |          4 | Product 4    | 448.81 | Food     |           4 |
+    |    4 |          5 | Product 5    | 200.71 | Food     |           8 |
+
+    </div>
+
+    ```py {.sql linenums="1" title="Check Customer DataFrame"}
+    print(f"Customer Table: {len(pd.read_sql('SELECT * FROM customer', conn))}")
+    print(pd.read_sql("SELECT * FROM customer LIMIT 5", conn))
     print(pd.read_sql("SELECT * FROM customer LIMIT 5", conn).to_markdown())
     ```
 
+    <div class="result" markdown>
+
+    ```txt
+    Customer Table: 100
+    ```
+
+    ```txt
+       customer_id customer_name         city state      segment
+    0            1    Customer 1      Phoenix    NY    Corporate
+    1            2    Customer 2      Phoenix    CA  Home Office
+    2            3    Customer 3      Phoenix    NY  Home Office
+    3            4    Customer 4  Los Angeles    NY     Consumer
+    4            5    Customer 5  Los Angeles    IL  Home Office
+    ```
+
+    |      | customer_id | customer_name | city        | state | segment     |
+    | ---: | ----------: | :------------ | :---------- | :---- | :---------- |
+    |    0 |           1 | Customer 1    | Phoenix     | NY    | Corporate   |
+    |    1 |           2 | Customer 2    | Phoenix     | CA    | Home Office |
+    |    2 |           3 | Customer 3    | Phoenix     | NY    | Home Office |
+    |    3 |           4 | Customer 4    | Los Angeles | NY    | Consumer    |
+    |    4 |           5 | Customer 5    | Los Angeles | IL    | Home Office |
+
+    </div>
+
 === "PySpark"
 
-    ```py {.pyspark linenums="1" title="TITLE"}
+    ```py {.pyspark linenums="1" title="Create Spark Session"}
     spark: SparkSession = SparkSession.builder.appName("SalesAnalysis").getOrCreate()
     ```
 
-    ```py {.pyspark linenums="1" title="TITLE"}
+    ```py {.pyspark linenums="1" title="Create DataFrames"}
     df_sales_ps: psDataFrame = spark.createDataFrame(df_sales_pd)
     df_product_ps: psDataFrame = spark.createDataFrame(df_product_pd)
     df_customer_ps: psDataFrame = spark.createDataFrame(df_customer_pd)
     ```
 
-    ```py {.pyspark linenums="1" title="TITLE"}
+    ```py {.pyspark linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {df_sales_ps.count()}")
-    df_sales_ps.show(10)
+    df_sales_ps.show(5)
+    print(df_sales_ps.limit(5).toPandas().to_markdown())
     ```
 
-    ```py {.pyspark linenums="1" title="TITLE"}
+    <div class="result" markdown>
+
+    ```txt
+    Sales DataFrame: 100
+    ```
+
+    ```txt
+    +-------------------+-----------+----------+-----------+------------+--------+
+    |               date|customer_id|product_id|   category|sales_amount|quantity|
+    +-------------------+-----------+----------+-----------+------------+--------+
+    |2023-01-01 00:00:00|         52|        45|       Food|      490.76|       7|
+    |2023-01-02 00:00:00|         93|        41|Electronics|      453.94|       5|
+    |2023-01-03 00:00:00|         15|        29|       Home|      994.51|       5|
+    |2023-01-04 00:00:00|         72|        15|Electronics|      184.17|       7|
+    |2023-01-05 00:00:00|         61|        45|       Food|       27.89|       9|
+    +-------------------+-----------+----------+-----------+------------+--------+
+    only showing top 10 rows
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 |
+
+    </div>
+
+    ```py {.pyspark linenums="1" title="Check Product DataFrame"}
     print(f"Product DataFrame: {df_product_ps.count()}")
-    df_product_ps.show(10)
+    df_product_ps.show(5)
+    print(df_product_ps.limit(5).toPandas().to_markdown())
     ```
 
-    ```py {.pyspark linenums="1" title="TITLE"}
-    print(f"Customer DataFrame: {df_customer_ps.count()}")
-    df_customer_ps.show(10)
+    <div class="result" markdown>
+
+    ```txt
+    Product DataFrame: 50
     ```
+
+    ```txt
+    +----------+------------+------+--------+-----------+
+    |product_id|product_name| price|category|supplier_id|
+    +----------+------------+------+--------+-----------+
+    |         1|   Product 1|257.57|    Food|          8|
+    |         2|   Product 2|414.96|Clothing|          5|
+    |         3|   Product 3|166.82|Clothing|          8|
+    |         4|   Product 4|448.81|    Food|          4|
+    |         5|   Product 5|200.71|    Food|          8|
+    +----------+------------+------+--------+-----------+
+    only showing top 5 rows
+    ```
+
+    |      | product_id | product_name |  price | category | supplier_id |
+    | ---: | ---------: | :----------- | -----: | :------- | ----------: |
+    |    0 |          1 | Product 1    | 257.57 | Food     |           8 |
+    |    1 |          2 | Product 2    | 414.96 | Clothing |           5 |
+    |    2 |          3 | Product 3    | 166.82 | Clothing |           8 |
+    |    3 |          4 | Product 4    | 448.81 | Food     |           4 |
+    |    4 |          5 | Product 5    | 200.71 | Food     |           8 |
+
+    </div>
+
+    ```py {.pyspark linenums="1" title="Check Customer DataFrame"}
+    print(f"Customer DataFrame: {df_customer_ps.count()}")
+    df_customer_ps.show(5)
+    print(df_customer_ps.limit(5).toPandas().to_markdown())
+    ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Customer DataFrame: 100
+    ```
+
+    ```txt
+    +-----------+-------------+-----------+-----+-----------+
+    |customer_id|customer_name|       city|state|    segment|
+    +-----------+-------------+-----------+-----+-----------+
+    |          1|   Customer 1|    Phoenix|   NY|  Corporate|
+    |          2|   Customer 2|    Phoenix|   CA|Home Office|
+    |          3|   Customer 3|    Phoenix|   NY|Home Office|
+    |          4|   Customer 4|Los Angeles|   NY|   Consumer|
+    |          5|   Customer 5|Los Angeles|   IL|Home Office|
+    +-----------+-------------+-----------+-----+-----------+
+    only showing top 5 rows
+    ```
+
+    |      | customer_id | customer_name | city        | state | segment     |
+    | ---: | ----------: | :------------ | :---------- | :---- | :---------- |
+    |    0 |           1 | Customer 1    | Phoenix     | NY    | Corporate   |
+    |    1 |           2 | Customer 2    | Phoenix     | CA    | Home Office |
+    |    2 |           3 | Customer 3    | Phoenix     | NY    | Home Office |
+    |    3 |           4 | Customer 4    | Los Angeles | NY    | Consumer    |
+    |    4 |           5 | Customer 5    | Los Angeles | IL    | Home Office |
+
+    </div>
 
 === "Polars"
 
-    ```py {.polars linenums="1" title="TITLE"}
+    ```py {.polars linenums="1" title="Create DataFrames"}
     df_sales_pl: pl.DataFrame = pl.DataFrame(sales_data)
     df_product_pl: pl.DataFrame = pl.DataFrame(product_data)
     df_customer_pl: pl.DataFrame = pl.DataFrame(customer_data)
     ```
 
-    ```py {.polars linenums="1" title="TITLE"}
+    ```py {.polars linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {df_sales_pl.shape[0]}")
-    display(df_sales_pl.head(10))
-    print(df_sales_pl.head(10).to_markdown())
+    print(df_sales_pl.head(5))
+    print(df_sales_pl.head(5).to_pandas().to_markdown())
     ```
 
-    ```py {.polars linenums="1" title="TITLE"}
+    <div class="result" markdown>
+
+    ```txt
+    Sales DataFrame: 100
+    ```
+
+    ```txt
+    shape: (5, 6)
+    ┌─────────────────────┬─────────────┬────────────┬─────────────┬──────────────┬──────────┐
+    │ date                ┆ customer_id ┆ product_id ┆ category    ┆ sales_amount ┆ quantity │
+    │ ---                 ┆ ---         ┆ ---        ┆ ---         ┆ ---          ┆ ---      │
+    │ datetime[ns]        ┆ i64         ┆ i64        ┆ str         ┆ f64          ┆ i64      │
+    ╞═════════════════════╪═════════════╪════════════╪═════════════╪══════════════╪══════════╡
+    │ 2023-01-01 00:00:00 ┆ 52          ┆ 45         ┆ Food        ┆ 490.76       ┆ 7        │
+    │ 2023-01-02 00:00:00 ┆ 93          ┆ 41         ┆ Electronics ┆ 453.94       ┆ 5        │
+    │ 2023-01-03 00:00:00 ┆ 15          ┆ 29         ┆ Home        ┆ 994.51       ┆ 5        │
+    │ 2023-01-04 00:00:00 ┆ 72          ┆ 15         ┆ Electronics ┆ 184.17       ┆ 7        │
+    │ 2023-01-05 00:00:00 ┆ 61          ┆ 45         ┆ Food        ┆ 27.89        ┆ 9        │
+    └─────────────────────┴─────────────┴────────────┴─────────────┴──────────────┴──────────┘
+    ```
+
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 |
+
+    </div>
+
+    ```py {.polars linenums="1" title="Check Product DataFrame"}
     print(f"Product DataFrame: {df_product_pl.shape[0]}")
-    display(df_product_pl.head(10))
-    print(df_product_pl.head(10).to_markdown())
+    print(df_product_pl.head(5))
+    print(df_product_pl.head(5).to_pandas().to_markdown())
     ```
 
-    ```py {.polars linenums="1" title="TITLE"}
-    print(f"Customer DataFrame: {df_customer_pl.shape[0]}")
-    display(df_customer_pl.head(10))
-    print(df_customer_pl.head(10).to_markdown())
+    <div class="result" markdown>
+
+    ```txt
+    Product DataFrame: 50
     ```
+
+    ```txt
+    shape: (5, 5)
+    ┌────────────┬──────────────┬────────┬──────────┬─────────────┐
+    │ product_id ┆ product_name ┆ price  ┆ category ┆ supplier_id │
+    │ ---        ┆ ---          ┆ ---    ┆ ---      ┆ ---         │
+    │ i64        ┆ str          ┆ f64    ┆ str      ┆ i64         │
+    ╞════════════╪══════════════╪════════╪══════════╪═════════════╡
+    │ 1          ┆ Product 1    ┆ 257.57 ┆ Food     ┆ 8           │
+    │ 2          ┆ Product 2    ┆ 414.96 ┆ Clothing ┆ 5           │
+    │ 3          ┆ Product 3    ┆ 166.82 ┆ Clothing ┆ 8           │
+    │ 4          ┆ Product 4    ┆ 448.81 ┆ Food     ┆ 4           │
+    │ 5          ┆ Product 5    ┆ 200.71 ┆ Food     ┆ 8           │
+    └────────────┴──────────────┴────────┴──────────┴─────────────┘
+    ```
+
+    |      | product_id | product_name |  price | category | supplier_id |
+    | ---: | ---------: | :----------- | -----: | :------- | ----------: |
+    |    0 |          1 | Product 1    | 257.57 | Food     |           8 |
+    |    1 |          2 | Product 2    | 414.96 | Clothing |           5 |
+    |    2 |          3 | Product 3    | 166.82 | Clothing |           8 |
+    |    3 |          4 | Product 4    | 448.81 | Food     |           4 |
+    |    4 |          5 | Product 5    | 200.71 | Food     |           8 |
+
+    </div>
+
+    ```py {.polars linenums="1" title="Check Customer DataFrame"}
+    print(f"Customer DataFrame: {df_customer_pl.shape[0]}")
+    print(df_customer_pl.head(5))
+    print(df_customer_pl.head(5).to_pandas().to_markdown())
+    ```
+
+    <div class="result" markdown>
+
+    ```txt
+    Customer DataFrame: 100
+    ```
+
+    ```txt
+    shape: (5, 5)
+    ┌─────────────┬───────────────┬─────────────┬───────┬─────────────┐
+    │ customer_id ┆ customer_name ┆ city        ┆ state ┆ segment     │
+    │ ---         ┆ ---           ┆ ---         ┆ ---   ┆ ---         │
+    │ i64         ┆ str           ┆ str         ┆ str   ┆ str         │
+    ╞═════════════╪═══════════════╪═════════════╪═══════╪═════════════╡
+    │ 1           ┆ Customer 1    ┆ Phoenix     ┆ NY    ┆ Corporate   │
+    │ 2           ┆ Customer 2    ┆ Phoenix     ┆ CA    ┆ Home Office │
+    │ 3           ┆ Customer 3    ┆ Phoenix     ┆ NY    ┆ Home Office │
+    │ 4           ┆ Customer 4    ┆ Los Angeles ┆ NY    ┆ Consumer    │
+    │ 5           ┆ Customer 5    ┆ Los Angeles ┆ IL    ┆ Home Office │
+    └─────────────┴───────────────┴─────────────┴───────┴─────────────┘
+    ```
+
+    |      | customer_id | customer_name | city        | state | segment     |
+    | ---: | ----------: | :------------ | :---------- | :---- | :---------- |
+    |    0 |           1 | Customer 1    | Phoenix     | NY    | Corporate   |
+    |    1 |           2 | Customer 2    | Phoenix     | CA    | Home Office |
+    |    2 |           3 | Customer 3    | Phoenix     | NY    | Home Office |
+    |    3 |           4 | Customer 4    | Los Angeles | NY    | Consumer    |
+    |    4 |           5 | Customer 5    | Los Angeles | IL    | Home Office |
+
+    </div>
 
 
 ## 1. Filtering and Selecting
