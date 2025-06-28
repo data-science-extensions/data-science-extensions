@@ -170,9 +170,7 @@ sales_data: dict[str, Any] = {
     "date": pd.date_range(start="2023-01-01", periods=n_records, freq="D"),
     "customer_id": np.random.randint(1, 100, n_records),
     "product_id": np.random.randint(1, 50, n_records),
-    "category": np.random.choice(
-        ["Electronics", "Clothing", "Food", "Books", "Home"], n_records
-    ),
+    "category": np.random.choice(["Electronics", "Clothing", "Food", "Books", "Home"], n_records),
     "sales_amount": np.random.uniform(10, 1000, n_records).round(2),
     "quantity": np.random.randint(1, 10, n_records),
 }
@@ -186,9 +184,7 @@ product_data: dict[str, Any] = {
     "product_id": np.arange(1, 51),
     "product_name": [f"Product {i}" for i in range(1, 51)],
     "price": np.random.uniform(10, 500, 50).round(2),
-    "category": np.random.choice(
-        ["Electronics", "Clothing", "Food", "Books", "Home"], 50
-    ),
+    "category": np.random.choice(["Electronics", "Clothing", "Food", "Books", "Home"], 50),
     "supplier_id": np.random.randint(1, 10, 50),
 }
 ```
@@ -200,9 +196,7 @@ Finally, we will create a customer dimension table. This table will contain info
 customer_data: dict[str, Any] = {
     "customer_id": np.arange(1, 101),
     "customer_name": [f"Customer {i}" for i in range(1, 101)],
-    "city": np.random.choice(
-        ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"], 100
-    ),
+    "city": np.random.choice(["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"], 100),
     "state": np.random.choice(["NY", "CA", "IL", "TX", "AZ"], 100),
     "segment": np.random.choice(["Consumer", "Corporate", "Home Office"], 100),
 }
@@ -904,9 +898,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     ```py {.pyspark linenums="1" title="TITLE"}
     # Join with customer information to get a complete view
     complete_sales: psDataFrame = sales_with_product.alias("s").join(
-        other=df_customer_ps.select("customer_id", "customer_name", "city", "state").alias(
-            "c"
-        ),
+        other=df_customer_ps.select("customer_id", "customer_name", "city", "state").alias("c"),
         on="customer_id",
         how="left",
     )
@@ -934,20 +926,10 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Calculate revenue (price * quantity) and compare with sales amount
-    complete_sales["calculated_revenue"] = (
-        complete_sales["price"] * complete_sales["quantity"]
-    )
-    complete_sales["price_difference"] = (
-        complete_sales["sales_amount"] - complete_sales["calculated_revenue"]
-    )
-    print(
-        f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales)}"
-    )
-    display(
-        complete_sales[
-            ["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]
-        ].head()
-    )
+    complete_sales["calculated_revenue"] = complete_sales["price"] * complete_sales["quantity"]
+    complete_sales["price_difference"] = complete_sales["sales_amount"] - complete_sales["calculated_revenue"]
+    print(f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales)}")
+    display(complete_sales[["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]].head())
     ```
 
 === "SQL"
@@ -979,12 +961,8 @@ Once we have the complete sales data, we can calculate the revenue for each sale
             "price_difference": F.expr("sales_amount - (price * quantity)"),
         },
     )
-    print(
-        f"Complete Sales Data with Calculated Revenue and Price Difference: {complete_sales.count()}"
-    )
-    complete_sales.select(
-        "sales_amount", "price", "quantity", "calculated_revenue", "price_difference"
-    ).show(10)
+    print(f"Complete Sales Data with Calculated Revenue and Price Difference: {complete_sales.count()}")
+    complete_sales.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference").show(10)
     ```
 
 === "Polars"
@@ -993,18 +971,10 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     # Calculate revenue (price * quantity) and compare with sales amount
     complete_sales = complete_sales.with_columns(
         (pl.col("price") * pl.col("quantity")).alias("calculated_revenue"),
-        (pl.col("sales_amount") - (pl.col("price") * pl.col("quantity"))).alias(
-            "price_difference"
-        ),
+        (pl.col("sales_amount") - (pl.col("price") * pl.col("quantity"))).alias("price_difference"),
     )
-    print(
-        f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales)}"
-    )
-    display(
-        complete_sales.select(
-            ["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]
-        ).head(10)
-    )
+    print(f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales)}")
+    display(complete_sales.select(["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]).head(10))
     ```
 
 ## 4. Window Functions
@@ -1024,10 +994,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
     # Time-based window function
     df_sales_pd["date"] = pd.to_datetime(df_sales_pd["date"])  # Ensure date type
     daily_sales: pd.DataFrame = (
-        df_sales_pd.groupby(df_sales_pd["date"].dt.date)["sales_amount"]
-        .sum()
-        .reset_index()
-        .sort_values("date")
+        df_sales_pd.groupby(df_sales_pd["date"].dt.date)["sales_amount"].sum().reset_index().sort_values("date")
     )
     print(f"Daily Sales Summary: {len(daily_sales)}")
     display(daily_sales.head())
@@ -1095,9 +1062,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Calculate rolling averages (7-day moving average)
-    daily_sales["7d_moving_avg"] = (
-        daily_sales["sales_amount"].rolling(window=7, min_periods=1).mean()
-    )
+    daily_sales["7d_moving_avg"] = daily_sales["sales_amount"].rolling(window=7, min_periods=1).mean()
     print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales)}")
     display(daily_sales.head())
     print(daily_sales.head().to_markdown())
@@ -1132,9 +1097,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     daily_sales = daily_sales.withColumns(
         {
             "day_over_day_change": F.expr("total_sales - previous_day_sales"),
-            "pct_change": (F.expr("total_sales / previous_day_sales - 1") * 100).alias(
-                "pct_change"
-            ),
+            "pct_change": (F.expr("total_sales / previous_day_sales - 1") * 100).alias("pct_change"),
         }
     )
     print(f"Daily Sales with Day-over-Day Change: {daily_sales.count()}")
@@ -1147,8 +1110,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     # Calculate day-over-day change
     daily_sales = daily_sales.with_columns(
         (pl.col("total_sales") - pl.col("previous_day_sales")).alias("day_over_day_change"),
-        (pl.col("total_sales") / pl.col("previous_day_sales") - 1).alias("pct_change")
-        * 100,
+        (pl.col("total_sales") / pl.col("previous_day_sales") - 1).alias("pct_change") * 100,
     )
     print(f"Daily Sales with Day-over-Day Change: {len(daily_sales)}")
     display(daily_sales.head(10))
@@ -1213,9 +1175,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Calculate day-over-day change
-    daily_sales["day_over_day_change"] = (
-        daily_sales["sales_amount"].pct_change() - daily_sales["previous_day_sales"]
-    )
+    daily_sales["day_over_day_change"] = daily_sales["sales_amount"].pct_change() - daily_sales["previous_day_sales"]
     daily_sales["pct_change"] = daily_sales["sales_amount"].pct_change() * 100
     print(f"Daily Sales with Day-over-Day Change: {len(daily_sales)}")
     display(daily_sales.head())
@@ -1233,12 +1193,8 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     # Calculate 7-day moving average
     daily_sales = daily_sales.withColumns(
         {
-            "7d_moving_avg": F.avg("total_sales").over(
-                Window.orderBy("date").rowsBetween(-6, 0)
-            ),
-            "7d_rolling_avg": F.expr(
-                "AVG(total_sales) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)"
-            ),
+            "7d_moving_avg": F.avg("total_sales").over(Window.orderBy("date").rowsBetween(-6, 0)),
+            "7d_rolling_avg": F.expr("AVG(total_sales) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)"),
         }
     )
     print(f"Daily Sales with 7-Day Moving Average: {daily_sales.count()}")
@@ -1250,9 +1206,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```py {.polars linenums="1" title="TITLE"}
     # Calculate 7-day moving average
     daily_sales = daily_sales.with_columns(
-        pl.col("total_sales")
-        .rolling_mean(window_size=7, min_periods=1)
-        .alias("7d_moving_avg"),
+        pl.col("total_sales").rolling_mean(window_size=7, min_periods=1).alias("7d_moving_avg"),
     )
     print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales)}")
     display(daily_sales.head(10))
@@ -1399,12 +1353,8 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Rank customers by total spending
-    customer_spending: pd.DataFrame = (
-        df_sales_pd.groupby("customer_id")["sales_amount"].sum().reset_index()
-    )
-    customer_spending["rank"] = customer_spending["sales_amount"].rank(
-        method="dense", ascending=False
-    )
+    customer_spending: pd.DataFrame = df_sales_pd.groupby("customer_id")["sales_amount"].sum().reset_index()
+    customer_spending["rank"] = customer_spending["sales_amount"].rank(method="dense", ascending=False)
     customer_spending = customer_spending.sort_values("rank")
     print(f"Customer Spending Summary: {len(customer_spending)}")
     display(customer_spending.head(10))
@@ -1437,9 +1387,7 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     customer_spending = (
         df_sales_pl.group_by("customer_id")
         .agg(pl.col("sales_amount").sum().alias("total_spending"))
-        .with_columns(
-            pl.col("total_spending").rank(method="dense", descending=True).alias("rank")
-        )
+        .with_columns(pl.col("total_spending").rank(method="dense", descending=True).alias("rank"))
         .sort("rank")
     )
     print(f"Customer Spending Summary: {len(customer_spending)}")
@@ -1502,12 +1450,8 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Rank products by quantity sold
-    product_popularity: pd.DataFrame = (
-        df_sales_pd.groupby("product_id")["quantity"].sum().reset_index()
-    )
-    product_popularity["rank"] = product_popularity["quantity"].rank(
-        method="dense", ascending=False
-    )
+    product_popularity: pd.DataFrame = df_sales_pd.groupby("product_id")["quantity"].sum().reset_index()
+    product_popularity["rank"] = product_popularity["quantity"].rank(method="dense", ascending=False)
     product_popularity = product_popularity.sort_values("rank")
     print(f"Product Popularity Summary: {len(product_popularity)}")
     display(product_popularity.head(10))
@@ -1556,9 +1500,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     product_popularity = (
         df_sales_pl.group_by("product_id")
         .agg(pl.col("quantity").sum().alias("total_quantity"))
-        .with_columns(
-            pl.col("total_quantity").rank(method="dense", descending=True).alias("rank")
-        )
+        .with_columns(pl.col("total_quantity").rank(method="dense", descending=True).alias("rank"))
         .sort("rank")
     )
     print(f"Product Popularity Summary: {len(product_popularity)}")
