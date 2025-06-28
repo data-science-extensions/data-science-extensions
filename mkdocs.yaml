@@ -36,10 +36,12 @@ theme:
     - toc.follow
     - content.action.edit
     - content.action.view
+    - content.code.copy
+    - content.code.annotate
     - content.tabs.link
   logo: ./assets/images/1067432.png
   icon:
-    repo: material/gitlab
+    repo: material/github
     edit: material/file-edit-outline
     view: material/file-eye-outline
 
