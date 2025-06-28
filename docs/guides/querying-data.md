@@ -212,9 +212,9 @@ Now that we have our sample data created, we can proceed to the querying section
     To create the dataframes in Pandas, we will use the data we generated earlier. We will parse the dictionaries into Pandas DataFrames, which will allow us to perform various data manipulation tasks.
 
     ```py {.pandas linenums="1" title="Create DataFrames"}
-    df_sales_pd = pd.DataFrame(sales_data)
-    df_product_pd = pd.DataFrame(product_data)
-    df_customer_pd = pd.DataFrame(customer_data)
+    df_sales_pd: pd.DataFrame = pd.DataFrame(sales_data)
+    df_product_pd: pd.DataFrame = pd.DataFrame(product_data)
+    df_customer_pd: pd.DataFrame = pd.DataFrame(customer_data)
     ```
 
     Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `.head()` method to display the first 5 rows of each DataFrame, and then parse to the `print()` function to display the DataFrame in a readable format.
@@ -696,7 +696,7 @@ The first section will demonstrate how to filter and select data from the DataFr
 
     ```py {.sql linenums="1" title="TITLE"}
     # Filter sales for a specific category
-    electronics_sales_txt = """
+    electronics_sales_txt: str = """
         SELECT *
         FROM sales
         WHERE category = 'Electronics'
@@ -720,7 +720,7 @@ The first section will demonstrate how to filter and select data from the DataFr
 
     ```py {.polars linenums="1" title="TITLE"}
     # Filter sales data for specific category
-    electronics_sales_pl = df_sales_pl.filter(df_sales_pl["category"] == "Electronics")
+    electronics_sales_pl: pl.DataFrame = df_sales_pl.filter(pl.col("category") == "Electronics")
     print(f"Number of Electronics Sales: {len(electronics_sales_pl)}")
     display(electronics_sales_pl.head(10))
     print(electronics_sales_pl.head(10).to_markdown())
@@ -742,7 +742,7 @@ We can also use numerical filtering, as you can see in the next example, where w
 
     ```py {.sql linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
-    high_value_sales_txt = """
+    high_value_sales_txt: str = """
         SELECT *
         FROM sales
         WHERE sales_amount > 500
@@ -766,7 +766,7 @@ We can also use numerical filtering, as you can see in the next example, where w
 
     ```py {.polars linenums="1" title="TITLE"}
     # Filter for high value transactions (over $500)
-    high_value_sales_pl = df_sales_pl.filter(df_sales_pl["sales_amount"] > 500)
+    high_value_sales_pl: pl.DataFrame = df_sales_pl.filter(df_sales_pl["sales_amount"] > 500)
     print(f"Number of high-value Sales: {len(high_value_sales_pl)}")
     display(high_value_sales_pl.head(10))
     print(high_value_sales_pl.head(10).to_markdown())
@@ -788,7 +788,7 @@ When it comes to selecting specific columns, we can use the double square bracke
 
     ```py {.sql linenums="1" title="TITLE"}
     # Select specific columns
-    sales_summary_txt = """
+    sales_summary_txt: str = """
         SELECT date, category, sales_amount
         FROM sales
     """
@@ -811,7 +811,7 @@ When it comes to selecting specific columns, we can use the double square bracke
 
     ```py {.polars linenums="1" title="TITLE"}
     # Select specific columns
-    sales_summary_pl = df_sales_pl.select(["date", "category", "sales_amount"])
+    sales_summary_pl: pl.DataFrame = df_sales_pl.select(["date", "category", "sales_amount"])
     print(f"Sales Summary DataFrame: {len(sales_summary_pl)}")
     display(sales_summary_pl.head(10))
     print(sales_summary_pl.head(10).to_markdown())
@@ -842,7 +842,7 @@ The second section will cover grouping and aggregation techniques. These operati
 
     ```py {.sql linenums="1" title="TITLE"}
     # Basic aggregation
-    sales_stats_sql = """
+    sales_stats_sql: str = """
         SELECT
             SUM(sales_amount) AS sales_sum,
             AVG(sales_amount) AS sales_mean,
@@ -883,7 +883,7 @@ The second section will cover grouping and aggregation techniques. These operati
 
     ```py {.polars linenums="1" title="TITLE"}
     # Basic aggregation
-    sales_stats = df_sales_pl.select(
+    sales_stats: pl.DataFrame = df_sales_pl.select(
         pl.col("sales_amount").sum().alias("sales_sum"),
         pl.col("sales_amount").mean().alias("sales_mean"),
         pl.col("sales_amount").min().alias("sales_min"),
@@ -921,7 +921,7 @@ It is also possible to group data by a specific column and then apply aggregatio
 
     ```py {.sql linenums="1" title="TITLE"}
     # Group by category and aggregate
-    category_sales_sql = """
+    category_sales_sql: str = """
         SELECT
             category,
             SUM(sales_amount) AS total_sales,
@@ -954,7 +954,7 @@ It is also possible to group data by a specific column and then apply aggregatio
 
     ```py {.polars linenums="1" title="TITLE"}
     # Group by category and aggregate
-    category_sales = df_sales_pl.group_by("category").agg(
+    category_sales: pl.DataFrame = df_sales_pl.group_by("category").agg(
         pl.col("sales_amount").sum().alias("total_sales"),
         pl.col("sales_amount").mean().alias("average_sales"),
         pl.col("sales_amount").count().alias("transaction_count"),
@@ -993,7 +993,7 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Rename columns for clarity
-    category_sales = category_sales.withColumnsRenamed(
+    category_sales: psDataFrame = category_sales.withColumnsRenamed(
         {
             "total_sales": "Total Sales",
             "average_sales": "Average Sales",
@@ -1009,7 +1009,7 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```py {.polars linenums="1" title="TITLE"}
     # Rename columns for clarity
-    category_sales = category_sales.rename(
+    category_sales: pl.DataFrame = category_sales.rename(
         {
             "total_sales": "Total Sales",
             "average_sales": "Average Sales",
@@ -1112,7 +1112,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
     ```py {.sql linenums="1" title="TITLE"}
     # Join sales with product data
-    sales_with_product_sql = """
+    sales_with_product_sql: str = """
         SELECT s.*, p.product_name, p.price
         FROM sales s
         LEFT JOIN product p ON s.product_id = p.product_id
@@ -1139,7 +1139,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
     ```py {.polars linenums="1" title="TITLE"}
     # Join sales with product data
-    sales_with_product = df_sales_pl.join(
+    sales_with_product: pl.DataFrame = df_sales_pl.join(
         df_product_pl.select(["product_id", "product_name", "price"]),
         on="product_id",
         how="left",
@@ -1170,7 +1170,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
     ```py {.sql linenums="1" title="TITLE"}
     # Join with customer information to get a complete view
-    complete_sales_sql = """
+    complete_sales_sql: str = """
         SELECT
             s.*,
             p.product_name,
@@ -1204,7 +1204,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
     ```py {.polars linenums="1" title="TITLE"}
     # Join with customer information to get a complete view
-    complete_sales = sales_with_product.join(
+    complete_sales: pl.DataFrame = sales_with_product.join(
         df_customer_pl.select(["customer_id", "customer_name", "city", "state"]),
         on="customer_id",
         how="left",
@@ -1230,7 +1230,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
     ```py {.sql linenums="1" title="TITLE"}
     # Calculate revenue and price difference
-    revenue_comparison_sql = """
+    revenue_comparison_sql: str = """
         SELECT
             s.sales_amount,
             p.price,
@@ -1249,7 +1249,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Calculate revenue (price * quantity) and compare with sales amount
-    complete_sales = complete_sales.withColumns(
+    complete_sales: psDataFrame = complete_sales.withColumns(
         {
             "calculated_revenue": complete_sales["price"] * complete_sales["quantity"],
             "price_difference": F.expr("sales_amount - (price * quantity)"),
@@ -1263,7 +1263,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
     ```py {.polars linenums="1" title="TITLE"}
     # Calculate revenue (price * quantity) and compare with sales amount
-    complete_sales = complete_sales.with_columns(
+    complete_sales: pl.DataFrame = complete_sales.with_columns(
         (pl.col("price") * pl.col("quantity")).alias("calculated_revenue"),
         (pl.col("sales_amount") - (pl.col("price") * pl.col("quantity"))).alias("price_difference"),
     )
@@ -1299,7 +1299,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```py {.sql linenums="1" title="TITLE"}
     # Time-based window function
-    daily_sales_sql = """
+    daily_sales_sql: str = """
         SELECT
             date,
             SUM(sales_amount) AS total_sales
@@ -1316,7 +1316,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Convert date column to date type if not already
-    df_sales_ps = df_sales_ps.withColumn("date", F.to_date(df_sales_ps["date"]))
+    df_sales_ps: psDataFrame = df_sales_ps.withColumn("date", F.to_date(df_sales_ps["date"]))
     daily_sales: psDataFrame = (
         df_sales_ps.groupBy("date")
         .agg(
@@ -1332,11 +1332,11 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```py {.polars linenums="1" title="TITLE"}
     # Convert date column to date type if not already
-    df_sales_pl = df_sales_pl.with_columns(pl.col("date").cast(pl.Date))
+    df_sales_pl: pl.DataFrame = df_sales_pl.with_columns(pl.col("date").cast(pl.Date))
     ```
 
     ```py {.polars linenums="1" title="TITLE"}
-    daily_sales = (
+    daily_sales: pl.DataFrame = (
         df_sales_pl.group_by("date")
         .agg(
             pl.col("sales_amount").sum().alias("total_sales"),
@@ -1366,7 +1366,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```py {.sql linenums="1" title="TITLE"}
     # Window functions for lead and lag
-    window_sql = """
+    window_sql: str = """
         SELECT
             date AS sale_date,
             SUM(sales_amount) AS sales_amount,
@@ -1388,7 +1388,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Calculate day-over-day change
-    daily_sales = daily_sales.withColumns(
+    daily_sales: psDataFrame = daily_sales.withColumns(
         {
             "day_over_day_change": F.expr("total_sales - previous_day_sales"),
             "pct_change": (F.expr("total_sales / previous_day_sales - 1") * 100).alias("pct_change"),
@@ -1402,7 +1402,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```py {.polars linenums="1" title="TITLE"}
     # Calculate day-over-day change
-    daily_sales = daily_sales.with_columns(
+    daily_sales: pl.DataFrame = daily_sales.with_columns(
         (pl.col("total_sales") - pl.col("previous_day_sales")).alias("day_over_day_change"),
         (pl.col("total_sales") / pl.col("previous_day_sales") - 1).alias("pct_change") * 100,
     )
@@ -1435,10 +1435,10 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Define a window specification for lead/lag functions
-    window_spec = Window.orderBy("date")
+    window_spec: psDataFrame = Window.orderBy("date")
 
     # Calculate lead and lag
-    daily_sales = daily_sales.withColumns(
+    daily_sales: psDataFrame = daily_sales.withColumns(
         {
             "previous_day_sales": F.lag("total_sales").over(window_spec),
             "next_day_sales": F.expr("LEAD(total_sales) OVER (ORDER BY date)"),
@@ -1452,7 +1452,7 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
     ```py {.polars linenums="1" title="TITLE"}
     # Calculate lead and lag
-    daily_sales = daily_sales.with_columns(
+    daily_sales: pl.DataFrame = daily_sales.with_columns(
         pl.col("total_sales").shift(1).alias("previous_day_sales"),
         pl.col("total_sales").shift(-1).alias("next_day_sales"),
     )
@@ -1485,7 +1485,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Calculate 7-day moving average
-    daily_sales = daily_sales.withColumns(
+    daily_sales: psDataFrame = daily_sales.withColumns(
         {
             "7d_moving_avg": F.avg("total_sales").over(Window.orderBy("date").rowsBetween(-6, 0)),
             "7d_rolling_avg": F.expr("AVG(total_sales) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)"),
@@ -1499,7 +1499,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
     ```py {.polars linenums="1" title="TITLE"}
     # Calculate 7-day moving average
-    daily_sales = daily_sales.with_columns(
+    daily_sales: pl.DataFrame = daily_sales.with_columns(
         pl.col("total_sales").rolling_mean(window_size=7, min_periods=1).alias("7d_moving_avg"),
     )
     print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales)}")
@@ -1513,7 +1513,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Plot time series with rolling average
-    fig = (
+    fig: go.Figure = (
         go.Figure()
         .add_trace(
             go.Scatter(
@@ -1545,7 +1545,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     ```py {.sql linenums="1" title="TITLE"}
     # Plot time series with rolling average
-    fig = (
+    fig: go.Figure = (
         go.Figure()
         .add_trace(
             go.Scatter(
@@ -1577,7 +1577,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     ```py {.pyspark linenums="1" title="TITLE"}
     # Plot time series with rolling average
-    fig = (
+    fig: go.Figure = (
         go.Figure()
         .add_trace(
             go.Scatter(
@@ -1609,7 +1609,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     ```py {.polars linenums="1" title="TITLE"}
     # Plot time series with rolling average
-    fig = (
+    fig: go.Figure = (
         go.Figure()
         .add_trace(
             go.Scatter(
@@ -1649,7 +1649,7 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     # Rank customers by total spending
     customer_spending: pd.DataFrame = df_sales_pd.groupby("customer_id")["sales_amount"].sum().reset_index()
     customer_spending["rank"] = customer_spending["sales_amount"].rank(method="dense", ascending=False)
-    customer_spending = customer_spending.sort_values("rank")
+    customer_spending: pd.DataFrame = customer_spending.sort_values("rank")
     print(f"Customer Spending Summary: {len(customer_spending)}")
     display(customer_spending.head(10))
     print(customer_spending.head(10).to_markdown())
@@ -1678,7 +1678,7 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
 
     ```py {.polars linenums="1" title="TITLE"}
     # Rank customers by total spending
-    customer_spending = (
+    customer_spending: pl.DataFrame = (
         df_sales_pl.group_by("customer_id")
         .agg(pl.col("sales_amount").sum().alias("total_spending"))
         .with_columns(pl.col("total_spending").rank(method="dense", descending=True).alias("rank"))
@@ -1710,7 +1710,7 @@ Once we have ranked the customers, we can merge this information with the `custo
 
     ```py {.sql linenums="1" title="TITLE"}
     # Rank customers by total spending
-    customer_spending_sql = """
+    customer_spending_sql: str = """
         SELECT
             c.customer_id,
             c.customer_name,
@@ -1746,7 +1746,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     # Rank products by quantity sold
     product_popularity: pd.DataFrame = df_sales_pd.groupby("product_id")["quantity"].sum().reset_index()
     product_popularity["rank"] = product_popularity["quantity"].rank(method="dense", ascending=False)
-    product_popularity = product_popularity.sort_values("rank")
+    product_popularity: pd.DataFrame = product_popularity.sort_values("rank")
     print(f"Product Popularity Summary: {len(product_popularity)}")
     display(product_popularity.head(10))
     print(product_popularity.head(10).to_markdown())
@@ -1756,7 +1756,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
     ```py {.sql linenums="1" title="TITLE"}
     # Rank products by quantity sold
-    product_popularity_sql = """
+    product_popularity_sql: str = """
         SELECT
             p.product_id,
             p.product_name,
@@ -1791,7 +1791,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
     ```py {.polars linenums="1" title="TITLE"}
     # Rank products by quantity sold
-    product_popularity = (
+    product_popularity: pl.DataFrame = (
         df_sales_pl.group_by("product_id")
         .agg(pl.col("quantity").sum().alias("total_quantity"))
         .with_columns(pl.col("total_quantity").rank(method="dense", descending=True).alias("rank"))
