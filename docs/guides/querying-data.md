@@ -217,7 +217,7 @@ Now that we have our sample data created, we can proceed to the querying section
     df_customer_pd = pd.DataFrame(customer_data)
     ```
 
-    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame.
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `.head()` method to display the first 5 rows of each DataFrame, and then parse to the `print()` function to display the DataFrame in a readable format.
 
     ```py {.pandas linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {len(df_sales_pd)}")
@@ -314,13 +314,19 @@ Now that we have our sample data created, we can proceed to the querying section
 
 === "SQL"
 
+    To create the dataframes in SQL, we will use the data we generated earlier. Firstly, we need to create the SQLite database. This will be an in-memory database for demonstration purposes, but in a real-world scenario, you would typically connect to a persistent (on-disk) database. To do this, we will use the `sqlite3` library to create a connection to the database, which we define with the `:memory:` parameter. The result is to create a temporary database that exists only during the lifetime of the connection.
+
+    Next, we will then parse the dictionaries into Pandas DataFrames, which will then be loaded into an SQLite database. This allows us to perform various data manipulation tasks using SQL queries.
+
     ```py {.sql linenums="1" title="Create DataFrames"}
     # Creates SQLite database and tables
     conn: sqlite3.Connection = sqlite3.connect(":memory:")
-    df_sales_pd.to_sql("sales", conn, index=False, if_exists="replace")
-    df_product_pd.to_sql("product", conn, index=False, if_exists="replace")
-    df_customer_pd.to_sql("customer", conn, index=False, if_exists="replace")
+    pd.DataFrame(sales_data).to_sql("sales", conn, index=False, if_exists="replace")
+    pd.DataFrame(product_data).to_sql("product", conn, index=False, if_exists="replace")
+    pd.DataFrame(customer_data).to_sql("customer", conn, index=False, if_exists="replace")
     ```
+
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `pd.read_sql()` function to execute SQL queries and retrieve the data from the database. We will then parse the results to the `print()` function to display the DataFrame in a readable format.
 
     ```py {.sql linenums="1" title="Check Sales DataFrame"}
     print(f"Sales Table: {len(pd.read_sql('SELECT * FROM sales', conn))}")
@@ -417,15 +423,29 @@ Now that we have our sample data created, we can proceed to the querying section
 
 === "PySpark"
 
+    Spark DataFrames are similar to Pandas DataFrames, but they are designed to work with large datasets that do not fit into memory. They can be distributed across a cluster of machines, allowing for parallel processing of data.
+
+    To create the dataframes in PySpark, we will use the data we generated earlier. We will first create a Spark session, which is the entry point to using PySpark. Then, we will parse the dictionaries into PySpark DataFrames, which will allow us to perform various data manipulation tasks.
+
+    The PySpark session is created using the `.builder` method on the `SparkSession` class, which allows us to configure the session with various options such as the application name. The `.getOrCreate()` method is used to either get an existing session or create a new one if it doesn't exist.
+
     ```py {.pyspark linenums="1" title="Create Spark Session"}
     spark: SparkSession = SparkSession.builder.appName("SalesAnalysis").getOrCreate()
     ```
 
+    Once the Spark session is created, we can create the DataFrames from the dictionaries. We will  use the `.createDataFrame()` method on the Spark session to convert the dictionaries into PySpark DataFrames. The `.createDataFrame()` method is expecting the data to be oriented by _row_. Meaning that the data should be in the form of a list of dictionaries, where each dictionary represents a row of data. However, we currently have our data is oriented by _column_, where the dictionarieshave keys as column names and values as lists of data. Therefore, we will first need to convert the dictionaries from _column_ orientation to _row_ orientation. The easiest way to do this is by parse'ing the data to a Pandas DataFrames, and then using that to create our PySpark DataFrames from there.
+
+    A good description of how to create PySpark DataFrames from Python Dictionaries can be found in the PySpark documentation: [PySpark Create DataFrame From Dictionary][pyspark-create-dataframe-from-dict].
+
+    [pyspark-create-dataframe-from-dict]: https://sparkbyexamples.com/pyspark/pyspark-create-dataframe-from-dictionary/
+
     ```py {.pyspark linenums="1" title="Create DataFrames"}
-    df_sales_ps: psDataFrame = spark.createDataFrame(df_sales_pd)
-    df_product_ps: psDataFrame = spark.createDataFrame(df_product_pd)
-    df_customer_ps: psDataFrame = spark.createDataFrame(df_customer_pd)
+    df_sales_ps: psDataFrame = spark.createDataFrame(pd.DataFrame(sales_data))
+    df_product_ps: psDataFrame = spark.createDataFrame(pd.DataFrame(product_data))
+    df_customer_ps: psDataFrame = spark.createDataFrame(pd.DataFrame(customer_data))
     ```
+
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `.show()` method to display the first `5` rows of each DataFrame. The `.show()` method is used to display the data in a tabular format, similar to how it would be displayed in a SQL database.
 
     ```py {.pyspark linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {df_sales_ps.count()}")
@@ -534,11 +554,15 @@ Now that we have our sample data created, we can proceed to the querying section
 
 === "Polars"
 
+    To create the dataframes in Polars, we will use the data we generated earlier. We will parse the dictionaries into Polars DataFrames, which will allow us to perform various data manipulation tasks.
+
     ```py {.polars linenums="1" title="Create DataFrames"}
     df_sales_pl: pl.DataFrame = pl.DataFrame(sales_data)
     df_product_pl: pl.DataFrame = pl.DataFrame(product_data)
     df_customer_pl: pl.DataFrame = pl.DataFrame(customer_data)
     ```
+
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `.head()` method to display the first `5` rows of each DataFrame, and then parse to the `print()` function to display the DataFrame in a readable format.
 
     ```py {.polars linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {df_sales_pl.shape[0]}")
