@@ -18,16 +18,13 @@ Throughout this article, you can easily switch between the different libraries b
 
 === "Pandas"
 
-    [Pandas][pandas] is a powerful data manipulation library in Python that provides data structures and functions for working with structured data. It is widely used for data analysis and manipulation tasks.
+    [Pandas] is a powerful data manipulation library in Python that provides data structures and functions for working with structured data. It is widely used for data analysis and manipulation tasks.
 
     Historically, Pandas was one of the first libraries to provide a DataFrame structure, which is similar to a table in a relational database. It allows for easy data manipulation, filtering, grouping, and aggregation. Pandas is built on top of [NumPy][numpy] and provides a high-level interface for working with data. It is particularly well-suited for small to medium-sized datasets and is often used in Data Science and Machine Learning workflows.
 
     Pandas provides a rich set of functionalities for data manipulation, including filtering, grouping, joining, and window functions. It also integrates well with other libraries such as Matplotlib and Seaborn for data visualization, making it a popular choice among data scientists and analysts.
 
     While Pandas is both powerful and popular, it is important to note that it operates **in-memory**, which means that it may not be suitable for very large datasets that do not fit into memory. In such cases, other libraries like PySpark or Polars may be more appropriate.
-
-    [pandas]: https://pandas.pydata.org/
-    [numpy]: https://numpy.org/
 
 === "SQL"
 
@@ -48,15 +45,6 @@ Throughout this article, you can easily switch between the different libraries b
 
     </div>
 
-    [sql-wiki]: https://en.wikipedia.org/wiki/SQL
-    [sql-iso]: https://www.iso.org/standard/76583.html
-    [sqlite]: https://sqlite.org/
-    [postgresql]: https://www.postgresql.org/
-    [mysql]: https://www.mysql.com/
-    [t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
-    [pl-sql]: https://www.oracle.com/au/database/technologies/appdev/plsql.html
-    [spark-sql]: https://spark.apache.org/sql/
-
 === "PySpark"
 
     [PySpark] is the Python API for Apache Spark, a distributed computing framework that allows for large-scale data processing. PySpark provides a high-level interface for working with Spark, making it easier to write distributed data processing applications in Python. It is particularly well-suited for big data processing and analytics.
@@ -65,12 +53,6 @@ Throughout this article, you can easily switch between the different libraries b
 
     While PySpark is a powerful tool for big data processing, it can be more complex to set up and use compared to Pandas. It requires a Spark cluster and may have a steeper learning curve for those unfamiliar with distributed computing concepts. However, it is an excellent choice for processing large datasets and performing complex data transformations.
 
-    [pyspark]: https://spark.apache.org/docs/latest/api/python/
-    [hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
-    [s3]: https://aws.amazon.com/s3/
-    [adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
-    [jdbc]: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
-
 === "Polars"
 
     [Polars] is a fast DataFrame library for Python that is designed for high-performance data manipulation. It is built on top of Rust and provides a DataFrame API similar to Pandas, but with a focus on performance and memory efficiency. Polars is particularly well-suited for large datasets and complex queries.
@@ -78,8 +60,6 @@ Throughout this article, you can easily switch between the different libraries b
     Polars supports lazy evaluation, which allows for optimizations in query execution. Polars also provides powerful features for filtering, grouping, joining, and aggregating data, making it a great choice for data analysis tasks.
 
     While Polars is a relatively new library compared to Pandas, it has gained popularity for its performance and ease of use. It is designed to be a drop-in replacement for Pandas, allowing users to leverage its performance benefits without significant changes to their existing code. It is particularly useful for data scientists and analysts who need to work with large datasets and require fast data manipulation capabilities. The setup is simple and straightforward, similar to Pandas, and less complex than PySpark. It is a great choice for data analysis tasks that require high performance and memory efficiency.
-
-    [polars]: https://www.pola.rs/
 
 
 ## Setup
@@ -217,7 +197,7 @@ Now that we have our sample data created, we can proceed to the querying section
     df_customer_pd: pd.DataFrame = pd.DataFrame(customer_data)
     ```
 
-    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `.head()` method to display the first 5 rows of each DataFrame, and then parse to the `print()` function to display the DataFrame in a readable format.
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the [`.head()`][pandas-head] method to display the first 5 rows of each DataFrame, and then parse to the [`print()`][python-print] function to display the DataFrame in a readable format.
 
     ```py {.pandas linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {len(df_sales_pd)}")
@@ -314,7 +294,7 @@ Now that we have our sample data created, we can proceed to the querying section
 
 === "SQL"
 
-    To create the dataframes in SQL, we will use the data we generated earlier. Firstly, we need to create the SQLite database. This will be an in-memory database for demonstration purposes, but in a real-world scenario, you would typically connect to a persistent (on-disk) database. To do this, we will use the `sqlite3` library to create a connection to the database, which we define with the `:memory:` parameter. The result is to create a temporary database that exists only during the lifetime of the connection.
+    To create the dataframes in SQL, we will use the data we generated earlier. Firstly, we need to create the SQLite database. This will be an in-memory database for demonstration purposes, but in a real-world scenario, you would typically connect to a persistent (on-disk) database. To do this, we will use the [`sqlite3`][sqlite3] library to create a connection to the database, which we define with the `:memory:` parameter on the [`.connect()`][sqlite3-connect] function. The result is to create a temporary database that exists only during the lifetime of the connection.
 
     Next, we will then parse the dictionaries into Pandas DataFrames, which will then be loaded into an SQLite database. This allows us to perform various data manipulation tasks using SQL queries.
 
@@ -326,7 +306,7 @@ Now that we have our sample data created, we can proceed to the querying section
     pd.DataFrame(customer_data).to_sql("customer", conn, index=False, if_exists="replace")
     ```
 
-    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `pd.read_sql()` function to execute SQL queries and retrieve the data from the database. We will then parse the results to the `print()` function to display the DataFrame in a readable format.
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the [`pd.read_sql()`][pandas-read_sql] function to execute SQL queries and retrieve the data from the database. We will then parse the results to the [`print()`][python-print] function to display the DataFrame in a readable format.
 
     ```py {.sql linenums="1" title="Check Sales DataFrame"}
     print(f"Sales Table: {len(pd.read_sql('SELECT * FROM sales', conn))}")
@@ -427,17 +407,15 @@ Now that we have our sample data created, we can proceed to the querying section
 
     To create the dataframes in PySpark, we will use the data we generated earlier. We will first create a Spark session, which is the entry point to using PySpark. Then, we will parse the dictionaries into PySpark DataFrames, which will allow us to perform various data manipulation tasks.
 
-    The PySpark session is created using the `.builder` method on the `SparkSession` class, which allows us to configure the session with various options such as the application name. The `.getOrCreate()` method is used to either get an existing session or create a new one if it doesn't exist.
+    The PySpark session is created using the [`.builder`][pyspark-builder] method on the [`SparkSession`][pyspark-sparksession] class, which allows us to configure the session with various options such as the application name. The [`.getOrCreate()`][pyspark-getorcreate] method is used to either get an existing session or create a new one if it doesn't exist.
 
     ```py {.pyspark linenums="1" title="Create Spark Session"}
     spark: SparkSession = SparkSession.builder.appName("SalesAnalysis").getOrCreate()
     ```
 
-    Once the Spark session is created, we can create the DataFrames from the dictionaries. We will  use the `.createDataFrame()` method on the Spark session to convert the dictionaries into PySpark DataFrames. The `.createDataFrame()` method is expecting the data to be oriented by _row_. Meaning that the data should be in the form of a list of dictionaries, where each dictionary represents a row of data. However, we currently have our data is oriented by _column_, where the dictionarieshave keys as column names and values as lists of data. Therefore, we will first need to convert the dictionaries from _column_ orientation to _row_ orientation. The easiest way to do this is by parse'ing the data to a Pandas DataFrames, and then using that to create our PySpark DataFrames from there.
+    Once the Spark session is created, we can create the DataFrames from the dictionaries. We will  use the [`.createDataFrame()`][pyspark-createdataframe] method on the Spark session to convert the dictionaries into PySpark DataFrames. The [`.createDataFrame()`][pyspark-createdataframe] method is expecting the data to be oriented by _row_. Meaning that the data should be in the form of a list of dictionaries, where each dictionary represents a row of data. However, we currently have our data is oriented by _column_, where the dictionarieshave keys as column names and values as lists of data. Therefore, we will first need to convert the dictionaries from _column_ orientation to _row_ orientation. The easiest way to do this is by parse'ing the data to a Pandas DataFrames, and then using that to create our PySpark DataFrames from there.
 
     A good description of how to create PySpark DataFrames from Python Dictionaries can be found in the PySpark documentation: [PySpark Create DataFrame From Dictionary][pyspark-create-dataframe-from-dict].
-
-    [pyspark-create-dataframe-from-dict]: https://sparkbyexamples.com/pyspark/pyspark-create-dataframe-from-dictionary/
 
     ```py {.pyspark linenums="1" title="Create DataFrames"}
     df_sales_ps: psDataFrame = spark.createDataFrame(pd.DataFrame(sales_data))
@@ -445,7 +423,7 @@ Now that we have our sample data created, we can proceed to the querying section
     df_customer_ps: psDataFrame = spark.createDataFrame(pd.DataFrame(customer_data))
     ```
 
-    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `.show()` method to display the first `5` rows of each DataFrame. The `.show()` method is used to display the data in a tabular format, similar to how it would be displayed in a SQL database.
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the [`.show()`][pyspark-show] method to display the first `5` rows of each DataFrame. The [`.show()`][pyspark-show] method is used to display the data in a tabular format, similar to how it would be displayed in a SQL database.
 
     ```py {.pyspark linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {df_sales_ps.count()}")
@@ -562,7 +540,7 @@ Now that we have our sample data created, we can proceed to the querying section
     df_customer_pl: pl.DataFrame = pl.DataFrame(customer_data)
     ```
 
-    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the `.head()` method to display the first `5` rows of each DataFrame, and then parse to the `print()` function to display the DataFrame in a readable format.
+    Once the data is created, we can check that it has been loaded correctly by displaying the first few rows of each DataFrame. To do this, we will use the [`.head()`][polars-head] method to display the first `5` rows of each DataFrame, and then parse to the [`print()`][python-print] function to display the DataFrame in a readable format.
 
     ```py {.polars linenums="1" title="Check Sales DataFrame"}
     print(f"Sales DataFrame: {df_sales_pl.shape[0]}")
@@ -802,7 +780,7 @@ The first section will demonstrate how to filter and select data from the DataFr
     In Polars, we can use the `.filter()` method to filter rows based on specific conditions. The syntax is similar to Pandas, where we can specify the condition using column expressions. In the below example, we filter for sales in the "Electronics" category.
 
     ```py {.polars linenums="1" title="Filter sales for a specific category"}
-    electronics_sales_pl: pl.DataFrame = df_sales_pl.filter(pl.col("category") == "Electronics")
+    electronics_sales_pl: pl.DataFrame = df_sales_pl.filter(df_sales_pl["category"] == "Electronics")
     print(f"Number of Electronics Sales: {len(electronics_sales_pl)}")
     print(electronics_sales_pl.head(5))
     print(electronics_sales_pl.head(5).to_pandas().to_markdown())
@@ -843,6 +821,8 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "Pandas"
 
+    When it comes to numerical filtering in Pandas, the process is similar to the previous example, where we use boolean indexing to filter rows based on a given condition condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
+
     ```py {.pandas linenums="1" title="Filter for high value transactions"}
     high_value_sales_pd: pd.DataFrame = df_sales_pd[df_sales_pd["sales_amount"] > 500]
     print(f"Number of high-value Sales: {len(high_value_sales_pd)}")
@@ -876,6 +856,8 @@ We can also use numerical filtering, as you can see in the next example, where w
     </div>
 
 === "SQL"
+
+    When it comes to numerical filtering in SQL, the process is similar to the previous example, where we use the `WHERE` clause to filter rows based on a given condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
 
     ```py {.sql linenums="1" title="Filter for high value transactions"}
     high_value_sales_txt: str = """
@@ -916,6 +898,10 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "PySpark"
 
+    When it comes to numerical filtering in PySpark, the process is similar to the previous example, where we use the `.filter()` (or `.where()`) method to filter rows based on a given condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
+
+    Also note here that we have parsed a string value to the `.filter()` method, instead of using the pure-Python syntax as shown above. This is because the `.filter()` method can accept a SQL-like string expression. This is a common practice in PySpark to parse a SQL-like string to a PySpark method.
+
     ```py {.pyspark linenums="1" title="Filter for high value transactions"}
     high_value_sales_ps: psDataFrame = df_sales_ps.filter("sales_amount > 500")
     print(f"Number of high-value Sales: {high_value_sales_ps.count()}")
@@ -954,8 +940,12 @@ We can also use numerical filtering, as you can see in the next example, where w
 
 === "Polars"
 
+    When it comes to numerical filtering in Polars, the process is similar to the previous example, where we use the `.filter()` method to filter rows based on a given condition, but here we use a numerical value instead of a string value. In the below example, we filter for sales amounts greater than `500`.
+
+    Also note here that we have used the `pl.col()` function to specify the column we want to filter on. This is different from the previous examples, where we used the column name directly. The use of `pl.col()` is a common practice in Polars to specify the column name in a more readable way.
+
     ```py {.polars linenums="1" title="Filter for high value transactions"}
-    high_value_sales_pl: pl.DataFrame = df_sales_pl.filter(df_sales_pl["sales_amount"] > 500)
+    high_value_sales_pl: pl.DataFrame = df_sales_pl.filter(pl.col("sales_amount") > 500)
     print(f"Number of high-value Sales: {len(high_value_sales_pl)}")
     print(high_value_sales_pl.head(5))
     print(high_value_sales_pl.head(5).to_pandas().to_markdown())
@@ -2670,3 +2660,32 @@ As with the customer data, we can merge the product popularity information with 
 ```
 
 </div>
+
+[python-print]: https://docs.python.org/3/library/functions.html#print
+[pandas]: https://pandas.pydata.org/
+[pandas-head]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.head.html
+[pandas-read_sql]: https://pandas.pydata.org/docs/reference/api/pandas.read_sql.html
+[numpy]: https://numpy.org/
+[sql-wiki]: https://en.wikipedia.org/wiki/SQL
+[sql-iso]: https://www.iso.org/standard/76583.html
+[sqlite]: https://sqlite.org/
+[sqlite3]: https://docs.python.org/3/library/sqlite3.html
+[sqlite3-connect]: https://docs.python.org/3/library/sqlite3.html#sqlite3.connect
+[postgresql]: https://www.postgresql.org/
+[mysql]: https://www.mysql.com/
+[t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
+[pl-sql]: https://www.oracle.com/au/database/technologies/appdev/plsql.html
+[spark-sql]: https://spark.apache.org/sql/
+[pyspark]: https://spark.apache.org/docs/latest/api/python/
+[pyspark-sparksession]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html
+[pyspark-builder]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html#pyspark.sql.SparkSession.builder
+[pyspark-getorcreate]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.builder.getOrCreate.html
+[pyspark-createdataframe]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.createDataFrame.html
+[pyspark-show]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.show.html
+[pyspark-create-dataframe-from-dict]: https://sparkbyexamples.com/pyspark/pyspark-create-dataframe-from-dictionary/
+[hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
+[s3]: https://aws.amazon.com/s3/
+[adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
+[jdbc]: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
+[polars]: https://www.pola.rs/
+[polars-head]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.head.html
