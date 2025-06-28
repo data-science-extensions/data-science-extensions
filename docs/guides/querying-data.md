@@ -741,12 +741,12 @@ The first section will demonstrate how to filter and select data from the DataFr
     ```
 
     ```txt
-                      date  customer_id  product_id     category  sales_amount  quantity  
-    0  2023-01-02 00:00:00           93          41  Electronics        453.94         5  
-    1  2023-01-04 00:00:00           72          15  Electronics        184.17         7  
-    2  2023-01-09 00:00:00           75           9  Electronics        746.73         2  
-    3  2023-01-11 00:00:00           88           1  Electronics        314.98         9  
-    4  2023-01-12 00:00:00           24          44  Electronics        547.11         8  
+                      date  customer_id  product_id     category  sales_amount  quantity
+    0  2023-01-02 00:00:00           93          41  Electronics        453.94         5
+    1  2023-01-04 00:00:00           72          15  Electronics        184.17         7
+    2  2023-01-09 00:00:00           75           9  Electronics        746.73         2
+    3  2023-01-11 00:00:00           88           1  Electronics        314.98         9
+    4  2023-01-12 00:00:00           24          44  Electronics        547.11         8
     ```
 
     |      | date                | customer_id | product_id | category    | sales_amount | quantity |
@@ -1810,7 +1810,12 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     )
     print(f"Complete Sales Data with Calculated Revenue and Price Difference: {complete_sales.count()}")
     complete_sales.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference").show(5)
-    print(complete_sales.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference").limit(5).toPandas().to_markdown())
+    print(
+        complete_sales.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference")
+        .limit(5)
+        .toPandas()
+        .to_markdown()
+    )
     ```
 
     <div class="result" markdown>
