@@ -30,6 +30,7 @@
     background-image: url('./../icons/pandas.svg');
 }
 
+.pyspark span.filename::before,
 .spark span.filename::before {
     content: '';
     display: inline-block;
