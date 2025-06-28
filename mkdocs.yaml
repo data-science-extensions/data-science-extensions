@@ -129,3 +129,6 @@ nav:
   - Guides:
       - guides/index.md
       - Querying Data: guides/querying-data/index.md
+
+exclude_docs: |
+  guides/querying-data/querying-data-reformatted.md
