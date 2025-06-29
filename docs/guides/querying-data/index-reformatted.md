@@ -159,12 +159,12 @@ First, we will create a sales fact table. This table will contain information ab
 
 ```python {.python linenums="1" title="Create Sales Fact Data"}
 sales_data: dict[str, Any] = {
-"date": pd.date_range(start="2023-01-01", periods=n_records, freq="D"),
-"customer_id": np.random.randint(1, 100, n_records),
-"product_id": np.random.randint(1, 50, n_records),
-"category": np.random.choice(["Electronics", "Clothing", "Food", "Books", "Home"], n_records),
-"sales_amount": np.random.uniform(10, 1000, n_records).round(2),
-"quantity": np.random.randint(1, 10, n_records),
+    "date": pd.date_range(start="2023-01-01", periods=n_records, freq="D"),
+    "customer_id": np.random.randint(1, 100, n_records),
+    "product_id": np.random.randint(1, 50, n_records),
+    "category": np.random.choice(["Electronics", "Clothing", "Food", "Books", "Home"], n_records),
+    "sales_amount": np.random.uniform(10, 1000, n_records).round(2),
+    "quantity": np.random.randint(1, 10, n_records),
 }
 ```
 
@@ -173,11 +173,11 @@ Next, we will create a product dimension table. This table will contain informat
 ```python {.python linenums="1" title="Create Product Dimension Data"}
 # Create product dimension table
 product_data: dict[str, Any] = {
-"product_id": np.arange(1, 51),
-"product_name": [f"Product {i}" for i in range(1, 51)],
-"price": np.random.uniform(10, 500, 50).round(2),
-"category": np.random.choice(["Electronics", "Clothing", "Food", "Books", "Home"], 50),
-"supplier_id": np.random.randint(1, 10, 50),
+    "product_id": np.arange(1, 51),
+    "product_name": [f"Product {i}" for i in range(1, 51)],
+    "price": np.random.uniform(10, 500, 50).round(2),
+    "category": np.random.choice(["Electronics", "Clothing", "Food", "Books", "Home"], 50),
+    "supplier_id": np.random.randint(1, 10, 50),
 }
 ```
 
@@ -186,11 +186,11 @@ Finally, we will create a customer dimension table. This table will contain info
 ```python {.python linenums="1" title="Create Customer Dimension Data"}
 # Create customer dimension table
 customer_data: dict[str, Any] = {
-"customer_id": np.arange(1, 101),
-"customer_name": [f"Customer {i}" for i in range(1, 101)],
-"city": np.random.choice(["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"], 100),
-"state": np.random.choice(["NY", "CA", "IL", "TX", "AZ"], 100),
-"segment": np.random.choice(["Consumer", "Corporate", "Home Office"], 100),
+    "customer_id": np.arange(1, 101),
+    "customer_name": [f"Customer {i}" for i in range(1, 101)],
+    "city": np.random.choice(["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"], 100),
+    "state": np.random.choice(["NY", "CA", "IL", "TX", "AZ"], 100),
+    "segment": np.random.choice(["Consumer", "Corporate", "Home Office"], 100),
 }
 ```
 
@@ -1358,7 +1358,7 @@ Category Sales Summary: 5
 ```txt
             sales_amount                   quantity
                      sum        mean count      sum
-category                                           
+category
 Books           10154.83  441.514348    23      100
 Clothing         7325.31  457.831875    16       62
 Electronics     11407.45  407.408929    28      147
@@ -1513,15 +1513,16 @@ We can rename the columns for clarity by simply assigning new names.
 In Pandas, we use the [`.columns`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html) attribute of the DataFrame. This makes it easier to understand the results of the aggregation.
 
 ```python {.pandas linenums="1" title="Rename columns for clarity"}
-category_sales_pd.columns = [
+category_sales_renamed_pd: pd.DataFrame = category_sales_pd.copy()
+category_sales_renamed_pd.columns = [
     "Total Sales",
     "Average Sales",
     "Transaction Count",
     "Total Quantity",
 ]
-print(f"Renamed Category Sales Summary: {len(category_sales_pd)}")
-print(category_sales_pd.head(5))
-print(category_sales_pd.head(5).to_markdown())
+print(f"Renamed Category Sales Summary: {len(category_sales_renamed_pd)}")
+print(category_sales_renamed_pd.head(5))
+print(category_sales_renamed_pd.head(5).to_markdown())
 ```
 
 <div class="result" markdown>
@@ -1532,7 +1533,7 @@ Renamed Category Sales Summary: 5
 
 ```txt
              Total Sales  Average Sales  Transaction Count  Total Quantity
-category                                                                  
+category
 Books           10154.83     441.514348                 23             100
 Clothing         7325.31     457.831875                 16              62
 Electronics     11407.45     407.408929                 28             147
@@ -1553,7 +1554,7 @@ Home             6343.89     704.876667                  9              40
 ### SQL
 
 ```python {.sql linenums="1" title="Rename columns for clarity"}
-category_sales_txt: str = """
+category_sales_renamed_txt: str = """
     SELECT
         category,
         total_sales AS `Total Sales`,
@@ -1571,9 +1572,9 @@ category_sales_txt: str = """
         GROUP BY category
     ) AS sales_summary
 """
-print(f"Renamed Category Sales Summary: {len(pd.read_sql(category_sales_txt, conn))}")
-print(pd.read_sql(category_sales_txt + "LIMIT 5", conn))
-print(pd.read_sql(category_sales_txt + "LIMIT 5", conn).to_markdown())
+print(f"Renamed Category Sales Summary: {len(pd.read_sql(category_sales_renamed_txt, conn))}")
+print(pd.read_sql(category_sales_renamed_txt + "LIMIT 5", conn))
+print(pd.read_sql(category_sales_renamed_txt + "LIMIT 5", conn).to_markdown())
 ```
 
 <div class="result" markdown>
@@ -1584,7 +1585,7 @@ Renamed Category Sales Summary: 5
 
 ```txt
              Total Sales  Average Sales  Transaction Count  Total Quantity
-category                                                                  
+category
 Books           10154.83     441.514348                 23             100
 Clothing         7325.31     457.831875                 16              62
 Electronics     11407.45     407.408929                 28             147
@@ -1605,7 +1606,7 @@ Home             6343.89     704.876667                  9              40
 ### PySpark
 
 ```python {.pyspark linenums="1" title="Rename columns for clarity"}
-category_sales_ps: psDataFrame = category_sales_ps.withColumnsRenamed(
+category_sales_renamed_ps: psDataFrame = category_sales_ps.withColumnsRenamed(
     {
         "total_sales": "Total Sales",
         "average_sales": "Average Sales",
@@ -1613,9 +1614,9 @@ category_sales_ps: psDataFrame = category_sales_ps.withColumnsRenamed(
         "total_quantity": "Total Quantity",
     }
 )
-print(f"Renamed Category Sales Summary: {category_sales_ps.count()}")
-category_sales_ps.show(5)
-print(category_sales_ps.limit(5).toPandas().to_markdown())
+print(f"Renamed Category Sales Summary: {category_sales_renamed_ps.count()}")
+category_sales_renamed_ps.show(5)
+print(category_sales_renamed_ps.limit(5).toPandas().to_markdown())
 ```
 
 <div class="result" markdown>
@@ -1649,7 +1650,7 @@ Renamed Category Sales Summary: 5
 ### Polars
 
 ```python {.polars linenums="1" title="Rename columns for clarity"}
-category_sales_pl: pl.DataFrame = category_sales_pl.rename(
+category_sales_renamed_pl: pl.DataFrame = category_sales_pl.rename(
     {
         "total_sales": "Total Sales",
         "average_sales": "Average Sales",
@@ -1657,9 +1658,9 @@ category_sales_pl: pl.DataFrame = category_sales_pl.rename(
         "total_quantity": "Total Quantity",
     }
 )
-print(f"Renamed Category Sales Summary: {len(category_sales_pl)}")
-print(category_sales_pl.head(5))
-print(category_sales_pl.head(5).to_pandas().to_markdown())
+print(f"Renamed Category Sales Summary: {len(category_sales_renamed_pl)}")
+print(category_sales_renamed_pl.head(5))
+print(category_sales_renamed_pl.head(5).to_pandas().to_markdown())
 ```
 
 <div class="result" markdown>
@@ -1701,10 +1702,10 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 fig: go.Figure = px.bar(
     data_frame=category_sales_pd.reset_index(),
     x="category",
-    y="total_sales",
+    y="Total Sales",
     title="Total Sales by Category",
-    text="transaction_count",
-    labels={"total_sales": "Total Sales ($)", "category": "Product Category"},
+    text="Transaction Count",
+    labels={"Total Sales": "Total Sales ($)", "category": "Product Category"},
 )
 fig.write_html("images/pt2_total_sales_by_category_pd.html", include_plotlyjs="cdn", full_html=True)
 fig.show()
@@ -1720,12 +1721,12 @@ fig.show()
 
 ```python {.sql linenums="1" title="Plot the results"}
 fig: go.Figure = px.bar(
-    data_frame=pd.read_sql(category_sales_txt, conn),
+    data_frame=pd.read_sql(category_sales_renamed_txt, conn),
     x="category",
-    y="total_sales",
+    y="Total Sales",
     title="Total Sales by Category",
-    text="transaction_count",
-    labels={"total_sales": "Total Sales ($)", "category": "Product Category"},
+    text="Transaction Count",
+    labels={"Total Sales": "Total Sales ($)", "category": "Product Category"},
 )
 fig.write_html("images/pt2_total_sales_by_category_sql.html", include_plotlyjs="cdn", full_html=True)
 fig.show()
@@ -1741,7 +1742,7 @@ fig.show()
 
 ```python {.pyspark linenums="1" title="Plot the results"}
 fig: go.Figure = px.bar(
-    data_frame=category_sales_ps.toPandas(),
+    data_frame=category_sales_renamed_ps.toPandas(),
     x="category",
     y="Total Sales",
     title="Total Sales by Category",
@@ -1762,7 +1763,7 @@ fig.show()
 
 ```python {.polars linenums="1" title="Plot the results"}
 fig: go.Figure = px.bar(
-    data_frame=category_sales_pl,
+    data_frame=category_sales_renamed_pl,
     x="category",
     y="Total Sales",
     title="Total Sales by Category",

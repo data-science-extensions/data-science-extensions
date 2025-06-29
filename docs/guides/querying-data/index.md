@@ -1358,7 +1358,7 @@ It is also possible to group data by a specific column and then apply aggregatio
     ```txt
                 sales_amount                   quantity
                          sum        mean count      sum
-    category                                           
+    category
     Books           10154.83  441.514348    23      100
     Clothing         7325.31  457.831875    16       62
     Electronics     11407.45  407.408929    28      147
@@ -1513,15 +1513,16 @@ We can rename the columns for clarity by simply assigning new names.
     In Pandas, we use the [`.columns`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html) attribute of the DataFrame. This makes it easier to understand the results of the aggregation.
 
     ```py {.pandas linenums="1" title="Rename columns for clarity"}
-    category_sales_pd.columns = [
+    category_sales_renamed_pd: pd.DataFrame = category_sales_pd.copy()
+    category_sales_renamed_pd.columns = [
         "Total Sales",
         "Average Sales",
         "Transaction Count",
         "Total Quantity",
     ]
-    print(f"Renamed Category Sales Summary: {len(category_sales_pd)}")
-    print(category_sales_pd.head(5))
-    print(category_sales_pd.head(5).to_markdown())
+    print(f"Renamed Category Sales Summary: {len(category_sales_renamed_pd)}")
+    print(category_sales_renamed_pd.head(5))
+    print(category_sales_renamed_pd.head(5).to_markdown())
     ```
 
     <div class="result" markdown>
@@ -1532,7 +1533,7 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```txt
                  Total Sales  Average Sales  Transaction Count  Total Quantity
-    category                                                                  
+    category
     Books           10154.83     441.514348                 23             100
     Clothing         7325.31     457.831875                 16              62
     Electronics     11407.45     407.408929                 28             147
@@ -1553,7 +1554,7 @@ We can rename the columns for clarity by simply assigning new names.
 === "SQL"
 
     ```py {.sql linenums="1" title="Rename columns for clarity"}
-    category_sales_txt: str = """
+    category_sales_renamed_txt: str = """
         SELECT
             category,
             total_sales AS `Total Sales`,
@@ -1571,9 +1572,9 @@ We can rename the columns for clarity by simply assigning new names.
             GROUP BY category
         ) AS sales_summary
     """
-    print(f"Renamed Category Sales Summary: {len(pd.read_sql(category_sales_txt, conn))}")
-    print(pd.read_sql(category_sales_txt + "LIMIT 5", conn))
-    print(pd.read_sql(category_sales_txt + "LIMIT 5", conn).to_markdown())
+    print(f"Renamed Category Sales Summary: {len(pd.read_sql(category_sales_renamed_txt, conn))}")
+    print(pd.read_sql(category_sales_renamed_txt + "LIMIT 5", conn))
+    print(pd.read_sql(category_sales_renamed_txt + "LIMIT 5", conn).to_markdown())
     ```
 
     <div class="result" markdown>
@@ -1584,7 +1585,7 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```txt
                  Total Sales  Average Sales  Transaction Count  Total Quantity
-    category                                                                  
+    category
     Books           10154.83     441.514348                 23             100
     Clothing         7325.31     457.831875                 16              62
     Electronics     11407.45     407.408929                 28             147
@@ -1605,7 +1606,7 @@ We can rename the columns for clarity by simply assigning new names.
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="Rename columns for clarity"}
-    category_sales_ps: psDataFrame = category_sales_ps.withColumnsRenamed(
+    category_sales_renamed_ps: psDataFrame = category_sales_ps.withColumnsRenamed(
         {
             "total_sales": "Total Sales",
             "average_sales": "Average Sales",
@@ -1613,9 +1614,9 @@ We can rename the columns for clarity by simply assigning new names.
             "total_quantity": "Total Quantity",
         }
     )
-    print(f"Renamed Category Sales Summary: {category_sales_ps.count()}")
-    category_sales_ps.show(5)
-    print(category_sales_ps.limit(5).toPandas().to_markdown())
+    print(f"Renamed Category Sales Summary: {category_sales_renamed_ps.count()}")
+    category_sales_renamed_ps.show(5)
+    print(category_sales_renamed_ps.limit(5).toPandas().to_markdown())
     ```
 
     <div class="result" markdown>
@@ -1649,7 +1650,7 @@ We can rename the columns for clarity by simply assigning new names.
 === "Polars"
 
     ```py {.polars linenums="1" title="Rename columns for clarity"}
-    category_sales_pl: pl.DataFrame = category_sales_pl.rename(
+    category_sales_renamed_pl: pl.DataFrame = category_sales_pl.rename(
         {
             "total_sales": "Total Sales",
             "average_sales": "Average Sales",
@@ -1657,9 +1658,9 @@ We can rename the columns for clarity by simply assigning new names.
             "total_quantity": "Total Quantity",
         }
     )
-    print(f"Renamed Category Sales Summary: {len(category_sales_pl)}")
-    print(category_sales_pl.head(5))
-    print(category_sales_pl.head(5).to_pandas().to_markdown())
+    print(f"Renamed Category Sales Summary: {len(category_sales_renamed_pl)}")
+    print(category_sales_renamed_pl.head(5))
+    print(category_sales_renamed_pl.head(5).to_pandas().to_markdown())
     ```
 
     <div class="result" markdown>
@@ -1699,12 +1700,12 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     ```py {.pandas linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
-        data_frame=category_sales_pd.reset_index(),
+        data_frame=category_sales_renamed_pd.reset_index(),
         x="category",
-        y="total_sales",
+        y="Total Sales",
         title="Total Sales by Category",
-        text="transaction_count",
-        labels={"total_sales": "Total Sales ($)", "category": "Product Category"},
+        text="Transaction Count",
+        labels={"Total Sales": "Total Sales ($)", "category": "Product Category"},
     )
     fig.write_html("images/pt2_total_sales_by_category_pd.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
@@ -1720,12 +1721,12 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     ```py {.sql linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
-        data_frame=pd.read_sql(category_sales_txt, conn),
+        data_frame=pd.read_sql(category_sales_renamed_txt, conn),
         x="category",
-        y="total_sales",
+        y="Total Sales",
         title="Total Sales by Category",
-        text="transaction_count",
-        labels={"total_sales": "Total Sales ($)", "category": "Product Category"},
+        text="Transaction Count",
+        labels={"Total Sales": "Total Sales ($)", "category": "Product Category"},
     )
     fig.write_html("images/pt2_total_sales_by_category_sql.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
@@ -1741,7 +1742,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     ```py {.pyspark linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
-        data_frame=category_sales_ps.toPandas(),
+        data_frame=category_sales_renamed_ps.toPandas(),
         x="category",
         y="Total Sales",
         title="Total Sales by Category",
@@ -1762,7 +1763,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     ```py {.polars linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
-        data_frame=category_sales_pl,
+        data_frame=category_sales_renamed_pl,
         x="category",
         y="Total Sales",
         title="Total Sales by Category",
