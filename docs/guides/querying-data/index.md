@@ -1905,14 +1905,14 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 === "Polars"
 
     ```py {.polars linenums="1" title="Join sales with product data"}
-    sales_with_product: pl.DataFrame = df_sales_pl.join(
+    sales_with_product_pl: pl.DataFrame = df_sales_pl.join(
         df_product_pl.select(["product_id", "product_name", "price"]),
         on="product_id",
         how="left",
     )
-    print(f"Sales with Product Information: {len(sales_with_product)}")
-    print(sales_with_product.head(5))
-    print(sales_with_product.head(5).to_pandas().to_markdown())
+    print(f"Sales with Product Information: {len(sales_with_product_pl)}")
+    print(sales_with_product_pl.head(5))
+    print(sales_with_product_pl.head(5).to_pandas().to_markdown())
     ```
 
     <div class="result" markdown>
@@ -1935,7 +1935,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
     ```py {.pandas linenums="1" title="Join with customer information to get a complete view"}
     complete_sales_pd: pd.DataFrame = pd.merge(
-        sales_with_product,
+        sales_with_product_pd,
         df_customer_pd[["customer_id", "customer_name", "city", "state"]],
         on="customer_id",
         how="left",
@@ -1996,7 +1996,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="Join with customer information to get a complete view"}
-    complete_sales_ps: psDataFrame = sales_with_product.alias("s").join(
+    complete_sales_ps: psDataFrame = sales_with_product_ps.alias("s").join(
         other=df_customer_ps.select("customer_id", "customer_name", "city", "state").alias("c"),
         on="customer_id",
         how="left",
@@ -2023,14 +2023,14 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 === "Polars"
 
     ```py {.polars linenums="1" title="Join with customer information to get a complete view"}
-    complete_sales: pl.DataFrame = sales_with_product.join(
+    complete_sales_pl: pl.DataFrame = sales_with_product_pl.join(
         df_customer_pl.select(["customer_id", "customer_name", "city", "state"]),
         on="customer_id",
         how="left",
     )
-    print(f"Complete Sales Data with Customer Information: {len(complete_sales)}")
-    print(complete_sales.head(5))
-    print(complete_sales.head(5).to_pandas().to_markdown())
+    print(f"Complete Sales Data with Customer Information: {len(complete_sales_pl)}")
+    print(complete_sales_pl.head(5))
+    print(complete_sales_pl.head(5).to_pandas().to_markdown())
     ```
 
     <div class="result" markdown>
