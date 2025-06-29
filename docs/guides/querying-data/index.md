@@ -75,13 +75,16 @@ Before we start querying data, we need to set up our environment. This includes 
     # Third Party Imports
     import numpy as np
     import pandas as pd
-    from plotly import express as px, graph_objects as go
+    from plotly import express as px, io as pio, graph_objects as go
 
     # Set seed for reproducibility
     np.random.seed(42)
 
     # Determine the number of records to generate
     n_records = 100
+
+    # Set default Plotly template
+    pio.templates.default = "simple_white+gridon"
     ```
 
 === "SQL"
@@ -94,7 +97,10 @@ Before we start querying data, we need to set up our environment. This includes 
     # Third Party Imports
     import numpy as np
     import pandas as pd
-    from plotly import express as px, graph_objects as go
+    from plotly import express as px, io as pio, graph_objects as go
+
+    # Set default Plotly template
+    pio.templates.default = "simple_white+gridon"
     ```
 
 === "PySpark"
@@ -105,7 +111,7 @@ Before we start querying data, we need to set up our environment. This includes 
 
     # Third Party Imports
     import numpy as np
-    from plotly import express as px, graph_objects as go
+    from plotly import express as px, io as pio, graph_objects as go
     from pyspark.sql import (
         DataFrame as psDataFrame,
         SparkSession,
@@ -119,6 +125,9 @@ Before we start querying data, we need to set up our environment. This includes 
 
     # Determine the number of records to generate
     n_records = 100
+
+    # Set default Plotly template
+    pio.templates.default = "simple_white+gridon"
     ```
 
 === "Polars"
@@ -130,13 +139,16 @@ Before we start querying data, we need to set up our environment. This includes 
     # Third Party Imports
     import numpy as np
     import polars as pl
-    from plotly import express as px, graph_objects as go
+    from plotly import express as px, io as pio, graph_objects as go
 
     # Set seed for reproducibility
     np.random.seed(42)
 
     # Determine the number of records to generate
     n_records = 100
+
+    # Set default Plotly template
+    pio.templates.default = "simple_white+gridon"
     ```
 
 Once the setup is complete, we can proceed to create our sample data. This data will be used for querying and will be consistent across all libraries. All tables will be created from scratch with randomly generated data to simulate a real-world scenario. This is to ensure that the examples are self-contained and can be run without any external dependencies, and also there is no issues about data privacy or security.
@@ -1534,6 +1546,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
         text="transaction_count",
         labels={"total_sales": "Total Sales ($)", "category": "Product Category"},
     )
+    fig.write_html("images/pt2_total_sales_by_category_pd.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
@@ -1560,6 +1573,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
         text="transaction_count",
         labels={"total_sales": "Total Sales ($)", "category": "Product Category"},
     )
+    fig.write_html("images/pt2_total_sales_by_category_sql.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
@@ -1586,6 +1600,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
         text="Transaction Count",
         labels={"Total Sales": "Total Sales ($)", "category": "Product Category"},
     )
+    fig.write_html("images/pt2_total_sales_by_category_ps.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
@@ -1612,6 +1627,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
         text="Transaction Count",
         labels={"Total Sales": "Total Sales ($)", "category": "Product Category"},
     )
+    fig.write_html("images/pt2_total_sales_by_category_pl.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
@@ -2481,6 +2497,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
             yaxis_title="Sales Amount ($)",
         )
     )
+    fig.write_html("images/pt4_daily_sales_with_7d_avg_pd.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
@@ -2526,6 +2543,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
             yaxis_title="Sales Amount ($)",
         )
     )
+    fig.write_html("images/pt4_daily_sales_with_7d_avg_sql.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
@@ -2571,6 +2589,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
             yaxis_title="Sales Amount ($)",
         )
     )
+    fig.write_html("images/pt4_daily_sales_with_7d_avg_ps.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
@@ -2616,6 +2635,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
             yaxis_title="Sales Amount ($)",
         )
     )
+    fig.write_html("images/pt4_daily_sales_with_7d_avg_pl.html", include_plotlyjs="cdn", full_html=True)
     fig.show()
     ```
 
