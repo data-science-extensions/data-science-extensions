@@ -1,5 +1,6 @@
 # Data Querying for Data Scientists
 
+
 ### A Comprehensive Guide of using Pandas, SQL, PySpark, and Polars for Data Manipulation Techniques, with Practical Examples and Visualisations
 
 
@@ -171,7 +172,6 @@ sales_data: dict[str, Any] = {
 Next, we will create a product dimension table. This table will contain information about products, including the product ID, name, price, category, and supplier ID.
 
 ```py {.python linenums="1" title="Create Product Dimension Data"}
-# Create product dimension table
 product_data: dict[str, Any] = {
     "product_id": np.arange(1, 51),
     "product_name": [f"Product {i}" for i in range(1, 51)],
@@ -184,7 +184,6 @@ product_data: dict[str, Any] = {
 Finally, we will create a customer dimension table. This table will contain information about customers, including the customer ID, name, city, state, and segment.
 
 ```py {.python linenums="1" title="Create Customer Dimension Data"}
-# Create customer dimension table
 customer_data: dict[str, Any] = {
     "customer_id": np.arange(1, 101),
     "customer_name": [f"Customer {i}" for i in range(1, 101)],
@@ -1812,6 +1811,7 @@ Having aggregated the data, we can now visualize the results using [Plotly][plot
 
     </div>
 
+
 ## 3. Joining
 
 The third section will demonstrate how to join DataFrames to combine data from different sources. This is a common operation in data analysis, allowing us to enrich our data with additional information.
@@ -2161,6 +2161,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     
 
     </div>
+
 
 ## 4. Window Functions
 
@@ -2823,6 +2824,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     
 
     </div>
+
 
 ## 5. Ranking and Partitioning
 
