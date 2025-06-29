@@ -1174,7 +1174,7 @@ The second section will cover grouping and aggregation techniques. These operati
 
 === "Pandas"
 
-    In Pandas, we can use the [`.agg()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html) method to perform aggregation operations on DataFrames. This method allows us to apply multiple aggregation functions to different columns in a single operation.
+    In Pandas, we can use the [`.agg()`][pandas-agg] method to perform aggregation operations on DataFrames. This method allows us to apply multiple aggregation functions to different columns in a single operation.
 
     ```py {.pandas linenums="1" title="Basic aggregation"}
     sales_stats_pd: pd.DataFrame = df_sales_pd.agg(
@@ -1215,6 +1215,10 @@ The second section will cover grouping and aggregation techniques. These operati
 
 === "SQL"
 
+    In SQL, we can use the aggregate functions like `SUM()`, `AVG()`, `MIN()`, `MAX()`, and `COUNT()` to perform aggregation operations on tables.
+
+    Note here that we are _not_ using the `GROUP BY` clause, which is typically used to group rows that have the same values in specified columns into summary rows. Instead, we are performing a basic aggregation on the entire table.
+
     ```py {.sql linenums="1" title="Basic aggregation"}
     sales_stats_txt: str = """
         SELECT
@@ -1252,6 +1256,8 @@ The second section will cover grouping and aggregation techniques. These operati
     </div>
 
 === "PySpark"
+
+    In PySpark, we can use the [`.agg()`][pyspark-agg] method to perform aggregation operations on DataFrames. This method allows us to apply multiple aggregation functions to different columns in a single operation.
 
     ```py {.pyspark linenums="1" title="Basic aggregation"}
     sales_stats_ps: psDataFrame = df_sales_ps.agg(
@@ -1292,6 +1298,8 @@ The second section will cover grouping and aggregation techniques. These operati
 
 === "Polars"
 
+    In Polars, we can use the [`.select()`][polars-select] method to perform aggregation operations on DataFrames. This method allows us to apply multiple aggregation functions to different columns in a single operation.
+
     ```py {.polars linenums="1" title="Basic aggregation"}
     sales_stats_pl: pl.DataFrame = df_sales_pl.select(
         pl.col("sales_amount").sum().alias("sales_sum"),
@@ -1331,11 +1339,11 @@ The second section will cover grouping and aggregation techniques. These operati
 
     </div>
 
-It is also possible to group data by a specific column and then apply aggregation functions to summarize the data.
+It is also possible to group the data by a specific column and then apply aggregation functions to summarize the data by group.
 
 === "Pandas"
 
-    This is done using the [`.groupby()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html) method to group data by one or more columns and then apply aggregation functions to summarize the data, followed by the [`.agg()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html) method.
+    This is done using the [`.groupby()`][pandas-groupby] method to group data by one or more columns and then apply aggregation functions to summarize the data, followed by the [`.agg()`][pandas-groupby-agg] method.
 
     ```py {.pandas linenums="1" title="Group by category and aggregate"}
     category_sales_pd: pd.DataFrame = df_sales_pd.groupby("category").agg(
@@ -1377,6 +1385,8 @@ It is also possible to group data by a specific column and then apply aggregatio
     </div>
 
 === "SQL"
+
+    In SQL, we can use the `GROUP BY` clause to group rows that have the same values in specified columns into summary rows. We can then apply aggregate functions like `SUM()`, `AVG()`, and `COUNT()` in the `SELECT` clause to summarize the data by group.
 
     ```py {.sql linenums="1" title="Group by category and aggregate"}
     category_sales_txt: str = """
@@ -1421,6 +1431,8 @@ It is also possible to group data by a specific column and then apply aggregatio
 
 === "PySpark"
 
+    In PySpark, we can use the [`.groupBy()`][pyspark-groupby] method to group data by one or more columns and then apply aggregation functions using the [`.agg()`][pyspark-groupby-agg] method.
+
     ```py {.pyspark linenums="1" title="Group by category and aggregate"}
     category_sales_ps: psDataFrame = df_sales_ps.groupBy("category").agg(
         F.sum("sales_amount").alias("total_sales"),
@@ -1462,6 +1474,8 @@ It is also possible to group data by a specific column and then apply aggregatio
     </div>
 
 === "Polars"
+
+    In Polars, we can use the [`.group_by()`][polars-groupby] method to group data by one or more columns and then apply aggregation functions using the [`.agg()`][polars-groupby-agg] method.
 
     ```py {.polars linenums="1" title="Group by category and aggregate"}
     category_sales_pl: pl.DataFrame = df_sales_pl.group_by("category").agg(
@@ -1510,7 +1524,9 @@ We can rename the columns for clarity by simply assigning new names.
 
 === "Pandas"
 
-    In Pandas, we use the [`.columns`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html) attribute of the DataFrame. This makes it easier to understand the results of the aggregation.
+    In Pandas, we use the [`.columns`][pandas-columns] attribute of the DataFrame. This makes it easier to understand the results of the aggregation.
+
+    It's also possible to rename columns using the [`.rename()`][pandas-rename] method, which allows for more flexibility in renaming specific columns from within 'dot-method' chains.
 
     ```py {.pandas linenums="1" title="Rename columns for clarity"}
     category_sales_renamed_pd: pd.DataFrame = category_sales_pd.copy()
@@ -1552,6 +1568,10 @@ We can rename the columns for clarity by simply assigning new names.
     </div>
 
 === "SQL"
+
+    In SQL, we can use the `AS` keyword to rename columns in the `SELECT` clause. This allows us to provide more descriptive names for the aggregated columns.
+
+    In this example, we provide the same aggregation as before, but from within a subquery. Then, in the parent query, we rename the columns for clarity.
 
     ```py {.sql linenums="1" title="Rename columns for clarity"}
     category_sales_renamed_txt: str = """
@@ -1605,6 +1625,8 @@ We can rename the columns for clarity by simply assigning new names.
 
 === "PySpark"
 
+    In PySpark, we can use the [`.withColumnsRenamed()`][pyspark-withcolumnsrenamed] method to rename columns in a DataFrame. This allows us to provide more descriptive names for the aggregated columns.
+
     ```py {.pyspark linenums="1" title="Rename columns for clarity"}
     category_sales_renamed_ps: psDataFrame = category_sales_ps.withColumnsRenamed(
         {
@@ -1648,6 +1670,8 @@ We can rename the columns for clarity by simply assigning new names.
     </div>
 
 === "Polars"
+
+    In Polars, we can use the [`.rename()`][polars-rename] method to rename columns in a DataFrame. This allows us to provide more descriptive names for the aggregated columns.
 
     ```py {.polars linenums="1" title="Rename columns for clarity"}
     category_sales_renamed_pl: pl.DataFrame = category_sales_pl.rename(
@@ -1694,9 +1718,11 @@ We can rename the columns for clarity by simply assigning new names.
 
     </div>
 
-Having aggregated the data, we can now visualize the results using [Plotly](https://plotly.com/python/). This allows us to create interactive visualizations that can help us better understand the data.
+Having aggregated the data, we can now visualize the results using [Plotly][plotly]. This allows us to create interactive visualizations that can help us better understand the data. The simplest way to do this is to use the [Plotly Express][plotly-express] module, which provides a high-level interface for creating visualizations. Here, we have utilised the [`px.bar()`][plotly-bar] function to create a bar chart of the total sales by category.
 
 === "Pandas"
+
+    The Plotly [`px.bar()`][plotly-bar] function is able to receive a Pandas DataFrame directly, making it easy to create visualizations from the aggregated data. However, what we first need to do is to convert the index labels in to a column, so that we can use it as the x-axis in the bar chart. We do this with the [`.reset_index()`][pandas-reset_index] method.
 
     ```py {.pandas linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
@@ -1719,6 +1745,8 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
 === "SQL"
 
+    The Plotly [`px.bar()`][plotly-bar] function can also receive a Pandas DataFrame, so we can use the results of the SQL query directly. Since the method we are using already returns the group labels in an indvidual column, we can use that directly in Plotly as the labels for the x-axis.
+
     ```py {.sql linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
         data_frame=pd.read_sql(category_sales_renamed_txt, conn),
@@ -1740,6 +1768,8 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
 === "PySpark"
 
+    Plotly is unfortunately not able to directly receive a PySpark DataFrame, so we need to convert it to a Pandas DataFrame first. This is done using the [`.toPandas()`][pyspark-topandas] method, which converts the PySpark DataFrame to a Pandas DataFrame.
+
     ```py {.pyspark linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
         data_frame=category_sales_renamed_ps.toPandas(),
@@ -1760,6 +1790,8 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
     </div>
 
 === "Polars"
+
+    Plotly is also able to receive a Polars DataFrame, so we can use the results of the aggregation directly.
 
     ```py {.polars linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
@@ -3227,6 +3259,12 @@ As with the customer data, we can merge the product popularity information with 
 [pandas-head]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.head.html
 [pandas-read_sql]: https://pandas.pydata.org/docs/reference/api/pandas.read_sql.html
 [pandas-subsetting]: https://pandas.pydata.org/docs/getting_started/intro_tutorials/03_subset_data.html
+[pandas-agg]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html
+[pandas-groupby]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html
+[pandas-groupby-agg]: https://pandas.pydata.org/docs/reference/api/pandas.core.groupby.DataFrameGroupBy.agg.html
+[pandas-columns]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
+[pandas-rename]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename.html
+[pandas-reset_index]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html
 [numpy]: https://numpy.org/
 [sql-wiki]: https://en.wikipedia.org/wiki/SQL
 [sql-iso]: https://www.iso.org/standard/76583.html
@@ -3251,6 +3289,11 @@ As with the customer data, we can merge the product popularity information with 
 [pyspark-where]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.where.html
 [pyspark-filtering]: https://sparkbyexamples.com/pyspark/pyspark-where-filter/
 [pyspark-select]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.select.html
+[pyspark-agg]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.agg.html
+[pyspark-groupby]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.groupBy.html
+[pyspark-groupby-agg]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.agg.html
+[pyspark-withcolumnsrenamed]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnsRenamed.html
+[pyspark-topandas]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html
 [hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
 [s3]: https://aws.amazon.com/s3/
 [adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
@@ -3261,3 +3304,9 @@ As with the customer data, we can merge the product popularity information with 
 [polars-filtering]: https://docs.pola.rs/user-guide/transformations/time-series/filter/
 [polars-col]: https://docs.pola.rs/api/python/stable/reference/expressions/col.html
 [polars-select]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.select.html
+[polars-groupby]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.group_by.html
+[polars-groupby-agg]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.dataframe.group_by.GroupBy.agg.html
+[polars-rename]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.rename.html
+[plotly]: https://plotly.com/python/
+[plotly-express]: https://plotly.com/python/plotly-express/
+[plotly-bar]: https://plotly.com/python/bar-charts/
