@@ -2373,14 +2373,25 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales Summary: 100
     ```
 
     ```txt
-    
+             date  sales_amount
+    0  2023-01-01        490.76
+    1  2023-01-02        453.94
+    2  2023-01-03        994.51
+    3  2023-01-04        184.17
+    4  2023-01-05         27.89
     ```
 
-    
+    |      | date       | sales_amount |
+    | ---: | :--------- | -----------: |
+    |    0 | 2023-01-01 |       490.76 |
+    |    1 | 2023-01-02 |       453.94 |
+    |    2 | 2023-01-03 |       994.51 |
+    |    3 | 2023-01-04 |       184.17 |
+    |    4 | 2023-01-05 |        27.89 |
 
     </div>
 
@@ -2395,7 +2406,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
         GROUP BY date
         ORDER BY date
     """
-    print(f"Daily Sales Data: {len(pd.read_sql(daily_sales_txt, conn))}")
+    print(f"Daily Sales Summary: {len(pd.read_sql(daily_sales_txt, conn))}")
     print(pd.read_sql(daily_sales_txt + "LIMIT 5", conn))
     print(pd.read_sql(daily_sales_txt + "LIMIT 5", conn).to_markdown())
     ```
@@ -2403,14 +2414,25 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales Summary: 100
     ```
 
     ```txt
-    
+                      date  total_sales
+    0  2023-01-01 00:00:00       490.76
+    1  2023-01-02 00:00:00       453.94
+    2  2023-01-03 00:00:00       994.51
+    3  2023-01-04 00:00:00       184.17
+    4  2023-01-05 00:00:00        27.89
     ```
 
-    
+    |      | date                | total_sales |
+    | ---: | :------------------ | ----------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |
 
     </div>
 
@@ -2433,14 +2455,29 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales Summary: 100
     ```
 
     ```txt
-    
+    +----------+-----------+
+    |      date|total_sales|
+    +----------+-----------+
+    |2023-01-01|     490.76|
+    |2023-01-02|     453.94|
+    |2023-01-03|     994.51|
+    |2023-01-04|     184.17|
+    |2023-01-05|      27.89|
+    +----------+-----------+
+    only showing top 5 rows
     ```
 
-    
+    |      | date       | total_sales |
+    | ---: | :--------- | ----------: |
+    |    0 | 2023-01-01 |      490.76 |
+    |    1 | 2023-01-02 |      453.94 |
+    |    2 | 2023-01-03 |      994.51 |
+    |    3 | 2023-01-04 |      184.17 |
+    |    4 | 2023-01-05 |       27.89 |
 
     </div>
 
@@ -2463,14 +2500,31 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales Summary: 100
     ```
 
     ```txt
-    
+    shape: (5, 2)
+    ┌────────────┬─────────────┐
+    │ date       ┆ total_sales │
+    │ ---        ┆ ---         │
+    │ date       ┆ f64         │
+    ╞════════════╪═════════════╡
+    │ 2023-01-01 ┆ 490.76      │
+    │ 2023-01-02 ┆ 453.94      │
+    │ 2023-01-03 ┆ 994.51      │
+    │ 2023-01-04 ┆ 184.17      │
+    │ 2023-01-05 ┆ 27.89       │
+    └────────────┴─────────────┘
     ```
 
-    
+    |      | date                | total_sales |
+    | ---: | :------------------ | ----------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |
 
     </div>
 
@@ -2491,14 +2545,25 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Lag and Lead: 100
     ```
 
     ```txt
-    
+             date  sales_amount  previous_day_sales  next_day_sales
+    0  2023-01-01        490.76                 NaN          453.94
+    1  2023-01-02        453.94              490.76          994.51
+    2  2023-01-03        994.51              453.94          184.17
+    3  2023-01-04        184.17              994.51           27.89
+    4  2023-01-05         27.89              184.17          498.95
     ```
 
-    
+    |      | date       | sales_amount | previous_day_sales | next_day_sales |
+    | ---: | :--------- | -----------: | -----------------: | -------------: |
+    |    0 | 2023-01-01 |       490.76 |                nan |         453.94 |
+    |    1 | 2023-01-02 |       453.94 |             490.76 |         994.51 |
+    |    2 | 2023-01-03 |       994.51 |             453.94 |         184.17 |
+    |    3 | 2023-01-04 |       184.17 |             994.51 |          27.89 |
+    |    4 | 2023-01-05 |        27.89 |             184.17 |         498.95 |
 
     </div>
 
@@ -2525,14 +2590,25 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Lag and Lead: 100
     ```
 
     ```txt
-    
+                 sale_date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change
+    0  2023-01-01 00:00:00        490.76                 NaN          453.94                  NaN
+    1  2023-01-02 00:00:00        453.94              490.76          994.51               -36.82
+    2  2023-01-03 00:00:00        994.51              453.94          184.17               540.57
+    3  2023-01-04 00:00:00        184.17              994.51           27.89              -810.34
+    4  2023-01-05 00:00:00         27.89              184.17          498.95              -156.28
     ```
 
-    
+    |      | sale_date           | sales_amount | previous_day_sales | next_day_sales | day_over_day_change |
+    | ---: | :------------------ | -----------: | -----------------: | -------------: | ------------------: |
+    |    0 | 2023-01-01 00:00:00 |       490.76 |                nan |         453.94 |                 nan |
+    |    1 | 2023-01-02 00:00:00 |       453.94 |             490.76 |         994.51 |              -36.82 |
+    |    2 | 2023-01-03 00:00:00 |       994.51 |             453.94 |         184.17 |              540.57 |
+    |    3 | 2023-01-04 00:00:00 |       184.17 |             994.51 |          27.89 |             -810.34 |
+    |    4 | 2023-01-05 00:00:00 |        27.89 |             184.17 |         498.95 |             -156.28 |
 
     </div>
 
@@ -2554,14 +2630,29 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Lag and Lead: 100
     ```
 
     ```txt
-    
+    +----------+-----------+------------------+--------------+
+    |      date|total_sales|previous_day_sales|next_day_sales|
+    +----------+-----------+------------------+--------------+
+    |2023-01-01|     490.76|              NULL|        453.94|
+    |2023-01-02|     453.94|            490.76|        994.51|
+    |2023-01-03|     994.51|            453.94|        184.17|
+    |2023-01-04|     184.17|            994.51|         27.89|
+    |2023-01-05|      27.89|            184.17|        498.95|
+    +----------+-----------+------------------+--------------+
+    only showing top 5 rows
     ```
 
-    
+    |      | date       | total_sales | previous_day_sales | next_day_sales |
+    | ---: | :--------- | ----------: | -----------------: | -------------: |
+    |    0 | 2023-01-01 |      490.76 |                nan |         453.94 |
+    |    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |
+    |    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |
+    |    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |
+    |    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |
 
     </div>
 
@@ -2580,14 +2671,31 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Lag and Lead: 100
     ```
 
     ```txt
-    
+    shape: (5, 4)
+    ┌────────────┬─────────────┬────────────────────┬────────────────┐
+    │ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales │
+    │ ---        ┆ ---         ┆ ---                ┆ ---            │
+    │ date       ┆ f64         ┆ f64                ┆ f64            │
+    ╞════════════╪═════════════╪════════════════════╪════════════════╡
+    │ 2023-01-01 ┆ 490.76      ┆ null               ┆ 453.94         │
+    │ 2023-01-02 ┆ 453.94      ┆ 490.76             ┆ 994.51         │
+    │ 2023-01-03 ┆ 994.51      ┆ 453.94             ┆ 184.17         │
+    │ 2023-01-04 ┆ 184.17      ┆ 994.51             ┆ 27.89          │
+    │ 2023-01-05 ┆ 27.89       ┆ 184.17             ┆ 498.95         │
+    └────────────┴─────────────┴────────────────────┴────────────────┘
     ```
 
-    
+    |      | date                | total_sales | previous_day_sales | next_day_sales |
+    | ---: | :------------------ | ----------: | -----------------: | -------------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |
 
     </div>
 
@@ -2598,7 +2706,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     We can also calculate the percentage change in sales using the [`.pct_change()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html) method, which calculates the percentage change between the current and previous values.
 
     ```py {.pandas linenums="1" title="Calculate day-over-day change"}
-    daily_sales_pd["day_over_day_change"] = (daily_sales_pd["sales_amount"] - daily_sales_pd["previous_day_sales"])
+    daily_sales_pd["day_over_day_change"] = daily_sales_pd["sales_amount"] - daily_sales_pd["previous_day_sales"]
     daily_sales_pd["pct_change"] = daily_sales_pd["sales_amount"].pct_change() * 100
     print(f"Daily Sales with Day-over-Day Change: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
@@ -2608,14 +2716,25 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Day-over-Day Change: 100
     ```
 
     ```txt
-    
+             date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change  pct_change
+    0  2023-01-01        490.76                 NaN          453.94                  NaN         NaN
+    1  2023-01-02        453.94              490.76          994.51               -36.82   -7.502649
+    2  2023-01-03        994.51              453.94          184.17               540.57  119.084020
+    3  2023-01-04        184.17              994.51           27.89              -810.34  -81.481333
+    4  2023-01-05         27.89              184.17          498.95              -156.28  -84.856383
     ```
 
-    
+    |      | date       | sales_amount | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
+    | ---: | :--------- | -----------: | -----------------: | -------------: | ------------------: | ---------: |
+    |    0 | 2023-01-01 |       490.76 |                nan |         453.94 |                 nan |        nan |
+    |    1 | 2023-01-02 |       453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
+    |    2 | 2023-01-03 |       994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
+    |    3 | 2023-01-04 |       184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
+    |    4 | 2023-01-05 |        27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
 
     </div>
 
@@ -2632,14 +2751,25 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Day-over-Day Change: 100
     ```
 
     ```txt
-    
+                 sale_date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change
+    0  2023-01-01 00:00:00        490.76                 NaN          453.94                  NaN
+    1  2023-01-02 00:00:00        453.94              490.76          994.51               -36.82
+    2  2023-01-03 00:00:00        994.51              453.94          184.17               540.57
+    3  2023-01-04 00:00:00        184.17              994.51           27.89              -810.34
+    4  2023-01-05 00:00:00         27.89              184.17          498.95              -156.28
     ```
 
-    
+    |      | sale_date           | sales_amount | previous_day_sales | next_day_sales | day_over_day_change |
+    | ---: | :------------------ | -----------: | -----------------: | -------------: | ------------------: |
+    |    0 | 2023-01-01 00:00:00 |       490.76 |                nan |         453.94 |                 nan |
+    |    1 | 2023-01-02 00:00:00 |       453.94 |             490.76 |         994.51 |              -36.82 |
+    |    2 | 2023-01-03 00:00:00 |       994.51 |             453.94 |         184.17 |              540.57 |
+    |    3 | 2023-01-04 00:00:00 |       184.17 |             994.51 |          27.89 |             -810.34 |
+    |    4 | 2023-01-05 00:00:00 |        27.89 |             184.17 |         498.95 |             -156.28 |
 
     </div>
 
@@ -2660,14 +2790,29 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Day-over-Day Change: 100
     ```
 
     ```txt
-    
+    +----------+-----------+------------------+--------------+-------------------+------------------+
+    |      date|total_sales|previous_day_sales|next_day_sales|day_over_day_change|        pct_change|
+    +----------+-----------+------------------+--------------+-------------------+------------------+
+    |2023-01-01|     490.76|              NULL|        453.94|               NULL|              NULL|
+    |2023-01-02|     453.94|            490.76|        994.51| -36.81999999999999|-7.502648952644875|
+    |2023-01-03|     994.51|            453.94|        184.17|  540.5699999999999|119.08401991452612|
+    |2023-01-04|     184.17|            994.51|         27.89|            -810.34|-81.48133251551015|
+    |2023-01-05|      27.89|            184.17|        498.95|-156.27999999999997|-84.85638268990606|
+    +----------+-----------+------------------+--------------+-------------------+------------------+
+    only showing top 5 rows
     ```
 
-    
+    |      | date       | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
+    | ---: | :--------- | ----------: | -----------------: | -------------: | ------------------: | ---------: |
+    |    0 | 2023-01-01 |      490.76 |                nan |         453.94 |                 nan |        nan |
+    |    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
+    |    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
+    |    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
+    |    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
 
     </div>
 
@@ -2686,14 +2831,31 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with Day-over-Day Change: 100
     ```
 
     ```txt
-    
+    shape: (5, 6)
+    ┌────────────┬─────────────┬────────────────────┬────────────────┬─────────────────────┬────────────┐
+    │ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales ┆ day_over_day_changd ┆ pct_change │
+    │ ---        ┆ ---         ┆ ---                ┆ ---            ┆ ---                 ┆ ---        │
+    │ date       ┆ f64         ┆ f64                ┆ f64            ┆ f64                 ┆ f64        │
+    ╞════════════╪═════════════╪════════════════════╪════════════════╪═════════════════════╪════════════╡
+    │ 2023-01-01 ┆ 490.76      ┆ null               ┆ 453.94         ┆ null                ┆ null       │
+    │ 2023-01-02 ┆ 453.94      ┆ 490.76             ┆ 994.51         ┆ -36.82              ┆ -7.502649  │
+    │ 2023-01-03 ┆ 994.51      ┆ 453.94             ┆ 184.17         ┆ 540.57              ┆ 119.08402  │
+    │ 2023-01-04 ┆ 184.17      ┆ 994.51             ┆ 27.89          ┆ -810.34             ┆ -81.481333 │
+    │ 2023-01-05 ┆ 27.89       ┆ 184.17             ┆ 498.95         ┆ -156.28             ┆ -84.856383 │
+    └────────────┴─────────────┴────────────────────┴────────────────┴─────────────────────┴────────────┘
     ```
 
-    
+    |      | date                | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
+    | ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
 
     </div>
 
@@ -2713,14 +2875,25 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with 7-Day Moving Average: 100
     ```
 
     ```txt
-    
+             date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg
+    0  2023-01-01        490.76                 NaN          453.94                  NaN         NaN     490.760000
+    1  2023-01-02        453.94              490.76          994.51               -36.82   -7.502649     472.350000
+    2  2023-01-03        994.51              453.94          184.17               540.57  119.084020     646.403333
+    3  2023-01-04        184.17              994.51           27.89              -810.34  -81.481333     530.845000
+    4  2023-01-05         27.89              184.17          498.95              -156.28  -84.856383     430.254000
     ```
 
-    
+    |      | date       | sales_amount | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
+    | ---: | :--------- | -----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
+    |    0 | 2023-01-01 |       490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
+    |    1 | 2023-01-02 |       453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
+    |    2 | 2023-01-03 |       994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
+    |    3 | 2023-01-04 |       184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
+    |    4 | 2023-01-05 |        27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
 
     </div>
 
@@ -2740,7 +2913,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
         ORDER BY date
     """
     window_df_sql: pd.DataFrame = pd.read_sql(rolling_avg_txt, conn)
-    print(f"Window Functions with Rolling Average: {len(window_df_sql)}")
+    print(f"Daily Sales with 7-Day Moving Average: {len(window_df_sql)}")
     print(pd.read_sql(rolling_avg_txt + " LIMIT 5", conn))
     print(pd.read_sql(rolling_avg_txt + " LIMIT 5", conn).to_markdown())
     ```
@@ -2748,14 +2921,25 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with 7-Day Moving Average: 100
     ```
 
     ```txt
-    
+                 sale_date  sales_amount  rolling_7d_avg  previous_day_sales  next_day_sales  day_over_day_change
+    0  2023-01-01 00:00:00        490.76      490.760000                 NaN          453.94                  NaN
+    1  2023-01-02 00:00:00        453.94      472.350000              490.76          994.51               -36.82
+    2  2023-01-03 00:00:00        994.51      646.403333              453.94          184.17               540.57
+    3  2023-01-04 00:00:00        184.17      530.845000              994.51           27.89              -810.34
+    4  2023-01-05 00:00:00         27.89      430.254000              184.17          498.95              -156.28
     ```
 
-    
+    |      | sale_date           | sales_amount | rolling_7d_avg | previous_day_sales | next_day_sales | day_over_day_change |
+    | ---: | :------------------ | -----------: | -------------: | -----------------: | -------------: | ------------------: |
+    |    0 | 2023-01-01 00:00:00 |       490.76 |         490.76 |                nan |         453.94 |                 nan |
+    |    1 | 2023-01-02 00:00:00 |       453.94 |         472.35 |             490.76 |         994.51 |              -36.82 |
+    |    2 | 2023-01-03 00:00:00 |       994.51 |        646.403 |             453.94 |         184.17 |              540.57 |
+    |    3 | 2023-01-04 00:00:00 |       184.17 |        530.845 |             994.51 |          27.89 |             -810.34 |
+    |    4 | 2023-01-05 00:00:00 |        27.89 |        430.254 |             184.17 |         498.95 |             -156.28 |
 
     </div>
 
@@ -2776,14 +2960,29 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with 7-Day Moving Average: 100
     ```
 
     ```txt
-    
+    +----------+-----------+------------------+--------------+-------------------+------------------+-----------------+-----------------+
+    |      date|total_sales|previous_day_sales|next_day_sales|day_over_day_change|        pct_change|    7d_moving_avg|   7d_rolling_avg|
+    +----------+-----------+------------------+--------------+-------------------+------------------+-----------------+-----------------+
+    |2023-01-01|     490.76|              NULL|        453.94|               NULL|              NULL|           490.76|           490.76|
+    |2023-01-02|     453.94|            490.76|        994.51| -36.81999999999999|-7.502648952644875|           472.35|           472.35|
+    |2023-01-03|     994.51|            453.94|        184.17|  540.5699999999999|119.08401991452612|646.4033333333333|646.4033333333333|
+    |2023-01-04|     184.17|            994.51|         27.89|            -810.34|-81.48133251551015|          530.845|          530.845|
+    |2023-01-05|      27.89|            184.17|        498.95|-156.27999999999997|-84.85638268990606|          430.254|          430.254|
+    +----------+-----------+------------------+--------------+-------------------+------------------+-----------------+-----------------+
+    only showing top 5 rows
     ```
 
-    
+    |      | date       | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg | 7d_rolling_avg |
+    | ---: | :--------- | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: | -------------: |
+    |    0 | 2023-01-01 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |         490.76 |
+    |    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |         472.35 |
+    |    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |        646.403 |
+    |    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |        530.845 |
+    |    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |        430.254 |
 
     </div>
 
@@ -2791,7 +2990,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```py {.polars linenums="1" title="Calculate 7-day moving average"}
     daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
-        pl.col("total_sales").rolling_mean(window_size=7, min_periods=1).alias("7d_moving_avg"),
+        pl.col("total_sales").rolling_mean(window_size=7, min_samples=1).alias("7d_moving_avg"),
     )
     print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales_pl)}")
     print(daily_sales_pl.head(5))
@@ -2801,14 +3000,31 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-    
+    Daily Sales with 7-Day Moving Average: 100
     ```
 
     ```txt
-    
+    shape: (5, 7)
+    ┌────────────┬─────────────┬──────────────────────────────┬───────────────────────┬─────────────────────────┬────────────┬───────────────────┐
+    │ date       ┆ total_sales ┆ previous_day_sales           ┆ next_day_sales        ┆ day_over_day_change     ┆ pct_change ┆ 7d_moving_avg     │
+    │ ---        ┆ ---         ┆ ---                          ┆ ---                   ┆ ---                     ┆ ---        ┆ ---               │
+    │ date       ┆ f64         ┆ f64                          ┆ f64                   ┆ f64                     ┆ f64        ┆ f64               │
+    ╞════════════╪═════════════╪══════════════════════════════╪═══════════════════════╪═════════════════════════╪════════════╪═══════════════════╡
+    │ 2023-01-01 ┆ 490.76      ┆ null                         ┆ 453.94                ┆ null                    ┆ null       ┆ 490.76            │
+    │ 2023-01-02 ┆ 453.94      ┆ 490.76                       ┆ 994.51                ┆ -36.82                  ┆ -7.502649  ┆ 472.35            │
+    │ 2023-01-03 ┆ 994.51      ┆ 453.94                       ┆ 184.17                ┆ 540.57                  ┆ 119.08402  ┆ 646.403333        │
+    │ 2023-01-04 ┆ 184.17      ┆ 994.51                       ┆ 27.89                 ┆ -810.34                 ┆ -81.481333 ┆ 530.845           │
+    │ 2023-01-05 ┆ 27.89       ┆ 184.17                       ┆ 498.95                ┆ -156.28                 ┆ -84.856383 ┆ 430.254           │
+    └────────────┴─────────────┴──────────────────────────────┴───────────────────────┴─────────────────────────┴────────────┴───────────────────┘
     ```
 
-    
+    |      | date                | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
+    | ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
 
     </div>
 
@@ -2848,15 +3064,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     <div class="result" markdown>
 
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
+    --8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_pd.html"
 
     </div>
 
@@ -2894,15 +3102,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     <div class="result" markdown>
 
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
+    --8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_sql.html"
 
     </div>
 
@@ -2940,15 +3140,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     <div class="result" markdown>
 
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
+    --8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_ps.html"
 
     </div>
 
@@ -2986,15 +3178,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     <div class="result" markdown>
 
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
+    --8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_pl.html"
 
     </div>
 
