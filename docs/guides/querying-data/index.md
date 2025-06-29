@@ -86,6 +86,9 @@ Before we start querying data, we need to set up our environment. This includes 
 
     # Set default Plotly template
     pio.templates.default = "simple_white+gridon"
+
+    # Set Pandas display options
+    pd.set_option("display.max_columns", None)
     ```
 
 === "SQL"
@@ -102,6 +105,9 @@ Before we start querying data, we need to set up our environment. This includes 
 
     # Set default Plotly template
     pio.templates.default = "simple_white+gridon"
+
+    # Set Pandas display options
+    pd.set_option("display.max_columns", None)
     ```
 
 === "PySpark"
@@ -150,6 +156,9 @@ Before we start querying data, we need to set up our environment. This includes 
 
     # Set default Plotly template
     pio.templates.default = "simple_white+gridon"
+
+    # Set Polars display options
+    pl.Config.set_tbl_cols(-1)
     ```
 
 Once the setup is complete, we can proceed to create our sample data. This data will be used for querying and will be consistent across all libraries. All tables will be created from scratch with randomly generated data to simulate a real-world scenario. This is to ensure that the examples are self-contained and can be run without any external dependencies, and also there is no issues about data privacy or security.
@@ -1837,14 +1846,25 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-    
+    Sales with Product Information: 100
     ```
 
     ```txt
-    
+            date  customer_id  product_id     category  sales_amount  quantity  product_name   price
+    0 2023-01-01           52          45         Food        490.76         7    Product 45  493.14
+    1 2023-01-02           93          41  Electronics        453.94         5    Product 41  193.39
+    2 2023-01-03           15          29         Home        994.51         5    Product 29   80.07
+    3 2023-01-04           72          15  Electronics        184.17         7    Product 15  153.67
+    4 2023-01-05           61          45         Food         27.89         9    Product 45  493.14
     ```
 
-    
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity | product_name |  price |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: | :----------- | -----: |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 | Product 45   | 493.14 |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 | Product 41   | 193.39 |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 | Product 29   |  80.07 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 | Product 15   | 153.67 |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 | Product 45   | 493.14 |
 
     </div>
 
@@ -1856,7 +1876,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
         FROM sales s
         LEFT JOIN product p ON s.product_id = p.product_id
     """
-    print(f"Sales with Product Data: {len(pd.read_sql(sales_with_product_txt, conn))}")
+    print(f"Sales with Product Information: {len(pd.read_sql(sales_with_product_txt, conn))}")
     print(pd.read_sql(sales_with_product_txt + "LIMIT 5", conn))
     print(pd.read_sql(sales_with_product_txt + "LIMIT 5", conn).to_markdown())
     ```
@@ -1864,14 +1884,25 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-    
+    Sales with Product Information: 100
     ```
 
     ```txt
-    
+                      date  customer_id  product_id     category  sales_amount  quantity  product_name   price
+    0  2023-01-01 00:00:00           52          45         Food        490.76         7    Product 45  493.14
+    1  2023-01-02 00:00:00           93          41  Electronics        453.94         5    Product 41  193.39
+    2  2023-01-03 00:00:00           15          29         Home        994.51         5    Product 29   80.07
+    3  2023-01-04 00:00:00           72          15  Electronics        184.17         7    Product 15  153.67
+    4  2023-01-05 00:00:00           61          45         Food         27.89         9    Product 45  493.14
     ```
 
-    
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity | product_name |  price |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: | :----------- | -----: |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 | Product 45   | 493.14 |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 | Product 41   | 193.39 |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 | Product 29   |  80.07 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 | Product 15   | 153.67 |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 | Product 45   | 493.14 |
 
     </div>
 
@@ -1891,14 +1922,29 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-    
+    Sales with Product Information: 100
     ```
 
     ```txt
-    
+    +----------+-------------------+-----------+-----------+------------+--------+------------+------+
+    |product_id|               date|customer_id|   category|sales_amount|quantity|product_name| price|
+    +----------+-------------------+-----------+-----------+------------+--------+------------+------+
+    |         1|2023-01-06 00:00:00|         21|   Clothing|      498.95|       5|   Product 1|257.57|
+    |         1|2023-01-11 00:00:00|         88|Electronics|      314.98|       9|   Product 1|257.57|
+    |         1|2023-02-11 00:00:00|         55|       Food|       199.0|       5|   Product 1|257.57|
+    |         1|2023-04-04 00:00:00|         85|       Food|      146.97|       7|   Product 1|257.57|
+    |         5|2023-01-21 00:00:00|         64|Electronics|      356.58|       5|   Product 5|200.71|
+    +----------+-------------------+-----------+-----------+------------+--------+------------+------+
+    only showing top 5 rows
     ```
 
-    
+    |      | product_id | date                | customer_id | category    | sales_amount | quantity | product_name |  price |
+    | ---: | ---------: | :------------------ | ----------: | :---------- | -----------: | -------: | :----------- | -----: |
+    |    0 |          1 | 2023-01-11 00:00:00 |          88 | Electronics |       314.98 |        9 | Product 1    | 257.57 |
+    |    1 |          1 | 2023-02-11 00:00:00 |          55 | Food        |          199 |        5 | Product 1    | 257.57 |
+    |    2 |          5 | 2023-01-21 00:00:00 |          64 | Electronics |       356.58 |        5 | Product 5    | 200.71 |
+    |    3 |          5 | 2023-02-18 00:00:00 |          39 | Books       |        79.71 |        8 | Product 5    | 200.71 |
+    |    4 |          6 | 2023-03-23 00:00:00 |          34 | Electronics |        48.45 |        8 | Product 6    |  15.31 |
 
     </div>
 
@@ -1918,14 +1964,31 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-    
+    Sales with Product Information: 100
     ```
 
     ```txt
-    
+    shape: (5, 8)
+    ┌─────────────────────┬─────────────┬────────────┬─────────────┬──────────────┬──────────┬──────────────┬────────┐
+    │ date                ┆ customer_id ┆ product_id ┆ category    ┆ sales_amount ┆ quantity ┆ product_name ┆ price  │
+    │ ---                 ┆ ---         ┆ ---        ┆ ---         ┆ ---          ┆ ---      ┆ ---          ┆ ---    │
+    │ datetime[ns]        ┆ i64         ┆ i64        ┆ str         ┆ f64          ┆ i64      ┆ str          ┆ f64    │
+    ╞═════════════════════╪═════════════╪════════════╪═════════════╪══════════════╪══════════╪══════════════╪════════╡
+    │ 2023-01-01 00:00:00 ┆ 52          ┆ 45         ┆ Food        ┆ 490.76       ┆ 7        ┆ Product 45   ┆ 493.14 │
+    │ 2023-01-02 00:00:00 ┆ 93          ┆ 41         ┆ Electronics ┆ 453.94       ┆ 5        ┆ Product 41   ┆ 193.39 │
+    │ 2023-01-03 00:00:00 ┆ 15          ┆ 29         ┆ Home        ┆ 994.51       ┆ 5        ┆ Product 29   ┆ 80.07  │
+    │ 2023-01-04 00:00:00 ┆ 72          ┆ 15         ┆ Electronics ┆ 184.17       ┆ 7        ┆ Product 15   ┆ 153.67 │
+    │ 2023-01-05 00:00:00 ┆ 61          ┆ 45         ┆ Food        ┆ 27.89        ┆ 9        ┆ Product 45   ┆ 493.14 │
+    └─────────────────────┴─────────────┴────────────┴─────────────┴──────────────┴──────────┴──────────────┴────────┘
     ```
 
-    
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity | product_name |  price |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: | :----------- | -----: |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 | Product 45   | 493.14 |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 | Product 41   | 193.39 |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 | Product 29   |  80.07 |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 | Product 15   | 153.67 |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 | Product 45   | 493.14 |
 
     </div>
 
@@ -1948,14 +2011,25 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Customer Information: 100
     ```
 
     ```txt
-    
+            date  customer_id  product_id     category  sales_amount  quantity  product_name   price  customer_name      city  state
+    0 2023-01-01           52          45         Food        490.76         7    Product 45  493.14    Customer 52   Phoenix     TX
+    1 2023-01-02           93          41  Electronics        453.94         5    Product 41  193.39    Customer 93  New York     TX
+    2 2023-01-03           15          29         Home        994.51         5    Product 29   80.07    Customer 15  New York     CA
+    3 2023-01-04           72          15  Electronics        184.17         7    Product 15  153.67    Customer 72   Houston     IL
+    4 2023-01-05           61          45         Food         27.89         9    Product 45  493.14    Customer 61   Phoenix     IL
     ```
 
-    
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity | product_name |  price | customer_name | city     | state |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: | :----------- | -----: | :------------ | :------- | :---- |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 | Product 45   | 493.14 | Customer 52   | Phoenix  | TX    |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 | Product 41   | 193.39 | Customer 93   | New York | TX    |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 | Product 29   |  80.07 | Customer 15   | New York | CA    |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 | Product 15   | 153.67 | Customer 72   | Houston  | IL    |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 | Product 45   | 493.14 | Customer 61   | Phoenix  | IL    |
 
     </div>
 
@@ -1974,7 +2048,7 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
         LEFT JOIN product p ON s.product_id = p.product_id
         LEFT JOIN customer c ON s.customer_id = c.customer_id
     """
-    print(f"Complete Sales Data: {len(pd.read_sql(complete_sales_txt, conn))}")
+    print(f"Complete Sales Data with Customer Information: {len(pd.read_sql(complete_sales_txt, conn))}")
     print(pd.read_sql(complete_sales_txt + "LIMIT 5", conn))
     print(pd.read_sql(complete_sales_txt + "LIMIT 5", conn).to_markdown())
     ```
@@ -1982,14 +2056,25 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Customer Information: 100
     ```
 
     ```txt
-    
+                      date  customer_id  product_id     category  sales_amount  quantity  product_name   price  customer_name      city  state
+    0  2023-01-01 00:00:00           52          45         Food        490.76         7    Product 45  493.14    Customer 52   Phoenix     TX
+    1  2023-01-02 00:00:00           93          41  Electronics        453.94         5    Product 41  193.39    Customer 93  New York     TX
+    2  2023-01-03 00:00:00           15          29         Home        994.51         5    Product 29   80.07    Customer 15  New York     CA
+    3  2023-01-04 00:00:00           72          15  Electronics        184.17         7    Product 15  153.67    Customer 72   Houston     IL
+    4  2023-01-05 00:00:00           61          45         Food         27.89         9    Product 45  493.14    Customer 61   Phoenix     IL
     ```
 
-    
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity | product_name |  price | customer_name | city     | state |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: | :----------- | -----: | :------------ | :------- | :---- |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 | Product 45   | 493.14 | Customer 52   | Phoenix  | TX    |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 | Product 41   | 193.39 | Customer 93   | New York | TX    |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 | Product 29   |  80.07 | Customer 15   | New York | CA    |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 | Product 15   | 153.67 | Customer 72   | Houston  | IL    |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 | Product 45   | 493.14 | Customer 61   | Phoenix  | IL    |
 
     </div>
 
@@ -2009,14 +2094,29 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Customer Information: 100
     ```
 
     ```txt
-    
+    +-----------+----------+-------------------+-----------+------------+--------+------------+------+-------------+-----------+-----+
+    |customer_id|product_id|               date|   category|sales_amount|quantity|product_name| price|customer_name|       city|state|
+    +-----------+----------+-------------------+-----------+------------+--------+------------+------+-------------+-----------+-----+
+    |         39|         5|2023-02-18 00:00:00|      Books|       79.71|       8|   Product 5|200.71|  Customer 39|Los Angeles|   NY|
+    |         88|         1|2023-01-11 00:00:00|Electronics|      314.98|       9|   Product 1|257.57|  Customer 88|Los Angeles|   TX|
+    |         85|         1|2023-04-04 00:00:00|       Food|      146.97|       7|   Product 1|257.57|  Customer 85|    Phoenix|   CA|
+    |         55|         1|2023-02-11 00:00:00|       Food|       199.0|       5|   Product 1|257.57|  Customer 55|Los Angeles|   NY|
+    |         21|         1|2023-01-06 00:00:00|   Clothing|      498.95|       5|   Product 1|257.57|  Customer 21|Los Angeles|   IL|
+    +-----------+----------+-------------------+-----------+------------+--------+------------+------+-------------+-----------+-----+
+    only showing top 5 rows
     ```
 
-    
+    |      | customer_id | product_id | date                | category    | sales_amount | quantity | product_name |  price | customer_name | city        | state |
+    | ---: | ----------: | ---------: | :------------------ | :---------- | -----------: | -------: | :----------- | -----: | :------------ | :---------- | :---- |
+    |    0 |          88 |          1 | 2023-01-11 00:00:00 | Electronics |       314.98 |        9 | Product 1    | 257.57 | Customer 88   | Los Angeles | TX    |
+    |    1 |          55 |          1 | 2023-02-11 00:00:00 | Food        |          199 |        5 | Product 1    | 257.57 | Customer 55   | Los Angeles | NY    |
+    |    2 |          64 |          5 | 2023-01-21 00:00:00 | Electronics |       356.58 |        5 | Product 5    | 200.71 | Customer 64   | Los Angeles | NY    |
+    |    3 |          39 |          5 | 2023-02-18 00:00:00 | Books       |        79.71 |        8 | Product 5    | 200.71 | Customer 39   | Los Angeles | NY    |
+    |    4 |          34 |          6 | 2023-03-23 00:00:00 | Electronics |        48.45 |        8 | Product 6    |  15.31 | Customer 34   | Los Angeles | NY    |
 
     </div>
 
@@ -2036,14 +2136,31 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Customer Information: 100
     ```
 
     ```txt
-    
+    shape: (5, 11)
+    ┌─────────────────────┬─────────────┬────────────┬─────────────┬──────────────┬──────────┬──────────────┬────────┬───────────────┬──────────┬───────┐
+    │ date                ┆ customer_id ┆ product_id ┆ category    ┆ sales_amount ┆ quantity ┆ product_name ┆ price  ┆ customer_name ┆ city     ┆ state │
+    │ ---                 ┆ ---         ┆ ---        ┆ ---         ┆ ---          ┆ ---      ┆ ---          ┆ ---    ┆ ---           ┆ ---      ┆ ---   │
+    │ datetime[ns]        ┆ i64         ┆ i64        ┆ str         ┆ f64          ┆ i64      ┆ str          ┆ f64    ┆ str           ┆ str      ┆ str   │
+    ╞═════════════════════╪═════════════╪════════════╪═════════════╪══════════════╪══════════╪══════════════╪════════╪═══════════════╪══════════╪═══════╡
+    │ 2023-01-01 00:00:00 ┆ 52          ┆ 45         ┆ Food        ┆ 490.76       ┆ 7        ┆ Product 45   ┆ 493.14 ┆ Customer 52   ┆ Phoenis  ┆ TX    │
+    │ 2023-01-02 00:00:00 ┆ 93          ┆ 41         ┆ Electronics ┆ 453.94       ┆ 5        ┆ Product 41   ┆ 193.39 ┆ Customer 93   ┆ New York ┆ TX    │
+    │ 2023-01-03 00:00:00 ┆ 15          ┆ 29         ┆ Home        ┆ 994.51       ┆ 5        ┆ Product 29   ┆ 80.07  ┆ Customer 15   ┆ New York ┆ CA    │
+    │ 2023-01-04 00:00:00 ┆ 72          ┆ 15         ┆ Electronics ┆ 184.17       ┆ 7        ┆ Product 15   ┆ 153.67 ┆ Customer 72   ┆ Houston  ┆ IL    │
+    │ 2023-01-05 00:00:00 ┆ 61          ┆ 45         ┆ Food        ┆ 27.89        ┆ 9        ┆ Product 45   ┆ 493.14 ┆ Customer 61   ┆ Phoenix  ┆ IL    │
+    └─────────────────────┴─────────────┴────────────┴─────────────┴──────────────┴──────────┴──────────────┴────────┴───────────────┴──────────┴───────┘
     ```
 
-    
+    |      | date                | customer_id | product_id | category    | sales_amount | quantity | product_name |  price | customer_name | city     | state |
+    | ---: | :------------------ | ----------: | ---------: | :---------- | -----------: | -------: | :----------- | -----: | :------------ | :------- | :---- |
+    |    0 | 2023-01-01 00:00:00 |          52 |         45 | Food        |       490.76 |        7 | Product 45   | 493.14 | Customer 52   | Phoenix  | TX    |
+    |    1 | 2023-01-02 00:00:00 |          93 |         41 | Electronics |       453.94 |        5 | Product 41   | 193.39 | Customer 93   | New York | TX    |
+    |    2 | 2023-01-03 00:00:00 |          15 |         29 | Home        |       994.51 |        5 | Product 29   |  80.07 | Customer 15   | New York | CA    |
+    |    3 | 2023-01-04 00:00:00 |          72 |         15 | Electronics |       184.17 |        7 | Product 15   | 153.67 | Customer 72   | Houston  | IL    |
+    |    4 | 2023-01-05 00:00:00 |          61 |         45 | Food        |        27.89 |        9 | Product 45   | 493.14 | Customer 61   | Phoenix  | IL    |
 
     </div>
 
@@ -2056,19 +2173,35 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     complete_sales_pd["price_difference"] = complete_sales_pd["sales_amount"] - complete_sales_pd["calculated_revenue"]
     print(f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales_pd)}")
     print(complete_sales_pd[["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]].head(5))
+    print(
+        complete_sales_pd[["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]]
+        .head(5)
+        .to_markdown()
+    )
     ```
 
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Calculated Revenue and Price Difference: 100
     ```
 
     ```txt
-    
+       sales_amount   price  quantity  calculated_revenue  price_difference
+    0        490.76  493.14         7             3451.98          -2961.22
+    1        453.94  193.39         5              966.95           -513.01
+    2        994.51   80.07         5              400.35            594.16
+    3        184.17  153.67         7             1075.69           -891.52
+    4         27.89  493.14         9             4438.26          -4410.37
     ```
 
-    
+    |      | sales_amount |  price | quantity | calculated_revenue | price_difference |
+    | ---: | -----------: | -----: | -------: | -----------------: | ---------------: |
+    |    0 |       490.76 | 493.14 |        7 |            3451.98 |         -2961.22 |
+    |    1 |       453.94 | 193.39 |        5 |             966.95 |          -513.01 |
+    |    2 |       994.51 |  80.07 |        5 |             400.35 |           594.16 |
+    |    3 |       184.17 | 153.67 |        7 |            1075.69 |          -891.52 |
+    |    4 |        27.89 | 493.14 |        9 |            4438.26 |         -4410.37 |
 
     </div>
 
@@ -2085,7 +2218,9 @@ Once we have the complete sales data, we can calculate the revenue for each sale
         FROM sales s
         LEFT JOIN product p ON s.product_id = p.product_id
     """
-    print(f"Revenue Comparison: {len(pd.read_sql(revenue_comparison_txt, conn))}")
+    print(
+        f"Complete Sales Data with Calculated Revenue and Price Difference: {len(pd.read_sql(revenue_comparison_txt, conn))}"
+    )
     print(pd.read_sql(revenue_comparison_txt + "LIMIT 5", conn))
     print(pd.read_sql(revenue_comparison_txt + "LIMIT 5", conn).to_markdown())
     ```
@@ -2093,14 +2228,25 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Calculated Revenue and Price Difference: 100
     ```
 
     ```txt
-    
+       sales_amount   price  quantity  calculated_revenue  price_difference
+    0        490.76  493.14         7             3451.98          -2961.22
+    1        453.94  193.39         5              966.95           -513.01
+    2        994.51   80.07         5              400.35            594.16
+    3        184.17  153.67         7             1075.69           -891.52
+    4         27.89  493.14         9             4438.26          -4410.37
     ```
 
-    
+    |      | sales_amount |  price | quantity | calculated_revenue | price_difference |
+    | ---: | -----------: | -----: | -------: | -----------------: | ---------------: |
+    |    0 |       490.76 | 493.14 |        7 |            3451.98 |         -2961.22 |
+    |    1 |       453.94 | 193.39 |        5 |             966.95 |          -513.01 |
+    |    2 |       994.51 |  80.07 |        5 |             400.35 |           594.16 |
+    |    3 |       184.17 | 153.67 |        7 |            1075.69 |          -891.52 |
+    |    4 |        27.89 | 493.14 |        9 |            4438.26 |         -4410.37 |
 
     </div>
 
@@ -2126,14 +2272,29 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Calculated Revenue and Price Difference: 100
     ```
 
     ```txt
-    
+    +------------+------+--------+------------------+------------------+
+    |sales_amount| price|quantity|calculated_revenue|  price_difference|
+    +------------+------+--------+------------------+------------------+
+    |       79.71|200.71|       8|           1605.68|          -1525.97|
+    |      314.98|257.57|       9|           2318.13|          -2003.15|
+    |      146.97|257.57|       7|           1802.99|          -1656.02|
+    |       199.0|257.57|       5|           1287.85|          -1088.85|
+    |      498.95|257.57|       5|           1287.85|-788.8999999999999|
+    +------------+------+--------+------------------+------------------+
+    only showing top 5 rows
     ```
 
-    
+    |      | sales_amount |  price | quantity | calculated_revenue | price_difference |
+    | ---: | -----------: | -----: | -------: | -----------------: | ---------------: |
+    |    0 |        48.45 |  15.31 |        8 |             122.48 |           -74.03 |
+    |    1 |        79.71 | 200.71 |        8 |            1605.68 |         -1525.97 |
+    |    2 |       314.98 | 257.57 |        9 |            2318.13 |         -2003.15 |
+    |    3 |          199 | 257.57 |        5 |            1287.85 |         -1088.85 |
+    |    4 |       356.58 | 200.71 |        5 |            1003.55 |          -646.97 |
 
     </div>
 
@@ -2146,19 +2307,42 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     )
     print(f"Complete Sales Data with Calculated Revenue and Price Difference: {len(complete_sales_pl)}")
     print(complete_sales_pl.select(["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"]).head(5))
+    print(
+        complete_sales_pl.select(["sales_amount", "price", "quantity", "calculated_revenue", "price_difference"])
+        .head(5)
+        .to_pandas()
+        .to_markdown()
+    )
     ```
 
     <div class="result" markdown>
 
     ```txt
-    
+    Complete Sales Data with Calculated Revenue and Price Difference: 100
     ```
 
     ```txt
-    
+    ┌──────────────┬────────┬──────────┬────────────────────┬──────────────────┐
+    │ sales_amount ┆ price  ┆ quantity ┆ calculated_revenue ┆ price_difference │
+    │ ---          ┆ ---    ┆ ---      ┆ ---                ┆ ---              │
+    │ f64          ┆ f64    ┆ i64      ┆ f64                ┆ f64              │
+    ╞══════════════╪════════╪══════════╪════════════════════╪══════════════════╡
+    │ 490.76       ┆ 493.14 ┆ 7        ┆ 3451.98            ┆ -2961.22         │
+    │ 453.94       ┆ 193.39 ┆ 5        ┆ 966.95             ┆ -513.01          │
+    │ 994.51       ┆ 80.07  ┆ 5        ┆ 400.35             ┆ 594.16           │
+    │ 184.17       ┆ 153.67 ┆ 7        ┆ 1075.69            ┆ -891.52          │
+    │ 27.89        ┆ 493.14 ┆ 9        ┆ 4438.26            ┆ -4410.37         │
+    └──────────────┴────────┴──────────┴────────────────────┴──────────────────┘
+
     ```
 
-    
+    |      | sales_amount |  price | quantity | calculated_revenue | price_difference |
+    | ---: | -----------: | -----: | -------: | -----------------: | ---------------: |
+    |    0 |       490.76 | 493.14 |        7 |            3451.98 |         -2961.22 |
+    |    1 |       453.94 | 193.39 |        5 |             966.95 |          -513.01 |
+    |    2 |       994.51 |  80.07 |        5 |             400.35 |           594.16 |
+    |    3 |       184.17 | 153.67 |        7 |            1075.69 |          -891.52 |
+    |    4 |        27.89 | 493.14 |        9 |            4438.26 |         -4410.37 |
 
     </div>
 
