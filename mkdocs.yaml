@@ -67,6 +67,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets:
       check_paths: true
+      url_download: true
+      dedent_subsections: true
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.tasklist:
@@ -133,4 +135,4 @@ nav:
       - Querying Data: guides/querying-data/index.md
 
 exclude_docs: |
-  guides/querying-data/querying-data-reformatted.md
+  guides/querying-data/index-reformatted.md

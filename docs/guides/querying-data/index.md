@@ -1191,14 +1191,25 @@ The second section will cover grouping and aggregation techniques. These operati
     <div class="result" markdown>
 
     ```txt
-
+    Sales Statistics: 5
     ```
 
     ```txt
-
+           sales_amount  quantity
+    sum      48227.0500    464.00
+    mean       482.2705      4.64
+    min         15.1300      1.00
+    max        994.6100      9.00
+    count      100.0000       NaN
     ```
 
-    
+    |       | sales_amount | quantity |
+    | :---- | -----------: | -------: |
+    | sum   |      48227.1 |      464 |
+    | mean  |      482.271 |     4.64 |
+    | min   |        15.13 |        1 |
+    | max   |       994.61 |        9 |
+    | count |          100 |      nan |
 
     </div>
 
@@ -1226,14 +1237,17 @@ The second section will cover grouping and aggregation techniques. These operati
     <div class="result" markdown>
 
     ```txt
-
+    Sales Statistics: 1
     ```
 
     ```txt
-
+       sales_sum  sales_mean  sales_min  sales_max  sales_count  quantity_sum  quantity_mean  quantity_min  quantity_max
+    0   48227.05    482.2705      15.13     994.61          100           464           4.64             1             9
     ```
 
-    
+    |      | sales_sum | sales_mean | sales_min | sales_max | sales_count | quantity_sum | quantity_mean | quantity_min | quantity_max |
+    | ---: | --------: | ---------: | --------: | --------: | ----------: | -----------: | ------------: | -----------: | -----------: |
+    |    0 |   48227.1 |    482.271 |     15.13 |    994.61 |         100 |          464 |          4.64 |            1 |            9 |
 
     </div>
 
@@ -1259,14 +1273,20 @@ The second section will cover grouping and aggregation techniques. These operati
     <div class="result" markdown>
 
     ```txt
-
+    Sales Statistics: 1
     ```
 
     ```txt
-
+    +---------+----------+---------+---------+-----------+------------+-------------+------------+------------+
+    |sales_sum|sales_mean|sales_min|sales_max|sales_count|quantity_sum|quantity_mean|quantity_min|quantity_max|
+    +---------+----------+---------+---------+-----------+------------+-------------+------------+------------+
+    | 48227.05|  482.2705|    15.13|   994.61|        100|         464|         4.64|           1|           9|
+    +---------+----------+---------+---------+-----------+------------+-------------+------------+------------+
     ```
 
-    
+    |      | sales_sum | sales_mean | sales_min | sales_max | sales_count | quantity_sum | quantity_mean | quantity_min | quantity_max |
+    | ---: | --------: | ---------: | --------: | --------: | ----------: | -----------: | ------------: | -----------: | -----------: |
+    |    0 |   48227.1 |    482.271 |     15.13 |    994.61 |         100 |          464 |          4.64 |            1 |            9 |
 
     </div>
 
@@ -1291,14 +1311,23 @@ The second section will cover grouping and aggregation techniques. These operati
     <div class="result" markdown>
 
     ```txt
-
+    Sales Statistics: 1
     ```
 
     ```txt
-
+    shape: (1, 8)
+    ┌───────────┬────────────┬───────────┬───────────┬──────────────┬───────────────┬──────────────┬──────────────┐
+    │ sales_sum ┆ sales_mean ┆ sales_min ┆ sales_max ┆ quantity_sum ┆ quantity_mean ┆ quantity_min ┆ quantity_max │
+    │ ---       ┆ ---        ┆ ---       ┆ ---       ┆ ---          ┆ ---           ┆ ---          ┆ ---          │
+    │ f64       ┆ f64        ┆ f64       ┆ f64       ┆ i64          ┆ f64           ┆ i64          ┆ i64          │
+    ╞═══════════╪════════════╪═══════════╪═══════════╪══════════════╪═══════════════╪══════════════╪══════════════╡
+    │ 48227.05  ┆ 482.2705   ┆ 15.13     ┆ 994.61    ┆ 464          ┆ 4.64          ┆ 1            ┆ 9            │
+    └───────────┴────────────┴───────────┴───────────┴──────────────┴───────────────┴──────────────┴──────────────┘
     ```
 
-    
+    |      | sales_sum | sales_mean | sales_min | sales_max | quantity_sum | quantity_mean | quantity_min | quantity_max |
+    | ---: | --------: | ---------: | --------: | --------: | -----------: | ------------: | -----------: | -----------: |
+    |    0 |     48227 |     482.27 |     15.13 |    994.61 |          464 |          4.64 |            1 |            9 |
 
     </div>
 
@@ -1323,14 +1352,27 @@ It is also possible to group data by a specific column and then apply aggregatio
     <div class="result" markdown>
 
     ```txt
-
+    Category Sales Summary: 5
     ```
 
     ```txt
-
+                sales_amount                   quantity
+                         sum        mean count      sum
+    category                                           
+    Books           10154.83  441.514348    23      100
+    Clothing         7325.31  457.831875    16       62
+    Electronics     11407.45  407.408929    28      147
+    Food            12995.57  541.482083    24      115
+    Home             6343.89  704.876667     9       40
     ```
 
-    
+    | category    | ('sales_amount', 'sum') | ('sales_amount', 'mean') | ('sales_amount', 'count') | ('quantity', 'sum') |
+    | :---------- | ----------------------: | -----------------------: | ------------------------: | ------------------: |
+    | Books       |                 10154.8 |                  441.514 |                        23 |                 100 |
+    | Clothing    |                 7325.31 |                  457.832 |                        16 |                  62 |
+    | Electronics |                 11407.5 |                  407.409 |                        28 |                 147 |
+    | Food        |                 12995.6 |                  541.482 |                        24 |                 115 |
+    | Home        |                 6343.89 |                  704.877 |                         9 |                  40 |
 
     </div>
 
@@ -1355,14 +1397,25 @@ It is also possible to group data by a specific column and then apply aggregatio
     <div class="result" markdown>
 
     ```txt
-
+    Category Sales Summary: 5
     ```
 
     ```txt
-
+          category  total_sales  average_sales  transaction_count  total_quantity
+    0        Books     10154.83     441.514348                 23             100
+    1     Clothing      7325.31     457.831875                 16              62
+    2  Electronics     11407.45     407.408929                 28             147
+    3         Food     12995.57     541.482083                 24             115
+    4         Home      6343.89     704.876667                  9              40
     ```
 
-    
+    |      | category    | total_sales | average_sales | transaction_count | total_quantity |
+    | ---: | :---------- | ----------: | ------------: | ----------------: | -------------: |
+    |    0 | Books       |     10154.8 |       441.514 |                23 |            100 |
+    |    1 | Clothing    |     7325.31 |       457.832 |                16 |             62 |
+    |    2 | Electronics |     11407.5 |       407.409 |                28 |            147 |
+    |    3 | Food        |     12995.6 |       541.482 |                24 |            115 |
+    |    4 | Home        |     6343.89 |       704.877 |                 9 |             40 |
 
     </div>
 
@@ -1383,14 +1436,28 @@ It is also possible to group data by a specific column and then apply aggregatio
     <div class="result" markdown>
 
     ```txt
-
+    Category Sales Summary: 5
     ```
 
     ```txt
-
+    +-----------+------------------+------------------+-----------------+--------------+
+    |   category|       total_sales|     average_sales|transaction_count|total_quantity|
+    +-----------+------------------+------------------+-----------------+--------------+
+    |       Home| 6343.889999999999| 704.8766666666666|                9|            40|
+    |       Food|          12995.57| 541.4820833333333|               24|           115|
+    |Electronics|11407.449999999999|407.40892857142853|               28|           147|
+    |   Clothing|7325.3099999999995|457.83187499999997|               16|            62|
+    |      Books|          10154.83|  441.514347826087|               23|           100|
+    +-----------+------------------+------------------+-----------------+--------------+
     ```
 
-    
+    |      | category    | total_sales | average_sales | transaction_count | total_quantity |
+    | ---: | :---------- | ----------: | ------------: | ----------------: | -------------: |
+    |    0 | Home        |     6343.89 |       704.877 |                 9 |             40 |
+    |    1 | Food        |     12995.6 |       541.482 |                24 |            115 |
+    |    2 | Electronics |     11407.4 |       407.409 |                28 |            147 |
+    |    3 | Clothing    |     7325.31 |       457.832 |                16 |             62 |
+    |    4 | Books       |     10154.8 |       441.514 |                23 |            100 |
 
     </div>
 
@@ -1411,14 +1478,31 @@ It is also possible to group data by a specific column and then apply aggregatio
     <div class="result" markdown>
 
     ```txt
-
+    Category Sales Summary: 5
     ```
 
     ```txt
-
+    shape: (5, 5)
+    ┌─────────────┬─────────────┬───────────────┬───────────────────┬────────────────┐
+    │ category    ┆ total_sales ┆ average_sales ┆ transaction_count ┆ total_quantity │
+    │ ---         ┆ ---         ┆ ---           ┆ ---               ┆ ---            │
+    │ str         ┆ f64         ┆ f64           ┆ u32               ┆ i64            │
+    ╞═════════════╪═════════════╪═══════════════╪═══════════════════╪════════════════╡
+    │ Food        ┆ 12995.57    ┆ 541.482083    ┆ 24                ┆ 115            │
+    │ Electronics ┆ 11407.45    ┆ 407.408929    ┆ 28                ┆ 147            │
+    │ Books       ┆ 10154.83    ┆ 441.514348    ┆ 23                ┆ 100            │
+    │ Home        ┆ 6343.89     ┆ 704.876667    ┆ 9                 ┆ 40             │
+    │ Clothing    ┆ 7325.31     ┆ 457.831875    ┆ 16                ┆ 62             │
+    └─────────────┴─────────────┴───────────────┴───────────────────┴────────────────┘
     ```
 
-    
+    |      | category    | total_sales | average_sales | transaction_count | total_quantity |
+    | ---: | :---------- | ----------: | ------------: | ----------------: | -------------: |
+    |    0 | Food        |     12995.6 |       541.482 |                24 |            115 |
+    |    1 | Electronics |     11407.5 |       407.409 |                28 |            147 |
+    |    2 | Books       |     10154.8 |       441.514 |                23 |            100 |
+    |    3 | Home        |     6343.89 |       704.877 |                 9 |             40 |
+    |    4 | Clothing    |     7325.31 |       457.832 |                16 |             62 |
 
     </div>
 
@@ -1430,10 +1514,10 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```py {.pandas linenums="1" title="Rename columns for clarity"}
     category_sales_pd.columns = [
-        "total_sales",
-        "average_sales",
-        "transaction_count",
-        "total_quantity",
+        "Total Sales",
+        "Average Sales",
+        "Transaction Count",
+        "Total Quantity",
     ]
     print(f"Renamed Category Sales Summary: {len(category_sales_pd)}")
     print(category_sales_pd.head(5))
@@ -1443,33 +1527,78 @@ We can rename the columns for clarity by simply assigning new names.
     <div class="result" markdown>
 
     ```txt
-
+    Renamed Category Sales Summary: 5
     ```
 
     ```txt
-
+                 Total Sales  Average Sales  Transaction Count  Total Quantity
+    category                                                                  
+    Books           10154.83     441.514348                 23             100
+    Clothing         7325.31     457.831875                 16              62
+    Electronics     11407.45     407.408929                 28             147
+    Food            12995.57     541.482083                 24             115
+    Home             6343.89     704.876667                  9              40
     ```
 
-    
+    | category    | Total Sales | Average Sales | Transaction Count | Total Quantity |
+    | :---------- | ----------: | ------------: | ----------------: | -------------: |
+    | Books       |     10154.8 |       441.514 |                23 |            100 |
+    | Clothing    |     7325.31 |       457.832 |                16 |             62 |
+    | Electronics |     11407.5 |       407.409 |                28 |            147 |
+    | Food        |     12995.6 |       541.482 |                24 |            115 |
+    | Home        |     6343.89 |       704.877 |                 9 |             40 |
 
     </div>
 
 === "SQL"
 
     ```py {.sql linenums="1" title="Rename columns for clarity"}
+    category_sales_txt: str = """
+        SELECT
+            category,
+            total_sales AS `Total Sales`,
+            average_sales AS `Average Sales`,
+            transaction_count AS `Transaction Count`,
+            total_quantity AS `Total Quantity`
+        FROM (
+            SELECT
+                category,
+                SUM(sales_amount) AS total_sales,
+                AVG(sales_amount) AS average_sales,
+                COUNT(*) AS transaction_count,
+                SUM(quantity) AS total_quantity
+            FROM sales
+            GROUP BY category
+        ) AS sales_summary
+    """
+    print(f"Renamed Category Sales Summary: {len(pd.read_sql(category_sales_txt, conn))}")
+    print(pd.read_sql(category_sales_txt + "LIMIT 5", conn))
+    print(pd.read_sql(category_sales_txt + "LIMIT 5", conn).to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
-
+    Renamed Category Sales Summary: 5
     ```
 
     ```txt
-
+                 Total Sales  Average Sales  Transaction Count  Total Quantity
+    category                                                                  
+    Books           10154.83     441.514348                 23             100
+    Clothing         7325.31     457.831875                 16              62
+    Electronics     11407.45     407.408929                 28             147
+    Food            12995.57     541.482083                 24             115
+    Home             6343.89     704.876667                  9              40
     ```
 
-    
+    | category    | Total Sales | Average Sales | Transaction Count | Total Quantity |
+    | :---------- | ----------: | ------------: | ----------------: | -------------: |
+    | Books       |     10154.8 |       441.514 |                23 |            100 |
+    | Clothing    |     7325.31 |       457.832 |                16 |             62 |
+    | Electronics |     11407.5 |       407.409 |                28 |            147 |
+    | Food        |     12995.6 |       541.482 |                24 |            115 |
+    | Home        |     6343.89 |       704.877 |                 9 |             40 |
 
     </div>
 
@@ -1492,14 +1621,28 @@ We can rename the columns for clarity by simply assigning new names.
     <div class="result" markdown>
 
     ```txt
-
+    Renamed Category Sales Summary: 5
     ```
 
     ```txt
-
+    +-----------+------------------+------------------+-----------------+--------------+
+    |   category|       Total Sales|     Average Sales|Transaction Count|Total Quantity|
+    +-----------+------------------+------------------+-----------------+--------------+
+    |       Home| 6343.889999999999| 704.8766666666666|                9|            40|
+    |       Food|          12995.57| 541.4820833333333|               24|           115|
+    |Electronics|11407.449999999999|407.40892857142853|               28|           147|
+    |   Clothing|7325.3099999999995|457.83187499999997|               16|            62|
+    |      Books|          10154.83|  441.514347826087|               23|           100|
+    +-----------+------------------+------------------+-----------------+--------------+
     ```
 
-    
+    |      | category    | Total Sales | Average Sales | Transaction Count | Total Quantity |
+    | ---: | :---------- | ----------: | ------------: | ----------------: | -------------: |
+    |    0 | Home        |     6343.89 |       704.877 |                 9 |             40 |
+    |    1 | Food        |     12995.6 |       541.482 |                24 |            115 |
+    |    2 | Electronics |     11407.4 |       407.409 |                28 |            147 |
+    |    3 | Clothing    |     7325.31 |       457.832 |                16 |             62 |
+    |    4 | Books       |     10154.8 |       441.514 |                23 |            100 |
 
     </div>
 
@@ -1522,14 +1665,31 @@ We can rename the columns for clarity by simply assigning new names.
     <div class="result" markdown>
 
     ```txt
-
+    Renamed Category Sales Summary: 5
     ```
 
     ```txt
-
+    shape: (5, 5)
+    ┌─────────────┬─────────────┬───────────────┬───────────────────┬────────────────┐
+    │ category    ┆ Total Sales ┆ Average Sales ┆ Transaction Count ┆ Total Quantity │
+    │ ---         ┆ ---         ┆ ---           ┆ ---               ┆ ---            │
+    │ str         ┆ f64         ┆ f64           ┆ u32               ┆ i64            │
+    ╞═════════════╪═════════════╪═══════════════╪═══════════════════╪════════════════╡
+    │ Food        ┆ 12995.57    ┆ 541.482083    ┆ 24                ┆ 115            │
+    │ Electronics ┆ 11407.45    ┆ 407.408929    ┆ 28                ┆ 147            │
+    │ Books       ┆ 10154.83    ┆ 441.514348    ┆ 23                ┆ 100            │
+    │ Home        ┆ 6343.89     ┆ 704.876667    ┆ 9                 ┆ 40             │
+    │ Clothing    ┆ 7325.31     ┆ 457.831875    ┆ 16                ┆ 62             │
+    └─────────────┴─────────────┴───────────────┴───────────────────┴────────────────┘
     ```
 
-    
+    |      | category    | Total Sales | Average Sales | Transaction Count | Total Quantity |
+    | ---: | :---------- | ----------: | ------------: | ----------------: | -------------: |
+    |    0 | Food        |     12995.6 |       541.482 |                24 |            115 |
+    |    1 | Electronics |     11407.5 |       407.409 |                28 |            147 |
+    |    2 | Books       |     10154.8 |       441.514 |                23 |            100 |
+    |    3 | Home        |     6343.89 |       704.877 |                 9 |             40 |
+    |    4 | Clothing    |     7325.31 |       457.832 |                16 |             62 |
 
     </div>
 
@@ -1552,13 +1712,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     <div class="result" markdown>
 
-    ```txt
-
-    ```
-
-    ```txt
-
-    ```
+    --8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_pd.html"
 
     </div>
 
@@ -1579,13 +1733,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     <div class="result" markdown>
 
-    ```txt
-
-    ```
-
-    ```txt
-
-    ```
+    --8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_sql.html"
 
     </div>
 
@@ -1606,13 +1754,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     <div class="result" markdown>
 
-    ```txt
-
-    ```
-
-    ```txt
-
-    ```
+    --8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_ps.html"
 
     </div>
 
@@ -1633,13 +1775,7 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     <div class="result" markdown>
 
-    ```txt
-
-    ```
-
-    ```txt
-
-    ```
+    --8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_pl.html"
 
     </div>
 
