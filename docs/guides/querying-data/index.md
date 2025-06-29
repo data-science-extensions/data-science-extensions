@@ -2615,7 +2615,7 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 === "PySpark"
 
     ```py {.pyspark linenums="1" title="Calculate lag and lead"}
-    window_spec_ps: psDataFrame = Window.orderBy("date")
+    window_spec_ps: Window = Window.orderBy("date")
     daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
         {
             "previous_day_sales": F.lag("total_sales").over(window_spec_ps),
@@ -3603,6 +3603,7 @@ As with the customer data, we can merge the product popularity information with 
 ## Conclusion
 
 ```py
+
 ```
 
 <div class="result" markdown>
