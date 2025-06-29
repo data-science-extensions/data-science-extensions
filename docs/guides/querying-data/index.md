@@ -1182,6 +1182,12 @@ The second section will cover grouping and aggregation techniques. These operati
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -1211,6 +1217,12 @@ The second section will cover grouping and aggregation techniques. These operati
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "PySpark"
@@ -1238,6 +1250,12 @@ The second section will cover grouping and aggregation techniques. These operati
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -1263,6 +1281,12 @@ The second section will cover grouping and aggregation techniques. These operati
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1290,6 +1314,12 @@ It is also possible to group data by a specific column and then apply aggregatio
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -1316,6 +1346,12 @@ It is also possible to group data by a specific column and then apply aggregatio
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "PySpark"
@@ -1338,6 +1374,12 @@ It is also possible to group data by a specific column and then apply aggregatio
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -1359,6 +1401,12 @@ It is also possible to group data by a specific column and then apply aggregatio
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1386,6 +1434,12 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -1398,6 +1452,12 @@ We can rename the columns for clarity by simply assigning new names.
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1423,6 +1483,12 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -1447,6 +1513,12 @@ We can rename the columns for clarity by simply assigning new names.
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 Having aggregated the data, we can now visualize the results using [Plotly](https://plotly.com/python/). This allows us to create interactive visualizations that can help us better understand the data.
@@ -1466,6 +1538,10 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
     ```
 
     <div class="result" markdown>
+
+    ```txt
+
+    ```
 
     ```txt
 
@@ -1493,6 +1569,10 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     ```
 
+    ```txt
+
+    ```
+
     </div>
 
 === "PySpark"
@@ -1515,6 +1595,10 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
 
     ```
 
+    ```txt
+
+    ```
+
     </div>
 
 === "Polars"
@@ -1532,6 +1616,10 @@ Having aggregated the data, we can now visualize the results using [Plotly](http
     ```
 
     <div class="result" markdown>
+
+    ```txt
+
+    ```
 
     ```txt
 
@@ -1567,6 +1655,12 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -1587,6 +1681,12 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1609,6 +1709,12 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -1629,6 +1735,12 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1653,6 +1765,12 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1682,6 +1800,12 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "PySpark"
@@ -1702,6 +1826,12 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1724,6 +1854,12 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 Once we have the complete sales data, we can calculate the revenue for each sale by multiplying the price and quantity (columns from different tables). We can also compare this calculated revenue with the sales amount to identify any discrepancies.
@@ -1742,6 +1878,12 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1768,6 +1910,12 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1796,6 +1944,12 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -1814,6 +1968,12 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1846,6 +2006,12 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -1869,6 +2035,12 @@ In this section, we will demonstrate how to use window functions to analyze sale
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1894,6 +2066,12 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -1907,6 +2085,12 @@ In this section, we will demonstrate how to use window functions to analyze sale
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1929,6 +2113,12 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 Next, we will calculate the rolling average of sales over a 7-day window.
@@ -1950,6 +2140,12 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -1981,6 +2177,12 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "PySpark"
@@ -2004,6 +2206,12 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2024,6 +2232,12 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2048,6 +2262,12 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -2060,6 +2280,12 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2087,6 +2313,12 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2107,6 +2339,12 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2131,6 +2369,12 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -2143,6 +2387,12 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2167,6 +2417,12 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2186,6 +2442,12 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2228,6 +2490,12 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -2266,6 +2534,12 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2306,6 +2580,12 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2345,6 +2625,12 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 ## 5. Ranking and Partitioning
@@ -2370,6 +2656,12 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -2382,6 +2674,12 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2405,6 +2703,12 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2426,6 +2730,12 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2451,6 +2761,12 @@ Once we have ranked the customers, we can merge this information with the `custo
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2482,6 +2798,12 @@ Once we have ranked the customers, we can merge this information with the `custo
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "PySpark"
@@ -2495,6 +2817,12 @@ Once we have ranked the customers, we can merge this information with the `custo
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2507,6 +2835,12 @@ Once we have ranked the customers, we can merge this information with the `custo
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2528,6 +2862,12 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2557,6 +2897,12 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "PySpark"
@@ -2579,6 +2925,12 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2600,6 +2952,12 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2626,6 +2984,12 @@ As with the customer data, we can merge the product popularity information with 
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "SQL"
@@ -2638,6 +3002,12 @@ As with the customer data, we can merge the product popularity information with 
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
@@ -2652,6 +3022,12 @@ As with the customer data, we can merge the product popularity information with 
 
     ```
 
+    ```txt
+
+    ```
+
+    
+
     </div>
 
 === "Polars"
@@ -2664,6 +3040,12 @@ As with the customer data, we can merge the product popularity information with 
     ```txt
 
     ```
+
+    ```txt
+
+    ```
+
+    
 
     </div>
 
