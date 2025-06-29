@@ -2418,16 +2418,16 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```py {.pyspark linenums="1" title="Time-based window function"}
     df_sales_ps: psDataFrame = df_sales_ps.withColumn("date", F.to_date(df_sales_ps["date"]))
-    daily_sales: psDataFrame = (
+    daily_sales_ps: psDataFrame = (
         df_sales_ps.groupBy("date")
         .agg(
             F.sum("sales_amount").alias("total_sales"),
         )
         .orderBy("date")
     )
-    print(f"Daily Sales Summary: {daily_sales.count()}")
-    daily_sales.show(5)
-    print(daily_sales.limit(5).toPandas().to_markdown())
+    print(f"Daily Sales Summary: {daily_sales_ps.count()}")
+    daily_sales_ps.show(5)
+    print(daily_sales_ps.limit(5).toPandas().to_markdown())
     ```
 
     <div class="result" markdown>
@@ -2448,23 +2448,6 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     ```py {.polars linenums="1" title="Time-based window function"}
     df_sales_pl: pl.DataFrame = df_sales_pl.with_columns(pl.col("date").cast(pl.Date))
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-    ```py {.polars linenums="1" title="TITLE"}
     daily_sales_pl: pl.DataFrame = (
         df_sales_pl.group_by("date")
         .agg(
@@ -2491,16 +2474,16 @@ In this section, we will demonstrate how to use window functions to analyze sale
 
     </div>
 
-Next, we will calculate the rolling average of sales over a 7-day window.
+Next, we will calculate the lag and lead values for the sales amount. This allows us to compare the current day's sales with the previous and next days' sales.
 
 === "Pandas"
 
-    This is done using the [`.rolling()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) method, which allows us to specify the window size and the minimum number of periods required for the calculation.
+    This is done using the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method, which shifts the values in a column by a specified number of periods. Note that the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method simply shifts the values in the column, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered; if you want it to be ordered, you can use the [`.sort_values()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sort_values.html) method before applying [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html).
 
-    ```py {.pandas linenums="1" title="TITLE"}
-    # Calculate rolling averages (7-day moving average)
-    daily_sales_pd["7d_moving_avg"] = daily_sales_pd["sales_amount"].rolling(window=7, min_periods=1).mean()
-    print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales_pd)}")
+    ```py {.pandas linenums="1" title="Calculate lag and lead"}
+    daily_sales_pd["previous_day_sales"] = daily_sales_pd["sales_amount"].shift(1)
+    daily_sales_pd["next_day_sales"] = daily_sales_pd["sales_amount"].shift(-1)
+    print(f"Daily Sales with Lag and Lead: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
     print(daily_sales_pd.head(5).to_markdown())
     ```
@@ -2521,13 +2504,11 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "SQL"
 
-    ```py {.sql linenums="1" title="TITLE"}
-    # Window functions for lead and lag
-    window_txt: str = """
+    ```py {.sql linenums="1" title="Calculate lag and lead"}
+    lag_lead_txt: str = """
         SELECT
             date AS sale_date,
             SUM(sales_amount) AS sales_amount,
-            AVG(sales_amount) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS rolling_7d_avg,
             LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
             LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
             SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change
@@ -2535,10 +2516,10 @@ Next, we will calculate the rolling average of sales over a 7-day window.
         GROUP BY date
         ORDER BY date
     """
-    window_df_sql: pd.DataFrame = pd.read_sql(window_txt, conn)
-    print(f"Window Functions: {len(window_df_sql)}")
-    print(pd.read_sql(window_txt + "LIMIT 5", conn))
-    print(pd.read_sql(window_txt + "LIMIT 5", conn).to_markdown())
+    lag_lead_df_sql: pd.DataFrame = pd.read_sql(lag_lead_txt, conn)
+    print(f"Daily Sales with Lag and Lead: {len(lag_lead_df_sql)}")
+    print(pd.read_sql(lag_lead_txt + " LIMIT 5", conn))
+    print(pd.read_sql(lag_lead_txt + " LIMIT 5", conn).to_markdown())
     ```
 
     <div class="result" markdown>
@@ -2557,8 +2538,114 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "PySpark"
 
-    ```py {.pyspark linenums="1" title="TITLE"}
-    # Calculate day-over-day change
+    ```py {.pyspark linenums="1" title="Calculate lag and lead"}
+    window_spec_ps: psDataFrame = Window.orderBy("date")
+    daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
+        {
+            "previous_day_sales": F.lag("total_sales").over(window_spec_ps),
+            "next_day_sales": F.expr("lead(total_sales) over (order by date)"),
+        },
+    )
+    print(f"Daily Sales with Lag and Lead: {daily_sales_ps.count()}")
+    daily_sales_ps.show(5)
+    print(daily_sales_ps.limit(5).toPandas().to_markdown())
+    ```
+
+    <div class="result" markdown>
+
+    ```txt
+    
+    ```
+
+    ```txt
+    
+    ```
+
+    
+
+    </div>
+
+=== "Polars"
+
+    ```py {.polars linenums="1" title="Calculate lag and lead"}
+    daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
+        pl.col("total_sales").shift(1).alias("previous_day_sales"),
+        pl.col("total_sales").shift(-1).alias("next_day_sales"),
+    )
+    print(f"Daily Sales with Lag and Lead: {len(daily_sales_pl)}")
+    print(daily_sales_pl.head(5))
+    print(daily_sales_pl.head(5).to_pandas().to_markdown())
+    ```
+
+    <div class="result" markdown>
+
+    ```txt
+    
+    ```
+
+    ```txt
+    
+    ```
+
+    
+
+    </div>
+
+Now, we can calculate the day-over-day change in sales. This is done by subtracting the previous day's sales from the current day's sales.
+
+=== "Pandas"
+
+    We can also calculate the percentage change in sales using the [`.pct_change()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html) method, which calculates the percentage change between the current and previous values.
+
+    ```py {.pandas linenums="1" title="Calculate day-over-day change"}
+    daily_sales_pd["day_over_day_change"] = (daily_sales_pd["sales_amount"] - daily_sales_pd["previous_day_sales"])
+    daily_sales_pd["pct_change"] = daily_sales_pd["sales_amount"].pct_change() * 100
+    print(f"Daily Sales with Day-over-Day Change: {len(daily_sales_pd)}")
+    print(daily_sales_pd.head(5))
+    print(daily_sales_pd.head(5).to_markdown())
+    ```
+
+    <div class="result" markdown>
+
+    ```txt
+    
+    ```
+
+    ```txt
+    
+    ```
+
+    
+
+    </div>
+
+=== "SQL"
+
+    The day-over-day change calculation is already included in the previous SQL query, so we can use the same result set.
+
+    ```py {.sql linenums="1" title="Day-over-day change already calculated"}
+    print(f"Daily Sales with Day-over-Day Change: {len(lag_lead_df_sql)}")
+    print(lag_lead_df_sql.head(5))
+    print(lag_lead_df_sql.head(5).to_markdown())
+    ```
+
+    <div class="result" markdown>
+
+    ```txt
+    
+    ```
+
+    ```txt
+    
+    ```
+
+    
+
+    </div>
+
+=== "PySpark"
+
+    ```py {.pyspark linenums="1" title="Calculate day-over-day change"}
     daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
         {
             "day_over_day_change": F.expr("total_sales - previous_day_sales"),
@@ -2586,8 +2673,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "Polars"
 
-    ```py {.polars linenums="1" title="TITLE"}
-    # Calculate day-over-day change
+    ```py {.polars linenums="1" title="Calculate day-over-day change"}
     daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
         (pl.col("total_sales") - pl.col("previous_day_sales")).alias("day_over_day_change"),
         (pl.col("total_sales") / pl.col("previous_day_sales") - 1).alias("pct_change") * 100,
@@ -2611,17 +2697,15 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     </div>
 
-Next, we will calculate the lag and lead values for the sales amount. This allows us to compare the current day's sales with the previous and next days' sales.
+Next, we will calculate the rolling average of sales over a 7-day window.
 
 === "Pandas"
 
-    This is done using the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method, which shifts the values in a column by a specified number of periods. Note that the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method simply shifts the values in the column, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered; if you want it to be ordered, you can use the [`.sort_values()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sort_values.html) method before applying [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html).
+    This is done using the [`.rolling()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) method, which allows us to specify the window size and the minimum number of periods required for the calculation.
 
-    ```py {.pandas linenums="1" title="TITLE"}
-    # Calculate lag and lead
-    daily_sales_pd["previous_day_sales"] = daily_sales_pd["sales_amount"].shift(1)
-    daily_sales_pd["next_day_sales"] = daily_sales_pd["sales_amount"].shift(-1)
-    print(f"Daily Sales with Lag and Lead: {len(daily_sales_pd)}")
+    ```py {.pandas linenums="1" title="Calculate 7-day moving average"}
+    daily_sales_pd["7d_moving_avg"] = daily_sales_pd["sales_amount"].rolling(window=7, min_periods=1).mean()
+    print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
     print(daily_sales_pd.head(5).to_markdown())
     ```
@@ -2642,7 +2726,23 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
 === "SQL"
 
-    ```py {.sql linenums="1" title="TITLE"}
+    ```py {.sql linenums="1" title="Calculate 7-day moving average"}
+    rolling_avg_txt: str = """
+        SELECT
+            date AS sale_date,
+            SUM(sales_amount) AS sales_amount,
+            AVG(SUM(sales_amount)) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS rolling_7d_avg,
+            LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
+            LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
+            SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change
+        FROM sales
+        GROUP BY date
+        ORDER BY date
+    """
+    window_df_sql: pd.DataFrame = pd.read_sql(rolling_avg_txt, conn)
+    print(f"Window Functions with Rolling Average: {len(window_df_sql)}")
+    print(pd.read_sql(rolling_avg_txt + " LIMIT 5", conn))
+    print(pd.read_sql(rolling_avg_txt + " LIMIT 5", conn).to_markdown())
     ```
 
     <div class="result" markdown>
@@ -2661,117 +2761,7 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
 === "PySpark"
 
-    ```py {.pyspark linenums="1" title="TITLE"}
-    # Define a window specification for lead/lag functions
-    window_spec_ps: psDataFrame = Window.orderBy("date")
-
-    # Calculate lead and lag
-    daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
-        {
-            "previous_day_sales": F.lag("total_sales").over(window_spec_ps),
-            "next_day_sales": F.expr("LEAD(total_sales) OVER (ORDER BY date)"),
-        },
-    )
-    print(f"Daily Sales with Lead and Lag: {daily_sales_ps.count()}")
-    daily_sales_ps.show(5)
-    print(daily_sales_ps.limit(5).toPandas().to_markdown())
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "Polars"
-
-    ```py {.polars linenums="1" title="TITLE"}
-    # Calculate lead and lag
-    daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
-        pl.col("total_sales").shift(1).alias("previous_day_sales"),
-        pl.col("total_sales").shift(-1).alias("next_day_sales"),
-    )
-    print(f"Daily Sales with Lead and Lag: {len(daily_sales_pl)}")
-    print(daily_sales_pl.head(5))
-    print(daily_sales_pl.head(5).to_pandas().to_markdown())
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-Now, we can calculate the day-over-day change in sales. This is done by subtracting the previous day's sales from the current day's sales.
-
-=== "Pandas"
-
-    We can also calculate the percentage change in sales using the [`.pct_change()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html) method, which calculates the percentage change between the current and previous values.
-
-    ```py {.pandas linenums="1" title="TITLE"}
-    # Calculate day-over-day change
-    daily_sales_pd["day_over_day_change"] = (
-        daily_sales_pd["sales_amount"].pct_change() - daily_sales_pd["previous_day_sales"]
-    )
-    daily_sales_pd["pct_change"] = daily_sales_pd["sales_amount"].pct_change() * 100
-    print(f"Daily Sales with Day-over-Day Change: {len(daily_sales_pd)}")
-    print(daily_sales_pd.head(5))
-    print(daily_sales_pd.head(5).to_markdown())
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "SQL"
-
-    ```py {.sql linenums="1" title="TITLE"}
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "PySpark"
-
-    ```py {.pyspark linenums="1" title="TITLE"}
-    # Calculate 7-day moving average
+    ```py {.pyspark linenums="1" title="Calculate 7-day moving average"}
     daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
         {
             "7d_moving_avg": F.avg("total_sales").over(Window.orderBy("date").rowsBetween(-6, 0)),
@@ -2799,8 +2789,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
 === "Polars"
 
-    ```py {.polars linenums="1" title="TITLE"}
-    # Calculate 7-day moving average
+    ```py {.polars linenums="1" title="Calculate 7-day moving average"}
     daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
         pl.col("total_sales").rolling_mean(window_size=7, min_periods=1).alias("7d_moving_avg"),
     )
