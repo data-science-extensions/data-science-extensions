@@ -712,7 +712,7 @@ This first section will demonstrate how to filter and select data from the DataF
 
     In SQL, we can use the `WHERE` clause to filter rows based on specific conditions. The syntax should be very familiar to anyone who has worked with SQL before. We can use the [`pd.read_sql()`][pandas-read_sql] function to execute SQL queries and retrieve the data from the database. The result is a Pandas DataFrame that contains only the rows that match the specified condition. In the below example, we filter for sales in the "Electronics" category.
 
-    For more information about filtering in SQL, see the [SQL WHERE clause documentation][sqlite-clause].
+    For more information about filtering in SQL, see the [SQL WHERE clause documentation][sqlite-where].
 
     ```py {.sql linenums="1" title="Filter sales for a specific category"}
     electronics_sales_txt: str = """
@@ -1804,11 +1804,11 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -1831,11 +1831,11 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -1858,11 +1858,11 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -1885,11 +1885,11 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -1915,11 +1915,11 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -1949,11 +1949,11 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -1976,11 +1976,11 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2003,11 +2003,11 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2028,11 +2028,11 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2060,11 +2060,11 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2093,11 +2093,11 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2118,11 +2118,11 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2155,11 +2155,11 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2185,11 +2185,11 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2215,11 +2215,11 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2235,11 +2235,11 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2262,11 +2262,11 @@ In this section, we will demonstrate how to use window functions to analyze sale
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2290,11 +2290,11 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2326,11 +2326,11 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2355,11 +2355,11 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2382,11 +2382,11 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2411,11 +2411,11 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2430,11 +2430,11 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2462,11 +2462,11 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2489,11 +2489,11 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2508,7 +2508,9 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 
     ```py {.pandas linenums="1" title="TITLE"}
     # Calculate day-over-day change
-    daily_sales_pd["day_over_day_change"] = daily_sales_pd["sales_amount"].pct_change() - daily_sales_pd["previous_day_sales"]
+    daily_sales_pd["day_over_day_change"] = (
+        daily_sales_pd["sales_amount"].pct_change() - daily_sales_pd["previous_day_sales"]
+    )
     daily_sales_pd["pct_change"] = daily_sales_pd["sales_amount"].pct_change() * 100
     print(f"Daily Sales with Day-over-Day Change: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
@@ -2518,11 +2520,11 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2537,11 +2539,11 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2566,11 +2568,11 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2592,11 +2594,11 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2640,11 +2642,11 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2686,11 +2688,11 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2732,11 +2734,11 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2778,11 +2780,11 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2809,11 +2811,11 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2828,11 +2830,11 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2856,11 +2858,11 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2884,11 +2886,11 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2915,11 +2917,11 @@ Once we have ranked the customers, we can merge this information with the `custo
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2951,11 +2953,11 @@ Once we have ranked the customers, we can merge this information with the `custo
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2970,11 +2972,11 @@ Once we have ranked the customers, we can merge this information with the `custo
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -2989,11 +2991,11 @@ Once we have ranked the customers, we can merge this information with the `custo
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3016,11 +3018,11 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3050,11 +3052,11 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3078,11 +3080,11 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3106,11 +3108,11 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3137,11 +3139,11 @@ As with the customer data, we can merge the product popularity information with 
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3156,11 +3158,11 @@ As with the customer data, we can merge the product popularity information with 
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3175,11 +3177,11 @@ As with the customer data, we can merge the product popularity information with 
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
@@ -3194,11 +3196,11 @@ As with the customer data, we can merge the product popularity information with 
     <div class="result" markdown>
 
     ```txt
-
+    
     ```
 
     ```txt
-
+    
     ```
 
     
