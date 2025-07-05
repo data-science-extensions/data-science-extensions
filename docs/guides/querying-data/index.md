@@ -2293,12 +2293,7 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     ).select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference")
     print(f"Complete Sales Data with Calculated Revenue and Price Difference: {complete_sales_ps.count()}")
     complete_sales_ps.show(5)
-    print(
-        complete_sales_ps 
-        .limit(5)
-        .toPandas()
-        .to_markdown()
-    )
+    print(complete_sales_ps.limit(5).toPandas().to_markdown())
     ```
 
     <div class="result" markdown>
@@ -2758,12 +2753,12 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```
 
     ```txt
-             date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  day_over_day_change  7d_moving_avg  
-    0  2023-01-01       490.76                 NaN          453.94                  NaN                  NaN     490.760000  
-    1  2023-01-02       453.94              490.76          994.51               -36.82               -36.82     472.350000  
-    2  2023-01-03       994.51              453.94          184.17               540.57               540.57     646.403333  
-    3  2023-01-04       184.17              994.51           27.89              -810.34              -810.34     530.845000  
-    4  2023-01-05        27.89              184.17          498.95              -156.28              -156.28     430.254000  
+             date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  day_over_day_change  7d_moving_avg
+    0  2023-01-01       490.76                 NaN          453.94                  NaN                  NaN     490.760000
+    1  2023-01-02       453.94              490.76          994.51               -36.82               -36.82     472.350000
+    2  2023-01-03       994.51              453.94          184.17               540.57               540.57     646.403333
+    3  2023-01-04       184.17              994.51           27.89              -810.34              -810.34     530.845000
+    4  2023-01-05        27.89              184.17          498.95              -156.28              -156.28     430.254000
     ```
 
     |      | date       | total_sales | previous_day_sales | next_day_sales | pct_change | day_over_day_change | 7d_moving_avg |
@@ -2813,12 +2808,12 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```
 
     ```txt
-                 sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  
-    0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN  
-    1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649  
-    2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020  
-    3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333  
-    4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383  
+                 sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change
+    0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN
+    1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649
+    2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020
+    3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333
+    4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383
     ```
 
     |      | sale_date           | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
@@ -2993,12 +2988,12 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     ```
 
     ```txt
-                 sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg  
-    0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN     490.760000  
-    1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649     472.350000  
-    2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020     646.403333  
-    3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333     530.845000  
-    4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383     430.254000  
+                 sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg
+    0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN     490.760000
+    1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649     472.350000
+    2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020     646.403333
+    3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333     530.845000
+    4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383     430.254000
     ```
 
     |      | sale_date           | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
@@ -3258,16 +3253,16 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
 
 ## 5. Ranking and Partitioning
 
-The fifth section will demonstrate how to rank and partition data in Pandas. This is useful for identifying top performers, such as the highest spending customers or the most popular products.
+The fifth section will demonstrate how to rank and partition data. This is useful for identifying top performers, such as the highest spending customers or the most popular products.
 
 === "Pandas"
 
     In Pandas, we can use the [`.rank()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rank.html) method to rank values in a DataFrame. This method allows us to specify the ranking method (e.g., dense, average, min, max) and whether to rank in ascending or descending order.
 
     ```py {.pandas linenums="1" title="Rank customers by total spending"}
-    customer_spending_pd: pd.DataFrame = df_sales_pd.groupby("customer_id")["sales_amount"].sum().reset_index()
-    customer_spending_pd["rank"] = customer_spending_pd["sales_amount"].rank(method="dense", ascending=False)
-    customer_spending_pd: pd.DataFrame = customer_spending_pd.sort_values("rank")
+    customer_spending_pd: pd.DataFrame = df_sales_pd.groupby("customer_id").agg(total_spending=("sales_amount", "sum"))
+    customer_spending_pd["rank"] = customer_spending_pd["total_spending"].rank(method="dense", ascending=False)
+    customer_spending_pd: pd.DataFrame = customer_spending_pd.sort_values("rank").reset_index()
     print(f"Customer Spending Summary: {len(customer_spending_pd)}")
     print(customer_spending_pd.head(5))
     print(customer_spending_pd.head(5).to_markdown())
@@ -3276,33 +3271,68 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     <div class="result" markdown>
 
     ```txt
-    
+    Customer Spending Summary: 61
     ```
 
     ```txt
-    
+       customer_id  total_spending  rank
+    0           15         2297.55   1.0
+    1            4         2237.49   2.0
+    2           62         2177.35   3.0
+    3           60         2086.09   4.0
+    4           21         2016.95   5.0
     ```
 
-    
+    |      | customer_id | total_spending | rank |
+    | ---: | ----------: | -------------: | ---: |
+    |    0 |          15 |        2297.55 |    1 |
+    |    1 |           4 |        2237.49 |    2 |
+    |    2 |          62 |        2177.35 |    3 |
+    |    3 |          60 |        2086.09 |    4 |
+    |    4 |          21 |        2016.95 |    5 |
 
     </div>
 
 === "SQL"
 
     ```py {.sql linenums="1" title="Rank customers by total spending"}
+    customer_spending_txt: str = """
+        SELECT
+            customer_id,
+            SUM(sales_amount) AS total_spending,
+            DENSE_RANK() OVER (ORDER BY SUM(sales_amount) DESC) AS rank
+        FROM sales
+        GROUP BY customer_id
+        ORDER BY rank
+    """
+    customer_spending_sql: pd.DataFrame = pd.read_sql(customer_spending_txt, conn)
+    print(f"Customer Spending Summary: {len(customer_spending_sql)}")
+    print(customer_spending_sql.head(5))
+    print(customer_spending_sql.head(5).to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
-    
+    Customer Spending Summary: 61
     ```
 
     ```txt
-    
+       customer_id  total_spending  rank
+    0           15         2297.55     1
+    1            4         2237.49     2
+    2           62         2177.35     3
+    3           60         2086.09     4
+    4           21         2016.95     5
     ```
 
-    
+    |      | customer_id | total_spending | rank |
+    | ---: | ----------: | -------------: | ---: |
+    |    0 |          15 |        2297.55 |    1 |
+    |    1 |           4 |        2237.49 |    2 |
+    |    2 |          62 |        2177.35 |    3 |
+    |    3 |          60 |        2086.09 |    4 |
+    |    4 |          21 |        2016.95 |    5 |
 
     </div>
 
@@ -3311,7 +3341,9 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     ```py {.pyspark linenums="1" title="Rank customers by total spending"}
     customer_spending_ps: psDataFrame = (
         df_sales_ps.groupBy("customer_id")
-        .agg(F.sum("sales_amount").alias("total_spending"))
+        .agg(
+            F.sum("sales_amount").alias("total_spending"),
+        )
         .withColumn("rank", F.dense_rank().over(Window.orderBy(F.desc("total_spending"))))
         .orderBy("rank")
     )
@@ -3323,14 +3355,28 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     <div class="result" markdown>
 
     ```txt
-    
+    Customer Spending Summary: 61
     ```
 
     ```txt
-    
+    +-----------+------------------+----+
+    |customer_id|    total_spending|rank|
+    +-----------+------------------+----+
+    |         15|           2297.55|   1|
+    |          4|           2237.49|   2|
+    |         62|           2177.35|   3|
+    |         60|2086.0899999999997|   4|
+    |         21|           2016.95|   5|
+    +-----------+------------------+----+
     ```
 
-    
+    |      | customer_id | total_spending | rank |
+    | ---: | ----------: | -------------: | ---: |
+    |    0 |          15 |        2297.55 |    1 |
+    |    1 |           4 |        2237.49 |    2 |
+    |    2 |          62 |        2177.35 |    3 |
+    |    3 |          60 |        2086.09 |    4 |
+    |    4 |          21 |        2016.95 |    5 |
 
     </div>
 
@@ -3340,7 +3386,9 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     customer_spending_pl: pl.DataFrame = (
         df_sales_pl.group_by("customer_id")
         .agg(pl.col("sales_amount").sum().alias("total_spending"))
-        .with_columns(pl.col("total_spending").rank(method="dense", descending=True).alias("rank"))
+        .with_columns(
+            pl.col("total_spending").rank(method="dense", descending=True).alias("rank"),
+        )
         .sort("rank")
     )
     print(f"Customer Spending Summary: {len(customer_spending_pl)}")
@@ -3351,119 +3399,32 @@ The fifth section will demonstrate how to rank and partition data in Pandas. Thi
     <div class="result" markdown>
 
     ```txt
-    
+    Customer Spending Summary: 61
     ```
 
     ```txt
-    
+    shape: (5, 3)
+    ┌─────────────┬────────────────┬──────┐
+    │ customer_id ┆ total_spending ┆ rank │
+    │ ---         ┆ ---            ┆ ---  │
+    │ i64         ┆ f64            ┆ u32  │
+    ╞═════════════╪════════════════╪══════╡
+    │ 15          ┆ 2297.55        ┆ 1    │
+    │ 4           ┆ 2237.49        ┆ 2    │
+    │ 62          ┆ 2177.35        ┆ 3    │
+    │ 60          ┆ 2086.09        ┆ 4    │
+    │ 21          ┆ 2016.95        ┆ 5    │
+    └─────────────┴────────────────┴──────┘
+
     ```
 
-    
-
-    </div>
-
-Once we have ranked the customers, we can merge this information with the `customer` DataFrame to get additional details about each customer, such as their name, segment, and city.
-
-=== "Pandas"
-
-    ```py {.pandas linenums="1" title="TITLE"}
-    # Add customer details
-    top_customers_pd: pd.DataFrame = pd.merge(
-        customer_spending,
-        df_customer_pd[["customer_id", "customer_name", "segment", "city"]],
-        on="customer_id",
-        how="left",
-    )
-    print(f"Top Customers Summary: {len(top_customers_pd)}")
-    print(top_customers_pd.head(5))
-    print(top_customers_pd.head(5).to_markdown())
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "SQL"
-
-    ```py {.sql linenums="1" title="TITLE"}
-    # Rank customers by total spending
-    customer_spending_txt: str = """
-        SELECT
-            c.customer_id,
-            c.customer_name,
-            c.segment,
-            c.city,
-            SUM(s.sales_amount) AS total_spending,
-            RANK() OVER (ORDER BY SUM(s.sales_amount) DESC) AS rank
-        FROM sales s
-        JOIN customer c ON s.customer_id = c.customer_id
-        GROUP BY c.customer_id, c.customer_name, c.segment, c.city
-        ORDER BY rank
-    """
-    print(f"Customer Spending: {len(pd.read_sql(customer_spending_txt, conn))}")
-    print(pd.read_sql(customer_spending_txt + "LIMIT 5", conn))
-    print(pd.read_sql(customer_spending_txt + "LIMIT 5", conn).to_markdown())
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "PySpark"
-
-    ```py {.pyspark linenums="1" title="TITLE"}
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "Polars"
-
-    ```py {.polars linenums="1" title="TITLE"}
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
+    |      | customer_id | total_spending | rank |
+    | ---: | ----------: | -------------: | ---: |
+    |    0 |          15 |        2297.55 |    1 |
+    |    1 |           4 |        2237.49 |    2 |
+    |    2 |          62 |        2177.35 |    3 |
+    |    3 |          60 |        2086.09 |    4 |
+    |    4 |          21 |        2016.95 |    5 |
 
     </div>
 
@@ -3472,9 +3433,9 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 === "Pandas"
 
     ```py {.pandas linenums="1" title="Rank products by quantity sold"}
-    product_popularity_pd: pd.DataFrame = df_sales_pd.groupby("product_id")["quantity"].sum().reset_index()
-    product_popularity_pd["rank"] = product_popularity_pd["quantity"].rank(method="dense", ascending=False)
-    product_popularity_pd: pd.DataFrame = product_popularity_pd.sort_values("rank")
+    product_popularity_pd: pd.DataFrame = df_sales_pd.groupby("product_id").agg(total_quantity=("quantity", "sum"))
+    product_popularity_pd["rank"] = product_popularity_pd["total_quantity"].rank(method="dense", ascending=False)
+    product_popularity_pd: pd.DataFrame = product_popularity_pd.sort_values("rank").reset_index()
     print(f"Product Popularity Summary: {len(product_popularity_pd)}")
     print(product_popularity_pd.head(5))
     print(product_popularity_pd.head(5).to_markdown())
@@ -3483,14 +3444,26 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-    
+    Product Popularity Summary: 41
     ```
 
     ```txt
-    
+       product_id  total_quantity  rank
+    0          45              34   1.0
+    1           1              30   2.0
+    2          35              26   3.0
+    3          13              25   4.0
+    4          28              22   5.0
+
     ```
 
-    
+    |      | product_id | total_quantity | rank |
+    | ---: | ---------: | -------------: | ---: |
+    |    0 |         45 |             34 |    1 |
+    |    1 |          1 |             30 |    2 |
+    |    2 |         35 |             26 |    3 |
+    |    3 |         13 |             25 |    4 |
+    |    4 |         28 |             22 |    5 |
 
     </div>
 
@@ -3499,14 +3472,11 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     ```py {.sql linenums="1" title="Rank products by quantity sold"}
     product_popularity_txt: str = """
         SELECT
-            p.product_id,
-            p.product_name,
-            p.category,
+            product_id,
             SUM(s.quantity) AS total_quantity,
             RANK() OVER (ORDER BY SUM(s.quantity) DESC) AS rank
         FROM sales s
-        JOIN product p ON s.product_id = p.product_id
-        GROUP BY p.product_id, p.product_name, p.category
+        GROUP BY product_id
         ORDER BY rank
     """
     print(f"Product Popularity: {len(pd.read_sql(product_popularity_txt, conn))}")
@@ -3517,14 +3487,25 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-    
+    Product Popularity Summary: 41
     ```
 
     ```txt
-    
+       product_id  total_quantity  rank
+    0          45              34     1
+    1           1              30     2
+    2          35              26     3
+    3          13              25     4
+    4          39              22     5
     ```
 
-    
+    |      | product_id | total_quantity | rank |
+    | ---: | ---------: | -------------: | ---: |
+    |    0 |         45 |             34 |    1 |
+    |    1 |          1 |             30 |    2 |
+    |    2 |         35 |             26 |    3 |
+    |    3 |         13 |             25 |    4 |
+    |    4 |         39 |             22 |    5 |
 
     </div>
 
@@ -3533,7 +3514,9 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     ```py {.pyspark linenums="1" title="Rank products by quantity sold"}
     product_popularity_ps: psDataFrame = (
         df_sales_ps.groupBy("product_id")
-        .agg(F.sum("quantity").alias("total_quantity"))
+        .agg(
+            F.sum("quantity").alias("total_quantity"),
+        )
         .withColumn("rank", F.expr("DENSE_RANK() OVER (ORDER BY total_quantity DESC)"))
         .orderBy("rank")
     )
@@ -3545,14 +3528,29 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-    
+    Product Popularity Summary: 41
     ```
 
     ```txt
-    
+    +----------+--------------+----+
+    |product_id|total_quantity|rank|
+    +----------+--------------+----+
+    |        45|            34|   1|
+    |         1|            30|   2|
+    |        35|            26|   3|
+    |        13|            25|   4|
+    |        15|            22|   5|
+    +----------+--------------+----+
+    only showing top 5 rows
     ```
 
-    
+    |      | product_id | total_quantity | rank |
+    | ---: | ---------: | -------------: | ---: |
+    |    0 |         45 |             34 |    1 |
+    |    1 |          1 |             30 |    2 |
+    |    2 |         35 |             26 |    3 |
+    |    3 |         13 |             25 |    4 |
+    |    4 |         15 |             22 |    5 |
 
     </div>
 
@@ -3561,7 +3559,9 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     ```py {.polars linenums="1" title="Rank products by quantity sold"}
     product_popularity_pl: pl.DataFrame = (
         df_sales_pl.group_by("product_id")
-        .agg(pl.col("quantity").sum().alias("total_quantity"))
+        .agg(
+            pl.col("quantity").sum().alias("total_quantity"),
+        )
         .with_columns(pl.col("total_quantity").rank(method="dense", descending=True).alias("rank"))
         .sort("rank")
     )
@@ -3573,102 +3573,31 @@ Next, we will rank products based on the quantity sold. This allows us to identi
     <div class="result" markdown>
 
     ```txt
-    
+    Product Popularity Summary: 41
     ```
 
     ```txt
-    
+    shape: (5, 3)
+    ┌────────────┬────────────────┬──────┐
+    │ product_id ┆ total_quantity ┆ rank │
+    │ ---        ┆ ---            ┆ ---  │
+    │ i64        ┆ i64            ┆ u32  │
+    ╞════════════╪════════════════╪══════╡
+    │ 45         ┆ 34             ┆ 1    │
+    │ 1          ┆ 30             ┆ 2    │
+    │ 35         ┆ 26             ┆ 3    │
+    │ 13         ┆ 25             ┆ 4    │
+    │ 28         ┆ 22             ┆ 5    │
+    └────────────┴────────────────┴──────┘
     ```
 
-    
-
-    </div>
-
-As with the customer data, we can merge the product popularity information with the `product` DataFrame to get additional details about each product, such as its name and category.
-
-=== "Pandas"
-
-    ```py {.pandas linenums="1" title="TITLE"}
-    # Add product details
-    top_products_pd: pd.DataFrame = pd.merge(
-        product_popularity,
-        df_product_pd[["product_id", "product_name", "category"]],
-        on="product_id",
-        how="left",
-    )
-    print(f"Top Products Summary: {len(top_products_pd)}")
-    print(top_products_pd.head(5))
-    print(top_products_pd.head(5).to_markdown())
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "SQL"
-
-    ```py {.sql linenums="1" title="TITLE"}
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "PySpark"
-
-    ```py {.pyspark linenums="1" title="TITLE"}
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
-
-    </div>
-
-=== "Polars"
-
-    ```py {.polars linenums="1" title="TITLE"}
-    ```
-
-    <div class="result" markdown>
-
-    ```txt
-    
-    ```
-
-    ```txt
-    
-    ```
-
-    
+    |      | product_id | total_quantity | rank |
+    | ---: | ---------: | -------------: | ---: |
+    |    0 |         45 |             34 |    1 |
+    |    1 |          1 |             30 |    2 |
+    |    2 |         35 |             26 |    3 |
+    |    3 |         13 |             25 |    4 |
+    |    4 |         28 |             22 |    5 |
 
     </div>
 
@@ -3698,6 +3627,7 @@ As with the customer data, we can merge the product popularity information with 
 [pandas-columns]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
 [pandas-rename]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename.html
 [pandas-reset_index]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html
+[pandas-merge]: https://pandas.pydata.org/docs/reference/api/pandas.merge.html
 [numpy]: https://numpy.org/
 [sql-wiki]: https://en.wikipedia.org/wiki/SQL
 [sql-iso]: https://www.iso.org/standard/76583.html
@@ -3706,6 +3636,7 @@ As with the customer data, we can merge the product popularity information with 
 [sqlite3-connect]: https://docs.python.org/3/library/sqlite3.html#sqlite3.connect
 [sqlite-where]: https://sqlite.org/lang_select.html#whereclause
 [sqlite-select]: https://sqlite.org/lang_select.html
+[sqlite-tutorial-join]: https://www.sqlitetutorial.net/sqlite-join/
 [postgresql]: https://www.postgresql.org/
 [mysql]: https://www.mysql.com/
 [t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
@@ -3727,6 +3658,10 @@ As with the customer data, we can merge the product popularity information with 
 [pyspark-groupby-agg]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.agg.html
 [pyspark-withcolumnsrenamed]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnsRenamed.html
 [pyspark-topandas]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html
+[pyspark-join]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.join.html
+[pyspark-withcolumns]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumns.html
+[pyspark-col]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html
+[pyspark-expr]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.expr.html
 [hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
 [s3]: https://aws.amazon.com/s3/
 [adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
@@ -3740,6 +3675,8 @@ As with the customer data, we can merge the product popularity information with 
 [polars-groupby]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.group_by.html
 [polars-groupby-agg]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.dataframe.group_by.GroupBy.agg.html
 [polars-rename]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.rename.html
+[polars-join]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.join.html
+[polars-with-columns]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.with_columns.html
 [plotly]: https://plotly.com/python/
 [plotly-express]: https://plotly.com/python/plotly-express/
 [plotly-bar]: https://plotly.com/python/bar-charts/
