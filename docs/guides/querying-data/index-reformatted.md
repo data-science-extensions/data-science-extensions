@@ -1747,13 +1747,12 @@ fig.show()
 
 <div class="result" markdown>
 
---8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_pd.html"
 
 </div>
 
 ### SQL
 
-The Plotly [`px.bar()`][plotly-bar] function can also receive a Pandas DataFrame, so we can use the results of the SQL query directly. Since the method we are using already returns the group labels in an indvidual column, we can use that directly in Plotly as the labels for the x-axis.
+The Plotly [`px.bar()`][plotly-bar] function can also receive a Pandas DataFrame, so we can use the results of the SQL query directly. Since the method we are using already returns the group labels in an individual column, we can use that directly in Plotly as the labels for the x-axis.
 
 ```python {.sql linenums="1" title="Plot the results"}
 fig: go.Figure = px.bar(
@@ -1770,7 +1769,6 @@ fig.show()
 
 <div class="result" markdown>
 
---8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_sql.html"
 
 </div>
 
@@ -1793,7 +1791,6 @@ fig.show()
 
 <div class="result" markdown>
 
---8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_ps.html"
 
 </div>
 
@@ -1816,9 +1813,9 @@ fig.show()
 
 <div class="result" markdown>
 
---8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_pl.html"
 
 </div>
+
 
 
 ## 3. Joining
@@ -1829,7 +1826,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
 ### Pandas
 
-In Pandas, we can use the [`pd.merge()`](https://pandas.pydata.org/docs/reference/api/pandas.merge.html) method to join DataFrames. This method allows us to specify the columns to join on and the type of join (inner, outer, left, or right).
+In Pandas, we can use the [`pd.merge()`][pandas-merge] method to combine rows from two or more tables based on a related column between them. In this case, we will join the `sales` table with the `product` table on the `product_id` column.
 
 ```python {.pandas linenums="1" title="Join sales with product data"}
 sales_with_product_pd: pd.DataFrame = pd.merge(
@@ -1870,6 +1867,8 @@ Sales with Product Information: 100
 
 ### SQL
 
+In SQL, we can use the [`JOIN`][sqlite-tutorial-join] clause to combine rows from two or more tables based on a related column between them. In this case, we will join the `sales` table with the `product` table on the `product_id` column.
+
 ```python {.sql linenums="1" title="Join sales with product data"}
 sales_with_product_txt: str = """
     SELECT s.*, p.product_name, p.price
@@ -1907,6 +1906,8 @@ Sales with Product Information: 100
 </div>
 
 ### PySpark
+
+In PySpark, we can use the [`.join()`][pyspark-join] method to combine rows from two or more DataFrames based on a related column between them. In this case, we will join the `sales` DataFrame with the `product` DataFrame on the `product_id` column.
 
 ```python {.pyspark linenums="1" title="Join sales with product data"}
 sales_with_product_ps: psDataFrame = df_sales_ps.join(
@@ -1949,6 +1950,8 @@ only showing top 5 rows
 </div>
 
 ### Polars
+
+In Polars, we can use the [`.join()`][polars-join] method to combine rows from two or more DataFrames based on a related column between them. In this case, we will join the `sales` DataFrame with the `product` DataFrame on the `product_id` column.
 
 ```python {.polars linenums="1" title="Join sales with product data"}
 sales_with_product_pl: pl.DataFrame = df_sales_pl.join(
@@ -1996,6 +1999,8 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
 ### Pandas
 
+This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
+
 ```python {.pandas linenums="1" title="Join with customer information to get a complete view"}
 complete_sales_pd: pd.DataFrame = pd.merge(
     sales_with_product_pd,
@@ -2034,6 +2039,8 @@ Complete Sales Data with Customer Information: 100
 </div>
 
 ### SQL
+
+This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
 
 ```python {.sql linenums="1" title="Join with customer information to get a complete view"}
 complete_sales_txt: str = """
@@ -2080,6 +2087,8 @@ Complete Sales Data with Customer Information: 100
 
 ### PySpark
 
+This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
+
 ```python {.pyspark linenums="1" title="Join with customer information to get a complete view"}
 complete_sales_ps: psDataFrame = sales_with_product_ps.alias("s").join(
     other=df_customer_ps.select("customer_id", "customer_name", "city", "state").alias("c"),
@@ -2121,6 +2130,8 @@ only showing top 5 rows
 </div>
 
 ### Polars
+
+This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
 
 ```python {.polars linenums="1" title="Join with customer information to get a complete view"}
 complete_sales_pl: pl.DataFrame = sales_with_product_pl.join(
@@ -2168,6 +2179,10 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
 ### Pandas
 
+In Pandas, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
+
+Notice here that the syntax for Pandas uses the `DataFrame` object directly, and we can access the columns using the 'slice' (`[]`) operator.
+
 ```python {.pandas linenums="1" title="Calculate revenue and compare with sales amount"}
 complete_sales_pd["calculated_revenue"] = complete_sales_pd["price"] * complete_sales_pd["quantity"]
 complete_sales_pd["price_difference"] = complete_sales_pd["sales_amount"] - complete_sales_pd["calculated_revenue"]
@@ -2206,6 +2221,8 @@ Complete Sales Data with Calculated Revenue and Price Difference: 100
 </div>
 
 ### SQL
+
+In SQL, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
 
 ```python {.sql linenums="1" title="Calculate revenue and compare with sales amount"}
 revenue_comparison_txt: str = """
@@ -2252,21 +2269,23 @@ Complete Sales Data with Calculated Revenue and Price Difference: 100
 
 ### PySpark
 
+In PySpark, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
+
+Notice here that the syntax for PySpark uses the [`.withColumns`][pyspark-withcolumns] method to add new multiple columns to the DataFrame simultaneously. This method takes a dictionary where the keys are the names of the new columns and the values are the expressions to compute those columns. The methematical computation we have shown here uses two different methods:
+
+    1. Using the PySpark API [`F.col`][pyspark-col] to refer to the columns, and multiply them directly
+    2. Using the Spark SQL API within the [`F.expr`][pyspark-expr] method to write a SQL-like expression for the calculation.
+
 ```python {.pyspark linenums="1" title="Calculate revenue and compare with sales amount"}
 complete_sales_ps: psDataFrame = complete_sales_ps.withColumns(
     {
-        "calculated_revenue": complete_sales_ps["price"] * complete_sales_ps["quantity"],
+        "calculated_revenue": F.col("price") * F.col("quantity"),
         "price_difference": F.expr("sales_amount - (price * quantity)"),
     },
-)
+).select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference")
 print(f"Complete Sales Data with Calculated Revenue and Price Difference: {complete_sales_ps.count()}")
-complete_sales_ps.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference").show(5)
-print(
-    complete_sales_ps.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference")
-    .limit(5)
-    .toPandas()
-    .to_markdown()
-)
+complete_sales_ps.show(5)
+print(complete_sales_ps.limit(5).toPandas().to_markdown())
 ```
 
 <div class="result" markdown>
@@ -2299,6 +2318,10 @@ only showing top 5 rows
 </div>
 
 ### Polars
+
+In Polars, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
+
+Notice here that the syntax for Polars uses the [`.with_columns`][polars-with-columns] method to add new multiple columns to the DataFrame simultaneously. This method takes a list of expressions, where each expression defines a new column.
 
 ```python {.polars linenums="1" title="Calculate revenue and compare with sales amount"}
 complete_sales_pl: pl.DataFrame = complete_sales_pl.with_columns(
@@ -2333,7 +2356,6 @@ Complete Sales Data with Calculated Revenue and Price Difference: 100
 │ 184.17       ┆ 153.67 ┆ 7        ┆ 1075.69            ┆ -891.52          │
 │ 27.89        ┆ 493.14 ┆ 9        ┆ 4438.26            ┆ -4410.37         │
 └──────────────┴────────┴──────────┴────────────────────┴──────────────────┘
-
 ```
 
 |      | sales_amount |  price | quantity | calculated_revenue | price_difference |
@@ -2363,7 +2385,10 @@ In this section, we will demonstrate how to use window functions to analyze sale
 ```python {.pandas linenums="1" title="Time-based window function"}
 df_sales_pd["date"] = pd.to_datetime(df_sales_pd["date"])  # Ensure correct date type
 daily_sales_pd: pd.DataFrame = (
-    df_sales_pd.groupby(df_sales_pd["date"].dt.date)["sales_amount"].sum().reset_index().sort_values("date")
+    df_sales_pd.groupby(df_sales_pd["date"].dt.date)
+    .agg(total_sales=("sales_amount", "sum"))
+    .reset_index()
+    .sort_values("date")
 )
 print(f"Daily Sales Summary: {len(daily_sales_pd)}")
 print(daily_sales_pd.head(5))
@@ -2373,14 +2398,25 @@ print(daily_sales_pd.head(5).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales Summary: 100
 ```
 
 ```txt
-
+         date  total_sales
+0  2023-01-01        490.76
+1  2023-01-02        453.94
+2  2023-01-03        994.51
+3  2023-01-04        184.17
+4  2023-01-05         27.89
 ```
 
-
+|      | date       | total_sales |
+| ---: | :--------- | ----------: |
+|    0 | 2023-01-01 |      490.76 |
+|    1 | 2023-01-02 |      453.94 |
+|    2 | 2023-01-03 |      994.51 |
+|    3 | 2023-01-04 |      184.17 |
+|    4 | 2023-01-05 |       27.89 |
 
 </div>
 
@@ -2395,7 +2431,7 @@ daily_sales_txt: str = """
     GROUP BY date
     ORDER BY date
 """
-print(f"Daily Sales Data: {len(pd.read_sql(daily_sales_txt, conn))}")
+print(f"Daily Sales Summary: {len(pd.read_sql(daily_sales_txt, conn))}")
 print(pd.read_sql(daily_sales_txt + "LIMIT 5", conn))
 print(pd.read_sql(daily_sales_txt + "LIMIT 5", conn).to_markdown())
 ```
@@ -2403,14 +2439,25 @@ print(pd.read_sql(daily_sales_txt + "LIMIT 5", conn).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales Summary: 100
 ```
 
 ```txt
-
+                  date  total_sales
+0  2023-01-01 00:00:00       490.76
+1  2023-01-02 00:00:00       453.94
+2  2023-01-03 00:00:00       994.51
+3  2023-01-04 00:00:00       184.17
+4  2023-01-05 00:00:00        27.89
 ```
 
-
+|      | date                | total_sales |
+| ---: | :------------------ | ----------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |
+|    1 | 2023-01-02 00:00:00 |      453.94 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |
 
 </div>
 
@@ -2433,14 +2480,29 @@ print(daily_sales_ps.limit(5).toPandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales Summary: 100
 ```
 
 ```txt
-
++----------+-----------+
+|      date|total_sales|
++----------+-----------+
+|2023-01-01|     490.76|
+|2023-01-02|     453.94|
+|2023-01-03|     994.51|
+|2023-01-04|     184.17|
+|2023-01-05|      27.89|
++----------+-----------+
+only showing top 5 rows
 ```
 
-
+|      | date       | total_sales |
+| ---: | :--------- | ----------: |
+|    0 | 2023-01-01 |      490.76 |
+|    1 | 2023-01-02 |      453.94 |
+|    2 | 2023-01-03 |      994.51 |
+|    3 | 2023-01-04 |      184.17 |
+|    4 | 2023-01-05 |       27.89 |
 
 </div>
 
@@ -2463,14 +2525,31 @@ print(daily_sales_pl.head(5).to_pandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales Summary: 100
 ```
 
 ```txt
-
+shape: (5, 2)
+┌────────────┬─────────────┐
+│ date       ┆ total_sales │
+│ ---        ┆ ---         │
+│ date       ┆ f64         │
+╞════════════╪═════════════╡
+│ 2023-01-01 ┆ 490.76      │
+│ 2023-01-02 ┆ 453.94      │
+│ 2023-01-03 ┆ 994.51      │
+│ 2023-01-04 ┆ 184.17      │
+│ 2023-01-05 ┆ 27.89       │
+└────────────┴─────────────┘
 ```
 
-
+|      | date                | total_sales |
+| ---: | :------------------ | ----------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |
+|    1 | 2023-01-02 00:00:00 |      453.94 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |
 
 </div>
 
@@ -2481,8 +2560,8 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 This is done using the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method, which shifts the values in a column by a specified number of periods. Note that the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method simply shifts the values in the column, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered; if you want it to be ordered, you can use the [`.sort_values()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sort_values.html) method before applying [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html).
 
 ```python {.pandas linenums="1" title="Calculate lag and lead"}
-daily_sales_pd["previous_day_sales"] = daily_sales_pd["sales_amount"].shift(1)
-daily_sales_pd["next_day_sales"] = daily_sales_pd["sales_amount"].shift(-1)
+daily_sales_pd["previous_day_sales"] = daily_sales_pd["total_sales"].shift(1)
+daily_sales_pd["next_day_sales"] = daily_sales_pd["total_sales"].shift(-1)
 print(f"Daily Sales with Lag and Lead: {len(daily_sales_pd)}")
 print(daily_sales_pd.head(5))
 print(daily_sales_pd.head(5).to_markdown())
@@ -2491,14 +2570,25 @@ print(daily_sales_pd.head(5).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Lag and Lead: 100
 ```
 
 ```txt
-
+         date  total_sales  previous_day_sales  next_day_sales
+0  2023-01-01       490.76                 NaN          453.94
+1  2023-01-02       453.94              490.76          994.51
+2  2023-01-03       994.51              453.94          184.17
+3  2023-01-04       184.17              994.51           27.89
+4  2023-01-05        27.89              184.17          498.95
 ```
 
-
+|      | date       | total_sales | previous_day_sales | next_day_sales |
+| ---: | :--------- | ----------: | -----------------: | -------------: |
+|    0 | 2023-01-01 |      490.76 |                nan |         453.94 |
+|    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |
+|    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |
+|    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |
+|    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |
 
 </div>
 
@@ -2508,10 +2598,9 @@ print(daily_sales_pd.head(5).to_markdown())
 lag_lead_txt: str = """
     SELECT
         date AS sale_date,
-        SUM(sales_amount) AS sales_amount,
+        SUM(sales_amount) AS total_sales,
         LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
-        LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
-        SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change
+        LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales
     FROM sales
     GROUP BY date
     ORDER BY date
@@ -2525,21 +2614,32 @@ print(pd.read_sql(lag_lead_txt + " LIMIT 5", conn).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Lag and Lead: 100
 ```
 
 ```txt
-
+             sale_date  total_sales  previous_day_sales  next_day_sales
+0  2023-01-01 00:00:00        490.76                 NaN          453.94
+1  2023-01-02 00:00:00        453.94              490.76          994.51
+2  2023-01-03 00:00:00        994.51              453.94          184.17
+3  2023-01-04 00:00:00        184.17              994.51           27.89
+4  2023-01-05 00:00:00         27.89              184.17          498.95
 ```
 
-
+|      | sale_date           | total_sales | previous_day_sales | next_day_sales |
+| ---: | :------------------ | ----------: | -----------------: | -------------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |
+|    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |
 
 </div>
 
 ### PySpark
 
 ```python {.pyspark linenums="1" title="Calculate lag and lead"}
-window_spec_ps: psDataFrame = Window.orderBy("date")
+window_spec_ps: Window = Window.orderBy("date")
 daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
     {
         "previous_day_sales": F.lag("total_sales").over(window_spec_ps),
@@ -2554,14 +2654,29 @@ print(daily_sales_ps.limit(5).toPandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Lag and Lead: 100
 ```
 
 ```txt
-
++----------+-----------+------------------+--------------+
+|      date|total_sales|previous_day_sales|next_day_sales|
++----------+-----------+------------------+--------------+
+|2023-01-01|     490.76|              NULL|        453.94|
+|2023-01-02|     453.94|            490.76|        994.51|
+|2023-01-03|     994.51|            453.94|        184.17|
+|2023-01-04|     184.17|            994.51|         27.89|
+|2023-01-05|      27.89|            184.17|        498.95|
++----------+-----------+------------------+--------------+
+only showing top 5 rows
 ```
 
-
+|      | date       | total_sales | previous_day_sales | next_day_sales |
+| ---: | :--------- | ----------: | -----------------: | -------------: |
+|    0 | 2023-01-01 |      490.76 |                nan |         453.94 |
+|    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |
+|    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |
+|    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |
+|    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |
 
 </div>
 
@@ -2580,14 +2695,31 @@ print(daily_sales_pl.head(5).to_pandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Lag and Lead: 100
 ```
 
 ```txt
-
+shape: (5, 4)
+┌────────────┬─────────────┬────────────────────┬────────────────┐
+│ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales │
+│ ---        ┆ ---         ┆ ---                ┆ ---            │
+│ date       ┆ f64         ┆ f64                ┆ f64            │
+╞════════════╪═════════════╪════════════════════╪════════════════╡
+│ 2023-01-01 ┆ 490.76      ┆ null               ┆ 453.94         │
+│ 2023-01-02 ┆ 453.94      ┆ 490.76             ┆ 994.51         │
+│ 2023-01-03 ┆ 994.51      ┆ 453.94             ┆ 184.17         │
+│ 2023-01-04 ┆ 184.17      ┆ 994.51             ┆ 27.89          │
+│ 2023-01-05 ┆ 27.89       ┆ 184.17             ┆ 498.95         │
+└────────────┴─────────────┴────────────────────┴────────────────┘
 ```
 
-
+|      | date                | total_sales | previous_day_sales | next_day_sales |
+| ---: | :------------------ | ----------: | -----------------: | -------------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |
+|    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |
 
 </div>
 
@@ -2598,8 +2730,8 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
 We can also calculate the percentage change in sales using the [`.pct_change()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html) method, which calculates the percentage change between the current and previous values.
 
 ```python {.pandas linenums="1" title="Calculate day-over-day change"}
-daily_sales_pd["day_over_day_change"] = daily_sales_pd["sales_amount"] - daily_sales_pd["previous_day_sales"]
-daily_sales_pd["pct_change"] = daily_sales_pd["sales_amount"].pct_change() * 100
+daily_sales_pd["day_over_day_change"] = daily_sales_pd["total_sales"] - daily_sales_pd["previous_day_sales"]
+daily_sales_pd["pct_change"] = daily_sales_pd["total_sales"].pct_change() * 100
 print(f"Daily Sales with Day-over-Day Change: {len(daily_sales_pd)}")
 print(daily_sales_pd.head(5))
 print(daily_sales_pd.head(5).to_markdown())
@@ -2608,14 +2740,25 @@ print(daily_sales_pd.head(5).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Day-over-Day Change: 100
 ```
 
 ```txt
-
+         date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  day_over_day_change  7d_moving_avg
+0  2023-01-01       490.76                 NaN          453.94                  NaN                  NaN     490.760000
+1  2023-01-02       453.94              490.76          994.51               -36.82               -36.82     472.350000
+2  2023-01-03       994.51              453.94          184.17               540.57               540.57     646.403333
+3  2023-01-04       184.17              994.51           27.89              -810.34              -810.34     530.845000
+4  2023-01-05        27.89              184.17          498.95              -156.28              -156.28     430.254000
 ```
 
-
+|      | date       | total_sales | previous_day_sales | next_day_sales | pct_change | day_over_day_change | 7d_moving_avg |
+| ---: | :--------- | ----------: | -----------------: | -------------: | ---------: | ------------------: | ------------: |
+|    0 | 2023-01-01 |      490.76 |                nan |         453.94 |        nan |                 nan |        490.76 |
+|    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |   -7.50265 |              -36.82 |        472.35 |
+|    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |    119.084 |              540.57 |       646.403 |
+|    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |   -81.4813 |             -810.34 |       530.845 |
+|    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |   -84.8564 |             -156.28 |       430.254 |
 
 </div>
 
@@ -2624,22 +2767,53 @@ print(daily_sales_pd.head(5).to_markdown())
 The day-over-day change calculation is already included in the previous SQL query, so we can use the same result set.
 
 ```python {.sql linenums="1" title="Day-over-day change already calculated"}
-print(f"Daily Sales with Day-over-Day Change: {len(lag_lead_df_sql)}")
-print(lag_lead_df_sql.head(5))
-print(lag_lead_df_sql.head(5).to_markdown())
+dod_change_txt: str = """
+    SELECT
+        sale_date,
+        total_sales,
+        previous_day_sales,
+        next_day_sales,
+        total_sales - previous_day_sales AS day_over_day_change,
+        (total_sales / NULLIF(previous_day_sales, 0) - 1) * 100 AS pct_change
+    FROM (
+        SELECT
+            date AS sale_date,
+            SUM(sales_amount) AS total_sales,
+            LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
+            LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales
+        FROM sales
+        GROUP BY date
+    )
+    ORDER BY sale_date
+"""
+dod_change_df_sql: pd.DataFrame = pd.read_sql(dod_change_txt, conn)
+print(f"Daily Sales with Day-over-Day Change: {len(dod_change_df_sql)}")
+print(dod_change_df_sql.head(5))
+print(dod_change_df_sql.head(5).to_markdown())
 ```
 
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Day-over-Day Change: 100
 ```
 
 ```txt
-
+             sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change
+0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN
+1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649
+2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020
+3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333
+4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383
 ```
 
-
+|      | sale_date           | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
+| ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |
+|    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
 
 </div>
 
@@ -2660,14 +2834,29 @@ print(daily_sales_ps.limit(5).toPandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Day-over-Day Change: 100
 ```
 
 ```txt
-
++----------+-----------+------------------+--------------+-------------------+------------------+
+|      date|total_sales|previous_day_sales|next_day_sales|day_over_day_change|        pct_change|
++----------+-----------+------------------+--------------+-------------------+------------------+
+|2023-01-01|     490.76|              NULL|        453.94|               NULL|              NULL|
+|2023-01-02|     453.94|            490.76|        994.51| -36.81999999999999|-7.502648952644875|
+|2023-01-03|     994.51|            453.94|        184.17|  540.5699999999999|119.08401991452612|
+|2023-01-04|     184.17|            994.51|         27.89|            -810.34|-81.48133251551015|
+|2023-01-05|      27.89|            184.17|        498.95|-156.27999999999997|-84.85638268990606|
++----------+-----------+------------------+--------------+-------------------+------------------+
+only showing top 5 rows
 ```
 
-
+|      | date       | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
+| ---: | :--------- | ----------: | -----------------: | -------------: | ------------------: | ---------: |
+|    0 | 2023-01-01 |      490.76 |                nan |         453.94 |                 nan |        nan |
+|    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
+|    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
+|    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
+|    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
 
 </div>
 
@@ -2686,14 +2875,31 @@ print(daily_sales_pl.head(5).to_pandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with Day-over-Day Change: 100
 ```
 
 ```txt
-
+shape: (5, 6)
+┌────────────┬─────────────┬────────────────────┬────────────────┬─────────────────────┬────────────┐
+│ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales ┆ day_over_day_change ┆ pct_change │
+│ ---        ┆ ---         ┆ ---                ┆ ---            ┆ ---                 ┆ ---        │
+│ date       ┆ f64         ┆ f64                ┆ f64            ┆ f64                 ┆ f64        │
+╞════════════╪═════════════╪════════════════════╪════════════════╪═════════════════════╪════════════╡
+│ 2023-01-01 ┆ 490.76      ┆ null               ┆ 453.94         ┆ null                ┆ null       │
+│ 2023-01-02 ┆ 453.94      ┆ 490.76             ┆ 994.51         ┆ -36.82              ┆ -7.502649  │
+│ 2023-01-03 ┆ 994.51      ┆ 453.94             ┆ 184.17         ┆ 540.57              ┆ 119.08402  │
+│ 2023-01-04 ┆ 184.17      ┆ 994.51             ┆ 27.89          ┆ -810.34             ┆ -81.481333 │
+│ 2023-01-05 ┆ 27.89       ┆ 184.17             ┆ 498.95         ┆ -156.28             ┆ -84.856383 │
+└────────────┴─────────────┴────────────────────┴────────────────┴─────────────────────┴────────────┘
 ```
 
-
+|      | date                | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
+| ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |
+|    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
 
 </div>
 
@@ -2704,7 +2910,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 This is done using the [`.rolling()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) method, which allows us to specify the window size and the minimum number of periods required for the calculation.
 
 ```python {.pandas linenums="1" title="Calculate 7-day moving average"}
-daily_sales_pd["7d_moving_avg"] = daily_sales_pd["sales_amount"].rolling(window=7, min_periods=1).mean()
+daily_sales_pd["7d_moving_avg"] = daily_sales_pd["total_sales"].rolling(window=7, min_periods=1).mean()
 print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales_pd)}")
 print(daily_sales_pd.head(5))
 print(daily_sales_pd.head(5).to_markdown())
@@ -2713,14 +2919,25 @@ print(daily_sales_pd.head(5).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with 7-Day Moving Average: 100
 ```
 
 ```txt
-
+         date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg
+0  2023-01-01       490.76                 NaN          453.94                  NaN         NaN     490.760000
+1  2023-01-02       453.94              490.76          994.51               -36.82   -7.502649     472.350000
+2  2023-01-03       994.51              453.94          184.17               540.57  119.084020     646.403333
+3  2023-01-04       184.17              994.51           27.89              -810.34  -81.481333     530.845000
+4  2023-01-05        27.89              184.17          498.95              -156.28  -84.856383     430.254000
 ```
 
-
+|      | date       | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
+| ---: | :--------- | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
+|    0 | 2023-01-01 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
+|    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
+|    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
+|    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
+|    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
 
 </div>
 
@@ -2729,18 +2946,28 @@ print(daily_sales_pd.head(5).to_markdown())
 ```python {.sql linenums="1" title="Calculate 7-day moving average"}
 rolling_avg_txt: str = """
     SELECT
-        date AS sale_date,
-        SUM(sales_amount) AS sales_amount,
-        AVG(SUM(sales_amount)) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS rolling_7d_avg,
-        LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
-        LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
-        SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change
-    FROM sales
-    GROUP BY date
-    ORDER BY date
+        sale_date,
+        total_sales,
+        previous_day_sales,
+        next_day_sales,
+        day_over_day_change,
+        pct_change,
+        AVG(total_sales) OVER (ORDER BY sale_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS "7d_moving_avg"
+    FROM (
+        SELECT
+            date AS sale_date,
+            SUM(sales_amount) AS total_sales,
+            LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
+            LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
+            SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change,
+            (SUM(sales_amount) / NULLIF(LAG(SUM(sales_amount)) OVER (ORDER BY date), 0) - 1) * 100 AS pct_change
+        FROM sales
+        GROUP BY date
+    ) AS daily_sales
+    ORDER BY sale_date
 """
 window_df_sql: pd.DataFrame = pd.read_sql(rolling_avg_txt, conn)
-print(f"Window Functions with Rolling Average: {len(window_df_sql)}")
+print(f"Daily Sales with 7-Day Moving Average: {len(window_df_sql)}")
 print(pd.read_sql(rolling_avg_txt + " LIMIT 5", conn))
 print(pd.read_sql(rolling_avg_txt + " LIMIT 5", conn).to_markdown())
 ```
@@ -2748,14 +2975,25 @@ print(pd.read_sql(rolling_avg_txt + " LIMIT 5", conn).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with 7-Day Moving Average: 100
 ```
 
 ```txt
-
+             sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg
+0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN     490.760000
+1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649     472.350000
+2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020     646.403333
+3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333     530.845000
+4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383     430.254000
 ```
 
-
+|      | sale_date           | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
+| ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
+|    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
 
 </div>
 
@@ -2776,14 +3014,29 @@ print(daily_sales_ps.limit(5).toPandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with 7-Day Moving Average: 100
 ```
 
 ```txt
-
++----------+-----------+------------------+--------------+-------------------+------------------+-----------------+-----------------+
+|      date|total_sales|previous_day_sales|next_day_sales|day_over_day_change|        pct_change|    7d_moving_avg|   7d_rolling_avg|
++----------+-----------+------------------+--------------+-------------------+------------------+-----------------+-----------------+
+|2023-01-01|     490.76|              NULL|        453.94|               NULL|              NULL|           490.76|           490.76|
+|2023-01-02|     453.94|            490.76|        994.51| -36.81999999999999|-7.502648952644875|           472.35|           472.35|
+|2023-01-03|     994.51|            453.94|        184.17|  540.5699999999999|119.08401991452612|646.4033333333333|646.4033333333333|
+|2023-01-04|     184.17|            994.51|         27.89|            -810.34|-81.48133251551015|          530.845|          530.845|
+|2023-01-05|      27.89|            184.17|        498.95|-156.27999999999997|-84.85638268990606|          430.254|          430.254|
++----------+-----------+------------------+--------------+-------------------+------------------+-----------------+-----------------+
+only showing top 5 rows
 ```
 
-
+|      | date       | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg | 7d_rolling_avg |
+| ---: | :--------- | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: | -------------: |
+|    0 | 2023-01-01 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |         490.76 |
+|    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |         472.35 |
+|    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |        646.403 |
+|    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |        530.845 |
+|    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |        430.254 |
 
 </div>
 
@@ -2791,7 +3044,7 @@ print(daily_sales_ps.limit(5).toPandas().to_markdown())
 
 ```python {.polars linenums="1" title="Calculate 7-day moving average"}
 daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
-    pl.col("total_sales").rolling_mean(window_size=7, min_periods=1).alias("7d_moving_avg"),
+    pl.col("total_sales").rolling_mean(window_size=7, min_samples=1).alias("7d_moving_avg"),
 )
 print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales_pl)}")
 print(daily_sales_pl.head(5))
@@ -2801,14 +3054,31 @@ print(daily_sales_pl.head(5).to_pandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Daily Sales with 7-Day Moving Average: 100
 ```
 
 ```txt
-
+shape: (5, 7)
+┌────────────┬─────────────┬────────────────────┬────────────────┬─────────────────────┬────────────┬───────────────┐
+│ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales ┆ day_over_day_change ┆ pct_change ┆ 7d_moving_avg │
+│ ---        ┆ ---         ┆ ---                ┆ ---            ┆ ---                 ┆ ---        ┆ ---           │
+│ date       ┆ f64         ┆ f64                ┆ f64            ┆ f64                 ┆ f64        ┆ f64           │
+╞════════════╪═════════════╪════════════════════╪════════════════╪═════════════════════╪════════════╪═══════════════╡
+│ 2023-01-01 ┆ 490.76      ┆ null               ┆ 453.94         ┆ null                ┆ null       ┆ 490.76        │
+│ 2023-01-02 ┆ 453.94      ┆ 490.76             ┆ 994.51         ┆ -36.82              ┆ -7.502649  ┆ 472.35        │
+│ 2023-01-03 ┆ 994.51      ┆ 453.94             ┆ 184.17         ┆ 540.57              ┆ 119.08402  ┆ 646.403333    │
+│ 2023-01-04 ┆ 184.17      ┆ 994.51             ┆ 27.89          ┆ -810.34             ┆ -81.481333 ┆ 530.845       │
+│ 2023-01-05 ┆ 27.89       ┆ 184.17             ┆ 498.95         ┆ -156.28             ┆ -84.856383 ┆ 430.254       │
+└────────────┴─────────────┴────────────────────┴────────────────┴─────────────────────┴────────────┴───────────────┘
 ```
 
-
+|      | date                | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
+| ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
+|    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
+|    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
+|    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
+|    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
+|    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
 
 </div>
 
@@ -2822,7 +3092,7 @@ fig: go.Figure = (
     .add_trace(
         go.Scatter(
             x=daily_sales_pd["date"],
-            y=daily_sales_pd["sales_amount"],
+            y=daily_sales_pd["total_sales"],
             mode="lines",
             name="Daily Sales",
         )
@@ -2848,15 +3118,6 @@ fig.show()
 
 <div class="result" markdown>
 
-```txt
-
-```
-
-```txt
-
-```
-
-
 
 </div>
 
@@ -2868,7 +3129,7 @@ fig: go.Figure = (
     .add_trace(
         go.Scatter(
             x=window_df_sql["sale_date"],
-            y=window_df_sql["sales_amount"],
+            y=window_df_sql["total_sales"],
             mode="lines",
             name="Daily Sales",
         )
@@ -2876,7 +3137,7 @@ fig: go.Figure = (
     .add_trace(
         go.Scatter(
             x=window_df_sql["sale_date"],
-            y=window_df_sql["rolling_7d_avg"],
+            y=window_df_sql["7d_moving_avg"],
             mode="lines",
             name="7-Day Moving Average",
             line=dict(width=3),
@@ -2893,15 +3154,6 @@ fig.show()
 ```
 
 <div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
 
 
 </div>
@@ -2940,15 +3192,6 @@ fig.show()
 
 <div class="result" markdown>
 
-```txt
-
-```
-
-```txt
-
-```
-
-
 
 </div>
 
@@ -2986,31 +3229,23 @@ fig.show()
 
 <div class="result" markdown>
 
-```txt
-
-```
-
-```txt
-
-```
-
-
 
 </div>
 
 
+
 ## 5. Ranking and Partitioning
 
-The fifth section will demonstrate how to rank and partition data in Pandas. This is useful for identifying top performers, such as the highest spending customers or the most popular products.
+The fifth section will demonstrate how to rank and partition data. This is useful for identifying top performers, such as the highest spending customers or the most popular products.
 
 ### Pandas
 
 In Pandas, we can use the [`.rank()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rank.html) method to rank values in a DataFrame. This method allows us to specify the ranking method (e.g., dense, average, min, max) and whether to rank in ascending or descending order.
 
 ```python {.pandas linenums="1" title="Rank customers by total spending"}
-customer_spending_pd: pd.DataFrame = df_sales_pd.groupby("customer_id")["sales_amount"].sum().reset_index()
-customer_spending_pd["rank"] = customer_spending_pd["sales_amount"].rank(method="dense", ascending=False)
-customer_spending_pd: pd.DataFrame = customer_spending_pd.sort_values("rank")
+customer_spending_pd: pd.DataFrame = df_sales_pd.groupby("customer_id").agg(total_spending=("sales_amount", "sum"))
+customer_spending_pd["rank"] = customer_spending_pd["total_spending"].rank(method="dense", ascending=False)
+customer_spending_pd: pd.DataFrame = customer_spending_pd.sort_values("rank").reset_index()
 print(f"Customer Spending Summary: {len(customer_spending_pd)}")
 print(customer_spending_pd.head(5))
 print(customer_spending_pd.head(5).to_markdown())
@@ -3019,33 +3254,68 @@ print(customer_spending_pd.head(5).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Customer Spending Summary: 61
 ```
 
 ```txt
-
+   customer_id  total_spending  rank
+0           15         2297.55   1.0
+1            4         2237.49   2.0
+2           62         2177.35   3.0
+3           60         2086.09   4.0
+4           21         2016.95   5.0
 ```
 
-
+|      | customer_id | total_spending | rank |
+| ---: | ----------: | -------------: | ---: |
+|    0 |          15 |        2297.55 |    1 |
+|    1 |           4 |        2237.49 |    2 |
+|    2 |          62 |        2177.35 |    3 |
+|    3 |          60 |        2086.09 |    4 |
+|    4 |          21 |        2016.95 |    5 |
 
 </div>
 
 ### SQL
 
 ```python {.sql linenums="1" title="Rank customers by total spending"}
+customer_spending_txt: str = """
+    SELECT
+        customer_id,
+        SUM(sales_amount) AS total_spending,
+        DENSE_RANK() OVER (ORDER BY SUM(sales_amount) DESC) AS rank
+    FROM sales
+    GROUP BY customer_id
+    ORDER BY rank
+"""
+customer_spending_sql: pd.DataFrame = pd.read_sql(customer_spending_txt, conn)
+print(f"Customer Spending Summary: {len(customer_spending_sql)}")
+print(customer_spending_sql.head(5))
+print(customer_spending_sql.head(5).to_markdown())
 ```
 
 <div class="result" markdown>
 
 ```txt
-
+Customer Spending Summary: 61
 ```
 
 ```txt
-
+   customer_id  total_spending  rank
+0           15         2297.55     1
+1            4         2237.49     2
+2           62         2177.35     3
+3           60         2086.09     4
+4           21         2016.95     5
 ```
 
-
+|      | customer_id | total_spending | rank |
+| ---: | ----------: | -------------: | ---: |
+|    0 |          15 |        2297.55 |    1 |
+|    1 |           4 |        2237.49 |    2 |
+|    2 |          62 |        2177.35 |    3 |
+|    3 |          60 |        2086.09 |    4 |
+|    4 |          21 |        2016.95 |    5 |
 
 </div>
 
@@ -3054,7 +3324,9 @@ print(customer_spending_pd.head(5).to_markdown())
 ```python {.pyspark linenums="1" title="Rank customers by total spending"}
 customer_spending_ps: psDataFrame = (
     df_sales_ps.groupBy("customer_id")
-    .agg(F.sum("sales_amount").alias("total_spending"))
+    .agg(
+        F.sum("sales_amount").alias("total_spending"),
+    )
     .withColumn("rank", F.dense_rank().over(Window.orderBy(F.desc("total_spending"))))
     .orderBy("rank")
 )
@@ -3066,14 +3338,28 @@ print(customer_spending_ps.limit(5).toPandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Customer Spending Summary: 61
 ```
 
 ```txt
-
++-----------+------------------+----+
+|customer_id|    total_spending|rank|
++-----------+------------------+----+
+|         15|           2297.55|   1|
+|          4|           2237.49|   2|
+|         62|           2177.35|   3|
+|         60|2086.0899999999997|   4|
+|         21|           2016.95|   5|
++-----------+------------------+----+
 ```
 
-
+|      | customer_id | total_spending | rank |
+| ---: | ----------: | -------------: | ---: |
+|    0 |          15 |        2297.55 |    1 |
+|    1 |           4 |        2237.49 |    2 |
+|    2 |          62 |        2177.35 |    3 |
+|    3 |          60 |        2086.09 |    4 |
+|    4 |          21 |        2016.95 |    5 |
 
 </div>
 
@@ -3083,7 +3369,9 @@ print(customer_spending_ps.limit(5).toPandas().to_markdown())
 customer_spending_pl: pl.DataFrame = (
     df_sales_pl.group_by("customer_id")
     .agg(pl.col("sales_amount").sum().alias("total_spending"))
-    .with_columns(pl.col("total_spending").rank(method="dense", descending=True).alias("rank"))
+    .with_columns(
+        pl.col("total_spending").rank(method="dense", descending=True).alias("rank"),
+    )
     .sort("rank")
 )
 print(f"Customer Spending Summary: {len(customer_spending_pl)}")
@@ -3094,119 +3382,32 @@ print(customer_spending_pl.head(5).to_pandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Customer Spending Summary: 61
 ```
 
 ```txt
+shape: (5, 3)
+┌─────────────┬────────────────┬──────┐
+│ customer_id ┆ total_spending ┆ rank │
+│ ---         ┆ ---            ┆ ---  │
+│ i64         ┆ f64            ┆ u32  │
+╞═════════════╪════════════════╪══════╡
+│ 15          ┆ 2297.55        ┆ 1    │
+│ 4           ┆ 2237.49        ┆ 2    │
+│ 62          ┆ 2177.35        ┆ 3    │
+│ 60          ┆ 2086.09        ┆ 4    │
+│ 21          ┆ 2016.95        ┆ 5    │
+└─────────────┴────────────────┴──────┘
 
 ```
 
-
-
-</div>
-
-Once we have ranked the customers, we can merge this information with the `customer` DataFrame to get additional details about each customer, such as their name, segment, and city.
-
-### Pandas
-
-```python {.pandas linenums="1" title="TITLE"}
-# Add customer details
-top_customers_pd: pd.DataFrame = pd.merge(
-    customer_spending,
-    df_customer_pd[["customer_id", "customer_name", "segment", "city"]],
-    on="customer_id",
-    how="left",
-)
-print(f"Top Customers Summary: {len(top_customers_pd)}")
-print(top_customers_pd.head(5))
-print(top_customers_pd.head(5).to_markdown())
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
-
-</div>
-
-### SQL
-
-```python {.sql linenums="1" title="TITLE"}
-# Rank customers by total spending
-customer_spending_txt: str = """
-    SELECT
-        c.customer_id,
-        c.customer_name,
-        c.segment,
-        c.city,
-        SUM(s.sales_amount) AS total_spending,
-        RANK() OVER (ORDER BY SUM(s.sales_amount) DESC) AS rank
-    FROM sales s
-    JOIN customer c ON s.customer_id = c.customer_id
-    GROUP BY c.customer_id, c.customer_name, c.segment, c.city
-    ORDER BY rank
-"""
-print(f"Customer Spending: {len(pd.read_sql(customer_spending_txt, conn))}")
-print(pd.read_sql(customer_spending_txt + "LIMIT 5", conn))
-print(pd.read_sql(customer_spending_txt + "LIMIT 5", conn).to_markdown())
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
-
-</div>
-
-### PySpark
-
-```python {.pyspark linenums="1" title="TITLE"}
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
-
-</div>
-
-### Polars
-
-```python {.polars linenums="1" title="TITLE"}
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
+|      | customer_id | total_spending | rank |
+| ---: | ----------: | -------------: | ---: |
+|    0 |          15 |        2297.55 |    1 |
+|    1 |           4 |        2237.49 |    2 |
+|    2 |          62 |        2177.35 |    3 |
+|    3 |          60 |        2086.09 |    4 |
+|    4 |          21 |        2016.95 |    5 |
 
 </div>
 
@@ -3215,9 +3416,9 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 ### Pandas
 
 ```python {.pandas linenums="1" title="Rank products by quantity sold"}
-product_popularity_pd: pd.DataFrame = df_sales_pd.groupby("product_id")["quantity"].sum().reset_index()
-product_popularity_pd["rank"] = product_popularity_pd["quantity"].rank(method="dense", ascending=False)
-product_popularity_pd: pd.DataFrame = product_popularity_pd.sort_values("rank")
+product_popularity_pd: pd.DataFrame = df_sales_pd.groupby("product_id").agg(total_quantity=("quantity", "sum"))
+product_popularity_pd["rank"] = product_popularity_pd["total_quantity"].rank(method="dense", ascending=False)
+product_popularity_pd: pd.DataFrame = product_popularity_pd.sort_values("rank").reset_index()
 print(f"Product Popularity Summary: {len(product_popularity_pd)}")
 print(product_popularity_pd.head(5))
 print(product_popularity_pd.head(5).to_markdown())
@@ -3226,14 +3427,26 @@ print(product_popularity_pd.head(5).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Product Popularity Summary: 41
 ```
 
 ```txt
+   product_id  total_quantity  rank
+0          45              34   1.0
+1           1              30   2.0
+2          35              26   3.0
+3          13              25   4.0
+4          28              22   5.0
 
 ```
 
-
+|      | product_id | total_quantity | rank |
+| ---: | ---------: | -------------: | ---: |
+|    0 |         45 |             34 |    1 |
+|    1 |          1 |             30 |    2 |
+|    2 |         35 |             26 |    3 |
+|    3 |         13 |             25 |    4 |
+|    4 |         28 |             22 |    5 |
 
 </div>
 
@@ -3242,14 +3455,11 @@ print(product_popularity_pd.head(5).to_markdown())
 ```python {.sql linenums="1" title="Rank products by quantity sold"}
 product_popularity_txt: str = """
     SELECT
-        p.product_id,
-        p.product_name,
-        p.category,
+        product_id,
         SUM(s.quantity) AS total_quantity,
         RANK() OVER (ORDER BY SUM(s.quantity) DESC) AS rank
     FROM sales s
-    JOIN product p ON s.product_id = p.product_id
-    GROUP BY p.product_id, p.product_name, p.category
+    GROUP BY product_id
     ORDER BY rank
 """
 print(f"Product Popularity: {len(pd.read_sql(product_popularity_txt, conn))}")
@@ -3260,14 +3470,25 @@ print(pd.read_sql(product_popularity_txt + "LIMIT 5", conn).to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Product Popularity Summary: 41
 ```
 
 ```txt
-
+   product_id  total_quantity  rank
+0          45              34     1
+1           1              30     2
+2          35              26     3
+3          13              25     4
+4          39              22     5
 ```
 
-
+|      | product_id | total_quantity | rank |
+| ---: | ---------: | -------------: | ---: |
+|    0 |         45 |             34 |    1 |
+|    1 |          1 |             30 |    2 |
+|    2 |         35 |             26 |    3 |
+|    3 |         13 |             25 |    4 |
+|    4 |         39 |             22 |    5 |
 
 </div>
 
@@ -3276,7 +3497,9 @@ print(pd.read_sql(product_popularity_txt + "LIMIT 5", conn).to_markdown())
 ```python {.pyspark linenums="1" title="Rank products by quantity sold"}
 product_popularity_ps: psDataFrame = (
     df_sales_ps.groupBy("product_id")
-    .agg(F.sum("quantity").alias("total_quantity"))
+    .agg(
+        F.sum("quantity").alias("total_quantity"),
+    )
     .withColumn("rank", F.expr("DENSE_RANK() OVER (ORDER BY total_quantity DESC)"))
     .orderBy("rank")
 )
@@ -3288,14 +3511,29 @@ print(product_popularity_ps.limit(5).toPandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Product Popularity Summary: 41
 ```
 
 ```txt
-
++----------+--------------+----+
+|product_id|total_quantity|rank|
++----------+--------------+----+
+|        45|            34|   1|
+|         1|            30|   2|
+|        35|            26|   3|
+|        13|            25|   4|
+|        15|            22|   5|
++----------+--------------+----+
+only showing top 5 rows
 ```
 
-
+|      | product_id | total_quantity | rank |
+| ---: | ---------: | -------------: | ---: |
+|    0 |         45 |             34 |    1 |
+|    1 |          1 |             30 |    2 |
+|    2 |         35 |             26 |    3 |
+|    3 |         13 |             25 |    4 |
+|    4 |         15 |             22 |    5 |
 
 </div>
 
@@ -3304,7 +3542,9 @@ print(product_popularity_ps.limit(5).toPandas().to_markdown())
 ```python {.polars linenums="1" title="Rank products by quantity sold"}
 product_popularity_pl: pl.DataFrame = (
     df_sales_pl.group_by("product_id")
-    .agg(pl.col("quantity").sum().alias("total_quantity"))
+    .agg(
+        pl.col("quantity").sum().alias("total_quantity"),
+    )
     .with_columns(pl.col("total_quantity").rank(method="dense", descending=True).alias("rank"))
     .sort("rank")
 )
@@ -3316,102 +3556,31 @@ print(product_popularity_pl.head(5).to_pandas().to_markdown())
 <div class="result" markdown>
 
 ```txt
-
+Product Popularity Summary: 41
 ```
 
 ```txt
-
+shape: (5, 3)
+┌────────────┬────────────────┬──────┐
+│ product_id ┆ total_quantity ┆ rank │
+│ ---        ┆ ---            ┆ ---  │
+│ i64        ┆ i64            ┆ u32  │
+╞════════════╪════════════════╪══════╡
+│ 45         ┆ 34             ┆ 1    │
+│ 1          ┆ 30             ┆ 2    │
+│ 35         ┆ 26             ┆ 3    │
+│ 13         ┆ 25             ┆ 4    │
+│ 28         ┆ 22             ┆ 5    │
+└────────────┴────────────────┴──────┘
 ```
 
-
-
-</div>
-
-As with the customer data, we can merge the product popularity information with the `product` DataFrame to get additional details about each product, such as its name and category.
-
-### Pandas
-
-```python {.pandas linenums="1" title="TITLE"}
-# Add product details
-top_products_pd: pd.DataFrame = pd.merge(
-    product_popularity,
-    df_product_pd[["product_id", "product_name", "category"]],
-    on="product_id",
-    how="left",
-)
-print(f"Top Products Summary: {len(top_products_pd)}")
-print(top_products_pd.head(5))
-print(top_products_pd.head(5).to_markdown())
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
-
-</div>
-
-### SQL
-
-```python {.sql linenums="1" title="TITLE"}
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
-
-</div>
-
-### PySpark
-
-```python {.pyspark linenums="1" title="TITLE"}
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
-
-</div>
-
-### Polars
-
-```python {.polars linenums="1" title="TITLE"}
-```
-
-<div class="result" markdown>
-
-```txt
-
-```
-
-```txt
-
-```
-
-
+|      | product_id | total_quantity | rank |
+| ---: | ---------: | -------------: | ---: |
+|    0 |         45 |             34 |    1 |
+|    1 |          1 |             30 |    2 |
+|    2 |         35 |             26 |    3 |
+|    3 |         13 |             25 |    4 |
+|    4 |         28 |             22 |    5 |
 
 </div>
 
@@ -3419,6 +3588,7 @@ print(top_products_pd.head(5).to_markdown())
 ## Conclusion
 
 ```python
+
 ```
 
 <div class="result" markdown>
@@ -3440,6 +3610,7 @@ print(top_products_pd.head(5).to_markdown())
 [pandas-columns]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
 [pandas-rename]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename.html
 [pandas-reset_index]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html
+[pandas-merge]: https://pandas.pydata.org/docs/reference/api/pandas.merge.html
 [numpy]: https://numpy.org/
 [sql-wiki]: https://en.wikipedia.org/wiki/SQL
 [sql-iso]: https://www.iso.org/standard/76583.html
@@ -3448,6 +3619,7 @@ print(top_products_pd.head(5).to_markdown())
 [sqlite3-connect]: https://docs.python.org/3/library/sqlite3.html#sqlite3.connect
 [sqlite-where]: https://sqlite.org/lang_select.html#whereclause
 [sqlite-select]: https://sqlite.org/lang_select.html
+[sqlite-tutorial-join]: https://www.sqlitetutorial.net/sqlite-join/
 [postgresql]: https://www.postgresql.org/
 [mysql]: https://www.mysql.com/
 [t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
@@ -3469,6 +3641,10 @@ print(top_products_pd.head(5).to_markdown())
 [pyspark-groupby-agg]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.GroupedData.agg.html
 [pyspark-withcolumnsrenamed]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumnsRenamed.html
 [pyspark-topandas]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.toPandas.html
+[pyspark-join]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.join.html
+[pyspark-withcolumns]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumns.html
+[pyspark-col]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html
+[pyspark-expr]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.expr.html
 [hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
 [s3]: https://aws.amazon.com/s3/
 [adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
@@ -3482,6 +3658,8 @@ print(top_products_pd.head(5).to_markdown())
 [polars-groupby]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.group_by.html
 [polars-groupby-agg]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.dataframe.group_by.GroupBy.agg.html
 [polars-rename]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.rename.html
+[polars-join]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.join.html
+[polars-with-columns]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.with_columns.html
 [plotly]: https://plotly.com/python/
 [plotly-express]: https://plotly.com/python/plotly-express/
 [plotly-bar]: https://plotly.com/python/bar-charts/

@@ -1753,7 +1753,7 @@ Having aggregated the data, we can now visualize the results using [Plotly][plot
 
 === "SQL"
 
-    The Plotly [`px.bar()`][plotly-bar] function can also receive a Pandas DataFrame, so we can use the results of the SQL query directly. Since the method we are using already returns the group labels in an indvidual column, we can use that directly in Plotly as the labels for the x-axis.
+    The Plotly [`px.bar()`][plotly-bar] function can also receive a Pandas DataFrame, so we can use the results of the SQL query directly. Since the method we are using already returns the group labels in an individual column, we can use that directly in Plotly as the labels for the x-axis.
 
     ```py {.sql linenums="1" title="Plot the results"}
     fig: go.Figure = px.bar(
@@ -2364,7 +2364,6 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     │ 184.17       ┆ 153.67 ┆ 7        ┆ 1075.69            ┆ -891.52          │
     │ 27.89        ┆ 493.14 ┆ 9        ┆ 4438.26            ┆ -4410.37         │
     └──────────────┴────────┴──────────┴────────────────────┴──────────────────┘
-
     ```
 
     |      | sales_amount |  price | quantity | calculated_revenue | price_difference |
