@@ -1820,6 +1820,11 @@ Having aggregated the data, we can now visualize the results using [Plotly][plot
 
     </div>
 
+--8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_pd.html"
+--8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_sql.html"
+--8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_ps.html"
+--8<-- "docs/guides/querying-data/images/pt2_total_sales_by_category_pl.html"
+
 
 ## 3. Joining
 
@@ -1829,7 +1834,7 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
 === "Pandas"
 
-    In Pandas, we can use the [`pd.merge()`](https://pandas.pydata.org/docs/reference/api/pandas.merge.html) method to join DataFrames. This method allows us to specify the columns to join on and the type of join (inner, outer, left, or right).
+    In Pandas, we can use the [`pd.merge()`][pandas-merge] method to combine rows from two or more tables based on a related column between them. In this case, we will join the `sales` table with the `product` table on the `product_id` column.
 
     ```py {.pandas linenums="1" title="Join sales with product data"}
     sales_with_product_pd: pd.DataFrame = pd.merge(
@@ -1870,6 +1875,8 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
 
 === "SQL"
 
+    In SQL, we can use the [`JOIN`][sqlite-tutorial-join] clause to combine rows from two or more tables based on a related column between them. In this case, we will join the `sales` table with the `product` table on the `product_id` column.
+
     ```py {.sql linenums="1" title="Join sales with product data"}
     sales_with_product_txt: str = """
         SELECT s.*, p.product_name, p.price
@@ -1907,6 +1914,8 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     </div>
 
 === "PySpark"
+
+    In PySpark, we can use the [`.join()`][pyspark-join] method to combine rows from two or more DataFrames based on a related column between them. In this case, we will join the `sales` DataFrame with the `product` DataFrame on the `product_id` column.
 
     ```py {.pyspark linenums="1" title="Join sales with product data"}
     sales_with_product_ps: psDataFrame = df_sales_ps.join(
@@ -1949,6 +1958,8 @@ Here, we will join the `sales` DataFrame with the `product` DataFrame to get add
     </div>
 
 === "Polars"
+
+    In Polars, we can use the [`.join()`][polars-join] method to combine rows from two or more DataFrames based on a related column between them. In this case, we will join the `sales` DataFrame with the `product` DataFrame on the `product_id` column.
 
     ```py {.polars linenums="1" title="Join sales with product data"}
     sales_with_product_pl: pl.DataFrame = df_sales_pl.join(
@@ -1996,6 +2007,8 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
 === "Pandas"
 
+    This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
+
     ```py {.pandas linenums="1" title="Join with customer information to get a complete view"}
     complete_sales_pd: pd.DataFrame = pd.merge(
         sales_with_product_pd,
@@ -2034,6 +2047,8 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     </div>
 
 === "SQL"
+
+    This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
 
     ```py {.sql linenums="1" title="Join with customer information to get a complete view"}
     complete_sales_txt: str = """
@@ -2080,6 +2095,8 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
 
 === "PySpark"
 
+    This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
+
     ```py {.pyspark linenums="1" title="Join with customer information to get a complete view"}
     complete_sales_ps: psDataFrame = sales_with_product_ps.alias("s").join(
         other=df_customer_ps.select("customer_id", "customer_name", "city", "state").alias("c"),
@@ -2121,6 +2138,8 @@ In the next step, we will join the resulting DataFrame with the `customer` DataF
     </div>
 
 === "Polars"
+
+    This process is similar to the previous step, but now we will extend the `sales_with_product` DataFrame to join it with the `customer` DataFrame on the `customer_id` column. This will give us a complete view of the sales data, including product and customer details.
 
     ```py {.polars linenums="1" title="Join with customer information to get a complete view"}
     complete_sales_pl: pl.DataFrame = sales_with_product_pl.join(
@@ -2168,6 +2187,10 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
 === "Pandas"
 
+    In Pandas, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
+
+    Notice here that the syntax for Pandas uses the `DataFrame` object directly, and we can access the columns using the 'slice' (`[]`) operator.
+
     ```py {.pandas linenums="1" title="Calculate revenue and compare with sales amount"}
     complete_sales_pd["calculated_revenue"] = complete_sales_pd["price"] * complete_sales_pd["quantity"]
     complete_sales_pd["price_difference"] = complete_sales_pd["sales_amount"] - complete_sales_pd["calculated_revenue"]
@@ -2206,6 +2229,8 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     </div>
 
 === "SQL"
+
+    In SQL, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
 
     ```py {.sql linenums="1" title="Calculate revenue and compare with sales amount"}
     revenue_comparison_txt: str = """
@@ -2252,17 +2277,24 @@ Once we have the complete sales data, we can calculate the revenue for each sale
 
 === "PySpark"
 
+    In PySpark, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
+
+    Notice here that the syntax for PySpark uses the [`.withColumns`][pyspark-withcolumns] method to add new multiple columns to the DataFrame simultaneously. This method takes a dictionary where the keys are the names of the new columns and the values are the expressions to compute those columns. The methematical computation we have shown here uses two different methods:
+
+        1. Using the PySpark API [`F.col`][pyspark-col] to refer to the columns, and multiply them directly
+        2. Using the Spark SQL API within the [`F.expr`][pyspark-expr] method to write a SQL-like expression for the calculation.
+
     ```py {.pyspark linenums="1" title="Calculate revenue and compare with sales amount"}
     complete_sales_ps: psDataFrame = complete_sales_ps.withColumns(
         {
-            "calculated_revenue": complete_sales_ps["price"] * complete_sales_ps["quantity"],
+            "calculated_revenue": F.col("price") * F.col("quantity"),
             "price_difference": F.expr("sales_amount - (price * quantity)"),
         },
-    )
+    ).select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference")
     print(f"Complete Sales Data with Calculated Revenue and Price Difference: {complete_sales_ps.count()}")
-    complete_sales_ps.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference").show(5)
+    complete_sales_ps.show(5)
     print(
-        complete_sales_ps.select("sales_amount", "price", "quantity", "calculated_revenue", "price_difference")
+        complete_sales_ps 
         .limit(5)
         .toPandas()
         .to_markdown()
@@ -2299,6 +2331,10 @@ Once we have the complete sales data, we can calculate the revenue for each sale
     </div>
 
 === "Polars"
+
+    In Polars, we can calculate the revenue for each sale by multiplying the `price` and `quantity` columns. We can then compare this calculated revenue with the `sales_amount` column to identify any discrepancies.
+
+    Notice here that the syntax for Polars uses the [`.with_columns`][polars-with-columns] method to add new multiple columns to the DataFrame simultaneously. This method takes a list of expressions, where each expression defines a new column.
 
     ```py {.polars linenums="1" title="Calculate revenue and compare with sales amount"}
     complete_sales_pl: pl.DataFrame = complete_sales_pl.with_columns(
