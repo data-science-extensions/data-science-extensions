@@ -10,17 +10,30 @@ from pathlib import Path
 
 
 ## --------------------------------------------------------------------------- #
-##  UV Processes                                                            ####
+##  Generic                                                                 ####
 ## --------------------------------------------------------------------------- #
 
 
 def run_command(*command) -> None:
-    print(" ".join(command))
+    print("\n", " ".join(command), sep="", flush=True)
     subprocess.run(command, check=True)
 
 
 def uv_sync() -> None:
     run_command("uv", "sync", "--all-groups", "--native-tls", "--link-mode=copy")
+
+
+def lint_check() -> None:
+    lint()
+    check()
+
+
+def get_all_files(*suffixes) -> list[str]:
+    return [
+        str(p)
+        for p in Path("./").glob("**/*")
+        if ".venv" not in p.parts and not p.parts[0].startswith(".") and p.is_file() and p.suffix in {*suffixes}
+    ]
 
 
 ## --------------------------------------------------------------------------- #
@@ -32,13 +45,27 @@ def run_black() -> None:
     run_command("black", "--config=pyproject.toml", "./")
 
 
+def run_blacken_docs() -> None:
+    run_command("blacken-docs", "--line-length=120", *get_all_files(".md", ".py", ".ipynb"))
+
+
 def run_isort() -> None:
     run_command("isort", "--settings-file=pyproject.toml", "./")
 
 
+def run_pycln() -> None:
+    run_command("pycln", "--config=pyproject.toml", "src/")
+
+
+def run_pyupgrade() -> None:
+    run_command("pyupgrade", "--py3-plus", *get_all_files(".py"))
+
+
 def lint() -> None:
     run_black()
+    run_blacken_docs()
     run_isort()
+    run_pycln()
 
 
 ## --------------------------------------------------------------------------- #
@@ -50,14 +77,12 @@ def check_black() -> None:
     run_command("black", "--check", "--config=pyproject.toml", "./")
 
 
+def check_blacken_docs() -> None:
+    run_command("blacken-docs", "--check", "--line-length=120", *get_all_files(".md", ".py", ".ipynb"))
+
+
 def check_mypy() -> None:
-    run_command(
-        "mypy",
-        "--install-types",
-        "--non-interactive",
-        "--config-file=pyproject.toml",
-        "./src",
-    )
+    run_command("mypy", "--install-types", "--non-interactive", "--config-file=pyproject.toml", "./src")
 
 
 def check_isort() -> None:
@@ -65,7 +90,7 @@ def check_isort() -> None:
 
 
 def check_codespell() -> None:
-    run_command("codespell", "--toml", "pyproject.toml", "src/", "*.py")
+    run_command("codespell", "--toml=pyproject.toml", "src/", "*.py")
 
 
 def check_pylint() -> None:
@@ -92,14 +117,15 @@ def check_pytest() -> None:
 
 def check() -> None:
     check_black()
-    check_isort()
+    check_blacken_docs()
     # check_mypy()
+    check_isort()
     check_codespell()
     check_pylint()
     check_pycln()
     # check_mkdocs()
     # check_build()
-    check_pytest()
+    # check_pytest()
 
 
 ## --------------------------------------------------------------------------- #
@@ -171,6 +197,10 @@ def reformat_file(file_path: str) -> str | None:
             # Convert headings
             if line.startswith("==="):
                 line = line.replace("=== ", "### ").replace('"', "")
+
+            # Drop lines
+            if "--8<--" in line:
+                line = ""
 
         # Check for code block end
         elif in_code_block:

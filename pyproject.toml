@@ -41,6 +41,7 @@ Issues = "https://github.com/data-science-extensions/website/issues"
 [project.scripts]
 lint = "cli.scripts:lint"
 check = "cli.scripts:check"
+lint-check = "cli.scripts:lint_check"
 sync = "cli.scripts:uv_sync"
 check-pytest = "cli.scripts:check_pytest"
 reformat-file = "cli.scripts:reformat_file_cli"
