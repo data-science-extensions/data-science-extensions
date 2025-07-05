@@ -2399,7 +2399,10 @@ In this section, we will demonstrate how to use window functions to analyze sale
     ```py {.pandas linenums="1" title="Time-based window function"}
     df_sales_pd["date"] = pd.to_datetime(df_sales_pd["date"])  # Ensure correct date type
     daily_sales_pd: pd.DataFrame = (
-        df_sales_pd.groupby(df_sales_pd["date"].dt.date)["sales_amount"].sum().reset_index().sort_values("date")
+        df_sales_pd.groupby(df_sales_pd["date"].dt.date)
+        .agg(total_sales=("sales_amount", "sum"))
+        .reset_index()
+        .sort_values("date")
     )
     print(f"Daily Sales Summary: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
@@ -2413,7 +2416,7 @@ In this section, we will demonstrate how to use window functions to analyze sale
     ```
 
     ```txt
-             date  sales_amount
+             date  total_sales
     0  2023-01-01        490.76
     1  2023-01-02        453.94
     2  2023-01-03        994.51
@@ -2421,13 +2424,13 @@ In this section, we will demonstrate how to use window functions to analyze sale
     4  2023-01-05         27.89
     ```
 
-    |      | date       | sales_amount |
-    | ---: | :--------- | -----------: |
-    |    0 | 2023-01-01 |       490.76 |
-    |    1 | 2023-01-02 |       453.94 |
-    |    2 | 2023-01-03 |       994.51 |
-    |    3 | 2023-01-04 |       184.17 |
-    |    4 | 2023-01-05 |        27.89 |
+    |      | date       | total_sales |
+    | ---: | :--------- | ----------: |
+    |    0 | 2023-01-01 |      490.76 |
+    |    1 | 2023-01-02 |      453.94 |
+    |    2 | 2023-01-03 |      994.51 |
+    |    3 | 2023-01-04 |      184.17 |
+    |    4 | 2023-01-05 |       27.89 |
 
     </div>
 
@@ -2571,8 +2574,8 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     This is done using the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method, which shifts the values in a column by a specified number of periods. Note that the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method simply shifts the values in the column, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered; if you want it to be ordered, you can use the [`.sort_values()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sort_values.html) method before applying [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html).
 
     ```py {.pandas linenums="1" title="Calculate lag and lead"}
-    daily_sales_pd["previous_day_sales"] = daily_sales_pd["sales_amount"].shift(1)
-    daily_sales_pd["next_day_sales"] = daily_sales_pd["sales_amount"].shift(-1)
+    daily_sales_pd["previous_day_sales"] = daily_sales_pd["total_sales"].shift(1)
+    daily_sales_pd["next_day_sales"] = daily_sales_pd["total_sales"].shift(-1)
     print(f"Daily Sales with Lag and Lead: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
     print(daily_sales_pd.head(5).to_markdown())
@@ -2585,21 +2588,21 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     ```
 
     ```txt
-             date  sales_amount  previous_day_sales  next_day_sales
-    0  2023-01-01        490.76                 NaN          453.94
-    1  2023-01-02        453.94              490.76          994.51
-    2  2023-01-03        994.51              453.94          184.17
-    3  2023-01-04        184.17              994.51           27.89
-    4  2023-01-05         27.89              184.17          498.95
+             date  total_sales  previous_day_sales  next_day_sales
+    0  2023-01-01       490.76                 NaN          453.94
+    1  2023-01-02       453.94              490.76          994.51
+    2  2023-01-03       994.51              453.94          184.17
+    3  2023-01-04       184.17              994.51           27.89
+    4  2023-01-05        27.89              184.17          498.95
     ```
 
-    |      | date       | sales_amount | previous_day_sales | next_day_sales |
-    | ---: | :--------- | -----------: | -----------------: | -------------: |
-    |    0 | 2023-01-01 |       490.76 |                nan |         453.94 |
-    |    1 | 2023-01-02 |       453.94 |             490.76 |         994.51 |
-    |    2 | 2023-01-03 |       994.51 |             453.94 |         184.17 |
-    |    3 | 2023-01-04 |       184.17 |             994.51 |          27.89 |
-    |    4 | 2023-01-05 |        27.89 |             184.17 |         498.95 |
+    |      | date       | total_sales | previous_day_sales | next_day_sales |
+    | ---: | :--------- | ----------: | -----------------: | -------------: |
+    |    0 | 2023-01-01 |      490.76 |                nan |         453.94 |
+    |    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |
+    |    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |
+    |    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |
+    |    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |
 
     </div>
 
@@ -2609,10 +2612,9 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     lag_lead_txt: str = """
         SELECT
             date AS sale_date,
-            SUM(sales_amount) AS sales_amount,
+            SUM(sales_amount) AS total_sales,
             LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
-            LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
-            SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change
+            LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales
         FROM sales
         GROUP BY date
         ORDER BY date
@@ -2630,21 +2632,21 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
     ```
 
     ```txt
-                 sale_date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change
-    0  2023-01-01 00:00:00        490.76                 NaN          453.94                  NaN
-    1  2023-01-02 00:00:00        453.94              490.76          994.51               -36.82
-    2  2023-01-03 00:00:00        994.51              453.94          184.17               540.57
-    3  2023-01-04 00:00:00        184.17              994.51           27.89              -810.34
-    4  2023-01-05 00:00:00         27.89              184.17          498.95              -156.28
+                 sale_date  total_sales  previous_day_sales  next_day_sales
+    0  2023-01-01 00:00:00        490.76                 NaN          453.94
+    1  2023-01-02 00:00:00        453.94              490.76          994.51
+    2  2023-01-03 00:00:00        994.51              453.94          184.17
+    3  2023-01-04 00:00:00        184.17              994.51           27.89
+    4  2023-01-05 00:00:00         27.89              184.17          498.95
     ```
 
-    |      | sale_date           | sales_amount | previous_day_sales | next_day_sales | day_over_day_change |
-    | ---: | :------------------ | -----------: | -----------------: | -------------: | ------------------: |
-    |    0 | 2023-01-01 00:00:00 |       490.76 |                nan |         453.94 |                 nan |
-    |    1 | 2023-01-02 00:00:00 |       453.94 |             490.76 |         994.51 |              -36.82 |
-    |    2 | 2023-01-03 00:00:00 |       994.51 |             453.94 |         184.17 |              540.57 |
-    |    3 | 2023-01-04 00:00:00 |       184.17 |             994.51 |          27.89 |             -810.34 |
-    |    4 | 2023-01-05 00:00:00 |        27.89 |             184.17 |         498.95 |             -156.28 |
+    |      | sale_date           | total_sales | previous_day_sales | next_day_sales |
+    | ---: | :------------------ | ----------: | -----------------: | -------------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |
 
     </div>
 
@@ -2742,8 +2744,8 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     We can also calculate the percentage change in sales using the [`.pct_change()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html) method, which calculates the percentage change between the current and previous values.
 
     ```py {.pandas linenums="1" title="Calculate day-over-day change"}
-    daily_sales_pd["day_over_day_change"] = daily_sales_pd["sales_amount"] - daily_sales_pd["previous_day_sales"]
-    daily_sales_pd["pct_change"] = daily_sales_pd["sales_amount"].pct_change() * 100
+    daily_sales_pd["day_over_day_change"] = daily_sales_pd["total_sales"] - daily_sales_pd["previous_day_sales"]
+    daily_sales_pd["pct_change"] = daily_sales_pd["total_sales"].pct_change() * 100
     print(f"Daily Sales with Day-over-Day Change: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
     print(daily_sales_pd.head(5).to_markdown())
@@ -2756,21 +2758,21 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```
 
     ```txt
-             date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change  pct_change
-    0  2023-01-01        490.76                 NaN          453.94                  NaN         NaN
-    1  2023-01-02        453.94              490.76          994.51               -36.82   -7.502649
-    2  2023-01-03        994.51              453.94          184.17               540.57  119.084020
-    3  2023-01-04        184.17              994.51           27.89              -810.34  -81.481333
-    4  2023-01-05         27.89              184.17          498.95              -156.28  -84.856383
+             date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  day_over_day_change  7d_moving_avg  
+    0  2023-01-01       490.76                 NaN          453.94                  NaN                  NaN     490.760000  
+    1  2023-01-02       453.94              490.76          994.51               -36.82               -36.82     472.350000  
+    2  2023-01-03       994.51              453.94          184.17               540.57               540.57     646.403333  
+    3  2023-01-04       184.17              994.51           27.89              -810.34              -810.34     530.845000  
+    4  2023-01-05        27.89              184.17          498.95              -156.28              -156.28     430.254000  
     ```
 
-    |      | date       | sales_amount | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
-    | ---: | :--------- | -----------: | -----------------: | -------------: | ------------------: | ---------: |
-    |    0 | 2023-01-01 |       490.76 |                nan |         453.94 |                 nan |        nan |
-    |    1 | 2023-01-02 |       453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
-    |    2 | 2023-01-03 |       994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
-    |    3 | 2023-01-04 |       184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
-    |    4 | 2023-01-05 |        27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
+    |      | date       | total_sales | previous_day_sales | next_day_sales | pct_change | day_over_day_change | 7d_moving_avg |
+    | ---: | :--------- | ----------: | -----------------: | -------------: | ---------: | ------------------: | ------------: |
+    |    0 | 2023-01-01 |      490.76 |                nan |         453.94 |        nan |                 nan |        490.76 |
+    |    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |   -7.50265 |              -36.82 |        472.35 |
+    |    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |    119.084 |              540.57 |       646.403 |
+    |    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |   -81.4813 |             -810.34 |       530.845 |
+    |    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |   -84.8564 |             -156.28 |       430.254 |
 
     </div>
 
@@ -2779,9 +2781,29 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     The day-over-day change calculation is already included in the previous SQL query, so we can use the same result set.
 
     ```py {.sql linenums="1" title="Day-over-day change already calculated"}
-    print(f"Daily Sales with Day-over-Day Change: {len(lag_lead_df_sql)}")
-    print(lag_lead_df_sql.head(5))
-    print(lag_lead_df_sql.head(5).to_markdown())
+    dod_change_txt: str = """
+        SELECT
+            sale_date,
+            total_sales,
+            previous_day_sales,
+            next_day_sales,
+            total_sales - previous_day_sales AS day_over_day_change,
+            (total_sales / NULLIF(previous_day_sales, 0) - 1) * 100 AS pct_change
+        FROM (
+            SELECT
+                date AS sale_date,
+                SUM(sales_amount) AS total_sales,
+                LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
+                LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales
+            FROM sales
+            GROUP BY date
+        )
+        ORDER BY sale_date
+    """
+    dod_change_df_sql: pd.DataFrame = pd.read_sql(dod_change_txt, conn)
+    print(f"Daily Sales with Day-over-Day Change: {len(dod_change_df_sql)}")
+    print(dod_change_df_sql.head(5))
+    print(dod_change_df_sql.head(5).to_markdown())
     ```
 
     <div class="result" markdown>
@@ -2791,21 +2813,21 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```
 
     ```txt
-                 sale_date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change
-    0  2023-01-01 00:00:00        490.76                 NaN          453.94                  NaN
-    1  2023-01-02 00:00:00        453.94              490.76          994.51               -36.82
-    2  2023-01-03 00:00:00        994.51              453.94          184.17               540.57
-    3  2023-01-04 00:00:00        184.17              994.51           27.89              -810.34
-    4  2023-01-05 00:00:00         27.89              184.17          498.95              -156.28
+                 sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  
+    0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN  
+    1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649  
+    2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020  
+    3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333  
+    4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383  
     ```
 
-    |      | sale_date           | sales_amount | previous_day_sales | next_day_sales | day_over_day_change |
-    | ---: | :------------------ | -----------: | -----------------: | -------------: | ------------------: |
-    |    0 | 2023-01-01 00:00:00 |       490.76 |                nan |         453.94 |                 nan |
-    |    1 | 2023-01-02 00:00:00 |       453.94 |             490.76 |         994.51 |              -36.82 |
-    |    2 | 2023-01-03 00:00:00 |       994.51 |             453.94 |         184.17 |              540.57 |
-    |    3 | 2023-01-04 00:00:00 |       184.17 |             994.51 |          27.89 |             -810.34 |
-    |    4 | 2023-01-05 00:00:00 |        27.89 |             184.17 |         498.95 |             -156.28 |
+    |      | sale_date           | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change |
+    | ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |
 
     </div>
 
@@ -2873,7 +2895,7 @@ Now, we can calculate the day-over-day change in sales. This is done by subtract
     ```txt
     shape: (5, 6)
     ┌────────────┬─────────────┬────────────────────┬────────────────┬─────────────────────┬────────────┐
-    │ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales ┆ day_over_day_changd ┆ pct_change │
+    │ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales ┆ day_over_day_change ┆ pct_change │
     │ ---        ┆ ---         ┆ ---                ┆ ---            ┆ ---                 ┆ ---        │
     │ date       ┆ f64         ┆ f64                ┆ f64            ┆ f64                 ┆ f64        │
     ╞════════════╪═════════════╪════════════════════╪════════════════╪═════════════════════╪════════════╡
@@ -2902,7 +2924,7 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     This is done using the [`.rolling()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) method, which allows us to specify the window size and the minimum number of periods required for the calculation.
 
     ```py {.pandas linenums="1" title="Calculate 7-day moving average"}
-    daily_sales_pd["7d_moving_avg"] = daily_sales_pd["sales_amount"].rolling(window=7, min_periods=1).mean()
+    daily_sales_pd["7d_moving_avg"] = daily_sales_pd["total_sales"].rolling(window=7, min_periods=1).mean()
     print(f"Daily Sales with 7-Day Moving Average: {len(daily_sales_pd)}")
     print(daily_sales_pd.head(5))
     print(daily_sales_pd.head(5).to_markdown())
@@ -2915,21 +2937,21 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     ```
 
     ```txt
-             date  sales_amount  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg
-    0  2023-01-01        490.76                 NaN          453.94                  NaN         NaN     490.760000
-    1  2023-01-02        453.94              490.76          994.51               -36.82   -7.502649     472.350000
-    2  2023-01-03        994.51              453.94          184.17               540.57  119.084020     646.403333
-    3  2023-01-04        184.17              994.51           27.89              -810.34  -81.481333     530.845000
-    4  2023-01-05         27.89              184.17          498.95              -156.28  -84.856383     430.254000
+             date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg
+    0  2023-01-01       490.76                 NaN          453.94                  NaN         NaN     490.760000
+    1  2023-01-02       453.94              490.76          994.51               -36.82   -7.502649     472.350000
+    2  2023-01-03       994.51              453.94          184.17               540.57  119.084020     646.403333
+    3  2023-01-04       184.17              994.51           27.89              -810.34  -81.481333     530.845000
+    4  2023-01-05        27.89              184.17          498.95              -156.28  -84.856383     430.254000
     ```
 
-    |      | date       | sales_amount | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
-    | ---: | :--------- | -----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
-    |    0 | 2023-01-01 |       490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
-    |    1 | 2023-01-02 |       453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
-    |    2 | 2023-01-03 |       994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
-    |    3 | 2023-01-04 |       184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
-    |    4 | 2023-01-05 |        27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
+    |      | date       | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
+    | ---: | :--------- | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
+    |    0 | 2023-01-01 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
+    |    1 | 2023-01-02 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
+    |    2 | 2023-01-03 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
+    |    3 | 2023-01-04 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
+    |    4 | 2023-01-05 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
 
     </div>
 
@@ -2938,15 +2960,25 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     ```py {.sql linenums="1" title="Calculate 7-day moving average"}
     rolling_avg_txt: str = """
         SELECT
-            date AS sale_date,
-            SUM(sales_amount) AS sales_amount,
-            AVG(SUM(sales_amount)) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS rolling_7d_avg,
-            LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
-            LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
-            SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change
-        FROM sales
-        GROUP BY date
-        ORDER BY date
+            sale_date,
+            total_sales,
+            previous_day_sales,
+            next_day_sales,
+            day_over_day_change,
+            pct_change,
+            AVG(total_sales) OVER (ORDER BY sale_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS "7d_moving_avg"
+        FROM (
+            SELECT
+                date AS sale_date,
+                SUM(sales_amount) AS total_sales,
+                LAG(SUM(sales_amount)) OVER (ORDER BY date) AS previous_day_sales,
+                LEAD(SUM(sales_amount)) OVER (ORDER BY date) AS next_day_sales,
+                SUM(sales_amount) - LAG(SUM(sales_amount)) OVER (ORDER BY date) AS day_over_day_change,
+                (SUM(sales_amount) / NULLIF(LAG(SUM(sales_amount)) OVER (ORDER BY date), 0) - 1) * 100 AS pct_change
+            FROM sales
+            GROUP BY date
+        ) AS daily_sales
+        ORDER BY sale_date
     """
     window_df_sql: pd.DataFrame = pd.read_sql(rolling_avg_txt, conn)
     print(f"Daily Sales with 7-Day Moving Average: {len(window_df_sql)}")
@@ -2961,21 +2993,21 @@ Next, we will calculate the rolling average of sales over a 7-day window.
     ```
 
     ```txt
-                 sale_date  sales_amount  rolling_7d_avg  previous_day_sales  next_day_sales  day_over_day_change
-    0  2023-01-01 00:00:00        490.76      490.760000                 NaN          453.94                  NaN
-    1  2023-01-02 00:00:00        453.94      472.350000              490.76          994.51               -36.82
-    2  2023-01-03 00:00:00        994.51      646.403333              453.94          184.17               540.57
-    3  2023-01-04 00:00:00        184.17      530.845000              994.51           27.89              -810.34
-    4  2023-01-05 00:00:00         27.89      430.254000              184.17          498.95              -156.28
+                 sale_date  total_sales  previous_day_sales  next_day_sales  day_over_day_change  pct_change  7d_moving_avg  
+    0  2023-01-01 00:00:00       490.76                 NaN          453.94                  NaN         NaN     490.760000  
+    1  2023-01-02 00:00:00       453.94              490.76          994.51               -36.82   -7.502649     472.350000  
+    2  2023-01-03 00:00:00       994.51              453.94          184.17               540.57  119.084020     646.403333  
+    3  2023-01-04 00:00:00       184.17              994.51           27.89              -810.34  -81.481333     530.845000  
+    4  2023-01-05 00:00:00        27.89              184.17          498.95              -156.28  -84.856383     430.254000  
     ```
 
-    |      | sale_date           | sales_amount | rolling_7d_avg | previous_day_sales | next_day_sales | day_over_day_change |
-    | ---: | :------------------ | -----------: | -------------: | -----------------: | -------------: | ------------------: |
-    |    0 | 2023-01-01 00:00:00 |       490.76 |         490.76 |                nan |         453.94 |                 nan |
-    |    1 | 2023-01-02 00:00:00 |       453.94 |         472.35 |             490.76 |         994.51 |              -36.82 |
-    |    2 | 2023-01-03 00:00:00 |       994.51 |        646.403 |             453.94 |         184.17 |              540.57 |
-    |    3 | 2023-01-04 00:00:00 |       184.17 |        530.845 |             994.51 |          27.89 |             -810.34 |
-    |    4 | 2023-01-05 00:00:00 |        27.89 |        430.254 |             184.17 |         498.95 |             -156.28 |
+    |      | sale_date           | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
+    | ---: | :------------------ | ----------: | -----------------: | -------------: | ------------------: | ---------: | ------------: |
+    |    0 | 2023-01-01 00:00:00 |      490.76 |                nan |         453.94 |                 nan |        nan |        490.76 |
+    |    1 | 2023-01-02 00:00:00 |      453.94 |             490.76 |         994.51 |              -36.82 |   -7.50265 |        472.35 |
+    |    2 | 2023-01-03 00:00:00 |      994.51 |             453.94 |         184.17 |              540.57 |    119.084 |       646.403 |
+    |    3 | 2023-01-04 00:00:00 |      184.17 |             994.51 |          27.89 |             -810.34 |   -81.4813 |       530.845 |
+    |    4 | 2023-01-05 00:00:00 |       27.89 |             184.17 |         498.95 |             -156.28 |   -84.8564 |       430.254 |
 
     </div>
 
@@ -3041,17 +3073,17 @@ Next, we will calculate the rolling average of sales over a 7-day window.
 
     ```txt
     shape: (5, 7)
-    ┌────────────┬─────────────┬──────────────────────────────┬───────────────────────┬─────────────────────────┬────────────┬───────────────────┐
-    │ date       ┆ total_sales ┆ previous_day_sales           ┆ next_day_sales        ┆ day_over_day_change     ┆ pct_change ┆ 7d_moving_avg     │
-    │ ---        ┆ ---         ┆ ---                          ┆ ---                   ┆ ---                     ┆ ---        ┆ ---               │
-    │ date       ┆ f64         ┆ f64                          ┆ f64                   ┆ f64                     ┆ f64        ┆ f64               │
-    ╞════════════╪═════════════╪══════════════════════════════╪═══════════════════════╪═════════════════════════╪════════════╪═══════════════════╡
-    │ 2023-01-01 ┆ 490.76      ┆ null                         ┆ 453.94                ┆ null                    ┆ null       ┆ 490.76            │
-    │ 2023-01-02 ┆ 453.94      ┆ 490.76                       ┆ 994.51                ┆ -36.82                  ┆ -7.502649  ┆ 472.35            │
-    │ 2023-01-03 ┆ 994.51      ┆ 453.94                       ┆ 184.17                ┆ 540.57                  ┆ 119.08402  ┆ 646.403333        │
-    │ 2023-01-04 ┆ 184.17      ┆ 994.51                       ┆ 27.89                 ┆ -810.34                 ┆ -81.481333 ┆ 530.845           │
-    │ 2023-01-05 ┆ 27.89       ┆ 184.17                       ┆ 498.95                ┆ -156.28                 ┆ -84.856383 ┆ 430.254           │
-    └────────────┴─────────────┴──────────────────────────────┴───────────────────────┴─────────────────────────┴────────────┴───────────────────┘
+    ┌────────────┬─────────────┬────────────────────┬────────────────┬─────────────────────┬────────────┬───────────────┐
+    │ date       ┆ total_sales ┆ previous_day_sales ┆ next_day_sales ┆ day_over_day_change ┆ pct_change ┆ 7d_moving_avg │
+    │ ---        ┆ ---         ┆ ---                ┆ ---            ┆ ---                 ┆ ---        ┆ ---           │
+    │ date       ┆ f64         ┆ f64                ┆ f64            ┆ f64                 ┆ f64        ┆ f64           │
+    ╞════════════╪═════════════╪════════════════════╪════════════════╪═════════════════════╪════════════╪═══════════════╡
+    │ 2023-01-01 ┆ 490.76      ┆ null               ┆ 453.94         ┆ null                ┆ null       ┆ 490.76        │
+    │ 2023-01-02 ┆ 453.94      ┆ 490.76             ┆ 994.51         ┆ -36.82              ┆ -7.502649  ┆ 472.35        │
+    │ 2023-01-03 ┆ 994.51      ┆ 453.94             ┆ 184.17         ┆ 540.57              ┆ 119.08402  ┆ 646.403333    │
+    │ 2023-01-04 ┆ 184.17      ┆ 994.51             ┆ 27.89          ┆ -810.34             ┆ -81.481333 ┆ 530.845       │
+    │ 2023-01-05 ┆ 27.89       ┆ 184.17             ┆ 498.95         ┆ -156.28             ┆ -84.856383 ┆ 430.254       │
+    └────────────┴─────────────┴────────────────────┴────────────────┴─────────────────────┴────────────┴───────────────┘
     ```
 
     |      | date                | total_sales | previous_day_sales | next_day_sales | day_over_day_change | pct_change | 7d_moving_avg |
@@ -3074,7 +3106,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
         .add_trace(
             go.Scatter(
                 x=daily_sales_pd["date"],
-                y=daily_sales_pd["sales_amount"],
+                y=daily_sales_pd["total_sales"],
                 mode="lines",
                 name="Daily Sales",
             )
@@ -3112,7 +3144,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
         .add_trace(
             go.Scatter(
                 x=window_df_sql["sale_date"],
-                y=window_df_sql["sales_amount"],
+                y=window_df_sql["total_sales"],
                 mode="lines",
                 name="Daily Sales",
             )
@@ -3120,7 +3152,7 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
         .add_trace(
             go.Scatter(
                 x=window_df_sql["sale_date"],
-                y=window_df_sql["rolling_7d_avg"],
+                y=window_df_sql["7d_moving_avg"],
                 mode="lines",
                 name="7-Day Moving Average",
                 line=dict(width=3),
@@ -3217,6 +3249,11 @@ Finally, we can visualize the daily sales data along with the 7-day moving avera
     --8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_pl.html"
 
     </div>
+
+--8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_pd.html"
+--8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_sql.html"
+--8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_ps.html"
+--8<-- "docs/guides/querying-data/images/pt4_daily_sales_with_7d_avg_pl.html"
 
 
 ## 5. Ranking and Partitioning
