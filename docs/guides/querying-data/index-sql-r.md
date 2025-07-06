@@ -3,6 +3,12 @@
 
 ### A Comprehensive Guide of using Pandas, SQL, PySpark, and Polars for Data Manipulation Techniques, with Practical Examples and Visualisations
 
+[![](./../../assets/images/dse.png){width=70px}<br>Download<br>- ALL](./index-r.ipynb){ :download .md-button .md-button-fifth }
+[![](./../../assets/icons/pandas.svg){width=100%}<br>Download<br>- Pandas](./index-pandas-r.ipynb){ :download .md-button .md-button-fifth }
+[![](./../../assets/icons/sql.svg){width=100%}<br>Download<br>- SQL](./index-sql-r.ipynb){ :download .md-button .md-button-fifth }
+[![](./../../assets/icons/spark.svg){width=100%}<br>Download<br>- PySpark](./index-pyspark-r.ipynb){ :download .md-button .md-button-fifth }
+[![](./../../assets/icons/polars.svg){width=100%}<br>Download<br>- Polars](./index-polars-r.ipynb){ :download .md-button .md-button-fifth }
+
 
 ## Introduction
 

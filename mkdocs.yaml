@@ -135,4 +135,12 @@ nav:
       - Querying Data: guides/querying-data/index.md
 
 exclude_docs: |
-  guides/querying-data/index-reformatted.md
+  guides/querying-data/index-r.md
+  guides/querying-data/index-pandas.md
+  guides/querying-data/index-sql.md
+  guides/querying-data/index-pyspark.md
+  guides/querying-data/index-polars.md
+  guides/querying-data/index-pandas-r.md
+  guides/querying-data/index-sql-r.md
+  guides/querying-data/index-pyspark-r.md
+  guides/querying-data/index-polars-r.md

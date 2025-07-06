@@ -293,7 +293,7 @@ def reformat_file(file_path: str) -> str | None:
     # Create output file path
     file_stem: str = file.stem  # Get filename without extension
     file_suffix: str = file.suffix  # Get file extension
-    output_file: Path = file.with_name(f"{file_stem}-reformatted{file_suffix}")
+    output_file: Path = file.with_name(f"{file_stem}-r{file_suffix}")
 
     # Read the file
     with open(file, "r") as f:
