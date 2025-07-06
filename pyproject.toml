@@ -38,6 +38,17 @@ Repository = "https://github.com/data-science-extensions/website"
 Changelog = "https://github.com/data-science-extensions/website/releases"
 Issues = "https://github.com/data-science-extensions/website/issues"
 
+[project.scripts]
+lint = "cli.scripts:lint"
+check = "cli.scripts:check"
+lint-check = "cli.scripts:lint_check"
+sync = "cli.scripts:uv_sync"
+check-pytest = "cli.scripts:check_pytest"
+reformat-file = "cli.scripts:reformat_file_cli"
+convert-md-to-ipynb = "cli.scripts:convert_markdown_to_notebook_cli"
+reformat-and-convert-md-to-ipynb = "cli.scripts:format_and_convert_cli"
+extract-sections-from-markdown-file = "cli.scripts:extract_sections_from_markdown_file_cli"
+
 [dependency-groups]
 dev = [
     "black==25.*",
@@ -61,10 +72,22 @@ docs = [
     "mkdocs-material==9.*",
     "mkdocstrings==0.*",
     "mkdocstrings-python==1.*",
+    "jupytext==1.*",  # <-- Used to convert notebooks to markdown
+]
+docs-dev = [
+    "numpy==2.*",
+    "pandas==2.*",
+    "tabulate==0.*",
+    "plotly==6.*",
+    "pyspark==3.*",
+    "polars==1.*",
+    "pyarrow==20.*",  # <-- Used for converting from polars to pandas
+    "setuptools==80.*",  # <-- Dependency for pyspark
 ]
 
 [tool.black]
 color = true
+line-length = 120
 exclude = '''
 /(
     \.git
@@ -83,3 +106,14 @@ exclude = '''
 
 [tool.codespell]
 ignore-words-list = "demog"
+
+[tool.isort]
+import_heading_future = "Future Library Imports"
+import_heading_stdlib = "StdLib Imports"
+import_heading_thirdparty = "Third Party Imports"
+import_heading_firstparty = "Local First Party Imports"
+import_heading_localfolder = "Local Module Imports"
+profile = "black"
+split_on_trailing_comma = true
+combine_as_imports = true
+lines_after_imports = 2

@@ -15,8 +15,10 @@ watch:
 
 theme:
   name: material
-  favicon: ./assets/images/1067432.png
-  coverpage_icon: ./assets/images/1067432.png
+  font:
+    code: Consolas, 'Courier New', monospace
+  favicon: ./assets/images/dse.png
+  coverpage_icon: ./assets/images/dse.png
   custom_dir: docs/overrides
   palette:
     primary: blue grey
@@ -34,9 +36,12 @@ theme:
     - toc.follow
     - content.action.edit
     - content.action.view
-  logo: ./assets/images/1067432.png
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  logo: ./assets/images/dse.png
   icon:
-    repo: material/gitlab
+    repo: material/github
     edit: material/file-edit-outline
     view: material/file-eye-outline
 
@@ -47,24 +52,29 @@ markdown_extensions:
   - md_in_html
   - toc:
       permalink: "🔗"
-  - pymdownx.emoji
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      options:
+        custom_icons:
+          - overrides/.icons
   - pymdownx.magiclink
   - pymdownx.details
+  - pymdownx.critic
   - pymdownx.superfences
   - pymdownx.progressbar
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets:
       check_paths: true
+      url_download: true
+      dedent_subsections: true
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.arithmatex:
       generic: true
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 extra:
   version:
@@ -75,6 +85,7 @@ extra_css:
   - assets/stylesheets/style.css
   - assets/stylesheets/admonitions.css
   - assets/stylesheets/code_chunks.css
+  - assets/stylesheets/columns.css
   - https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css
 
 plugins:
@@ -119,3 +130,17 @@ nav:
       - Python Toolbox: toolboxes/toolbox-python.md
       - PySpark Toolbox: toolboxes/toolbox-pyspark.md
       - Synthetic Data Generators: toolboxes/synthetic-data-generators.md
+  - Guides:
+      - guides/index.md
+      - Querying Data: guides/querying-data/index.md
+
+exclude_docs: |
+  guides/querying-data/index-r.md
+  guides/querying-data/index-pandas.md
+  guides/querying-data/index-sql.md
+  guides/querying-data/index-pyspark.md
+  guides/querying-data/index-polars.md
+  guides/querying-data/index-pandas-r.md
+  guides/querying-data/index-sql-r.md
+  guides/querying-data/index-pyspark-r.md
+  guides/querying-data/index-polars-r.md
