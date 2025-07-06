@@ -17,8 +17,8 @@ theme:
   name: material
   font:
     code: Consolas, 'Courier New', monospace
-  favicon: ./assets/images/1067432.png
-  coverpage_icon: ./assets/images/1067432.png
+  favicon: ./assets/images/dse.png
+  coverpage_icon: ./assets/images/dse.png
   custom_dir: docs/overrides
   palette:
     primary: blue grey
@@ -39,7 +39,7 @@ theme:
     - content.code.copy
     - content.code.annotate
     - content.tabs.link
-  logo: ./assets/images/1067432.png
+  logo: ./assets/images/dse.png
   icon:
     repo: material/github
     edit: material/file-edit-outline

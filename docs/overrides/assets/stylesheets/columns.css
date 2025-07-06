@@ -29,3 +29,43 @@
         columns: initial;
     }
 }
+
+/* Buttons with different widths */
+.md-typeset .md-button-fifth {
+    width: 19%;
+    text-align: center;
+    padding: 0.6em;
+}
+.md-typeset .md-button-quarter {
+    width: 24%;
+    text-align: center;
+}
+.md-typeset .md-button-third {
+    width: 33%;
+    text-align: center;
+}
+.md-typeset .md-button-half {
+    width: 49%;
+    text-align: center;
+}
+
+.md-typeset .md-button-fifth img  {
+    display: inline-block;
+    height: 70px;
+    /* width: 100%; */
+}
+.md-typeset .md-button-quarter img  {
+    display: inline-block;
+    height: 70px;
+    /* width: 100%; */
+}
+.md-typeset .md-button-third img  {
+    display: inline-block;
+    height: 70px;
+    /* width: 100%; */
+}
+.md-typeset .md-button-half img  {
+    display: inline-block;
+    height: 70px;
+    /* width: 100%; */
+}
