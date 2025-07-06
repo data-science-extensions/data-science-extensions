@@ -2273,8 +2273,8 @@ In PySpark, we can calculate the revenue for each sale by multiplying the `price
 
 Notice here that the syntax for PySpark uses the [`.withColumns`][pyspark-withcolumns] method to add new multiple columns to the DataFrame simultaneously. This method takes a dictionary where the keys are the names of the new columns and the values are the expressions to compute those columns. The methematical computation we have shown here uses two different methods:
 
-    1. Using the PySpark API [`F.col`][pyspark-col] to refer to the columns, and multiply them directly
-    2. Using the Spark SQL API within the [`F.expr`][pyspark-expr] method to write a SQL-like expression for the calculation.
+1. With the PySpark API, we can use the [`F.col()`][pyspark-col] function to refer to the columns, and multiply them directly
+2. With the Spark SQL API, we can use the [`F.expr()`][pyspark-expr] function to write a SQL-like expression for the calculation.
 
 ```python {.pyspark linenums="1" title="Calculate revenue and compare with sales amount"}
 complete_sales_ps: psDataFrame = complete_sales_ps.withColumns(
@@ -2375,12 +2375,16 @@ Window functions are a powerful feature in Pandas that allow us to perform calcu
 
 To understand more about the nuances of the window functions, check out some of these guides:
 
-- [Analyzing data with window functions](https://docs.snowflake.com/en/user-guide/functions-window-using)
-- [SQL Window Functions Visualized](https://medium.com/learning-sql/sql-window-function-visualized-fff1927f00f2)
+- [Analyzing data with window functions][analysing-window-functions]
+- [SQL Window Functions Visualized][visualising-window-functions]
 
 In this section, we will demonstrate how to use window functions to analyze sales data over time. We will start by converting the `date` column to a datetime type, which is necessary for time-based calculations. We will then group the data by date and calculate the total sales for each day.
 
+The first thing that we will do is to group the sales data by date and calculate the total sales for each day. This will give us a daily summary of sales, which we can then use to analyze trends over time.
+
 ### Pandas
+
+In Pandas, we can use the [`.groupby()`][pandas-groupby] method to group the data by the `date` column, followed by the [`.agg()`][pandas-groupby-agg] method to calculate the total sales for each day. This will then set us up for further time-based calculations in the following steps
 
 ```python {.pandas linenums="1" title="Time-based window function"}
 df_sales_pd["date"] = pd.to_datetime(df_sales_pd["date"])  # Ensure correct date type
@@ -2421,6 +2425,8 @@ Daily Sales Summary: 100
 </div>
 
 ### SQL
+
+In SQL, we can use the `GROUP BY` clause to group the data by the `date` column and then use the `SUM()` function to calculate the total sales for each day. This will give us a daily summary of sales, which we can then use to analyze trends over time.
 
 ```python {.sql linenums="1" title="Time-based window function"}
 daily_sales_txt: str = """
@@ -2463,14 +2469,12 @@ Daily Sales Summary: 100
 
 ### PySpark
 
+In PySpark, we can use the [`.groupBy()`][pyspark-groupby] method to group the data by the `date` column, followed by the [`.agg()`][pyspark-groupby-agg] method to calculate the total sales for each day. This will then set us up for further time-based calculations in the following steps.
+
 ```python {.pyspark linenums="1" title="Time-based window function"}
 df_sales_ps: psDataFrame = df_sales_ps.withColumn("date", F.to_date(df_sales_ps["date"]))
 daily_sales_ps: psDataFrame = (
-    df_sales_ps.groupBy("date")
-    .agg(
-        F.sum("sales_amount").alias("total_sales"),
-    )
-    .orderBy("date")
+    df_sales_ps.groupBy("date").agg(F.sum("sales_amount").alias("total_sales")).orderBy("date")
 )
 print(f"Daily Sales Summary: {daily_sales_ps.count()}")
 daily_sales_ps.show(5)
@@ -2508,14 +2512,12 @@ only showing top 5 rows
 
 ### Polars
 
+In Polars, we can use the [`.group_by()`][polars-groupby] method to group the data by the `date` column, followed by the [`.agg()`][polars-groupby-agg] method to calculate the total sales for each day. This will then set us up for further time-based calculations in the following steps.
+
 ```python {.polars linenums="1" title="Time-based window function"}
 df_sales_pl: pl.DataFrame = df_sales_pl.with_columns(pl.col("date").cast(pl.Date))
 daily_sales_pl: pl.DataFrame = (
-    df_sales_pl.group_by("date")
-    .agg(
-        pl.col("sales_amount").sum().alias("total_sales"),
-    )
-    .sort("date")
+    df_sales_pl.group_by("date").agg(pl.col("sales_amount").sum().alias("total_sales")).sort("date")
 )
 print(f"Daily Sales Summary: {len(daily_sales_pl)}")
 print(daily_sales_pl.head(5))
@@ -2557,7 +2559,9 @@ Next, we will calculate the lag and lead values for the sales amount. This allow
 
 ### Pandas
 
-This is done using the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method, which shifts the values in a column by a specified number of periods. Note that the [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html) method simply shifts the values in the column, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered; if you want it to be ordered, you can use the [`.sort_values()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sort_values.html) method before applying [`.shift()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html).
+In Pandas, we can calculate the lag and lead values for the sales amount by using the [`.shift()`][pandas-shift] method. This method shifts the values in a column by a specified number of periods, allowing us to create lag and lead columns.
+
+Note that the [`.shift()`][pandas-shift] method simply shifts the values in the column by a number of rows up or down, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered. However, if you want it to be ordered, you can use the [`.sort_values()`][pandas-sort_values] method before applying [`.shift()`][pandas-shift].
 
 ```python {.pandas linenums="1" title="Calculate lag and lead"}
 daily_sales_pd["previous_day_sales"] = daily_sales_pd["total_sales"].shift(1)
@@ -2593,6 +2597,10 @@ Daily Sales with Lag and Lead: 100
 </div>
 
 ### SQL
+
+In SQL, we can use the `LAG()` and `LEAD()` window functions to calculate the lag and lead values for the sales amount. These functions allow us to access data from previous and next rows in the result set without needing to join the table to itself.
+
+The part that is important to note here is that the `LAG()` and `LEAD()` functions are used in conjunction with the `OVER` clause, which defines the window over which the function operates. In this case, we are ordering by the `date` column to ensure that the lag and lead values are calculated based on the chronological order of the sales data.
 
 ```python {.sql linenums="1" title="Calculate lag and lead"}
 lag_lead_txt: str = """
@@ -2638,12 +2646,21 @@ Daily Sales with Lag and Lead: 100
 
 ### PySpark
 
+In PySpark, we can use the [`.lag()`][pyspark-lag] and [`.lead()`][pyspark-lead] functions to calculate the lag and lead values for the sales amount. These functions are used in conjunction with a window specification that defines the order of the rows.
+
+Note that in PySpark, we can define a Window function in one of two ways: using the PySpark API or using the Spark SQL API.
+
+1. **The PySpark API**: The PySpark API allows us to define a window specification using the [`Window()`][pyspark-window] class, which provides methods to specify the ordering of the rows. We can then use the `F.lag()` and `F.lead()` functions to calculate the lag and lead values _over_ a given window on the table.
+2. **The Spark SQL API**: The Spark SQL API is used through the [`F.expr()`][pyspark-expr] function, which allows us to write SQL-like expressions for the calculations. This is similar to how we would write SQL queries, but it is executed within the PySpark context.
+
+Here in the below example, we show how the previous day sales can be calculated using the [`.lag()`][pyspark-lag] function in the PySpark API, and the next day sales can be calculated using the [`LEAD()`][sparksql-lead] function in the Spark SQL API. Functionally, both of these two methods achieve the same result, but aesthetically they use slightly different syntax. It is primarily a matter of preference which one you choose to use.
+
 ```python {.pyspark linenums="1" title="Calculate lag and lead"}
 window_spec_ps: Window = Window.orderBy("date")
 daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
     {
         "previous_day_sales": F.lag("total_sales").over(window_spec_ps),
-        "next_day_sales": F.expr("lead(total_sales) over (order by date)"),
+        "next_day_sales": F.expr("LEAD(total_sales) OVER (ORDER BY date)"),
     },
 )
 print(f"Daily Sales with Lag and Lead: {daily_sales_ps.count()}")
@@ -2681,6 +2698,10 @@ only showing top 5 rows
 </div>
 
 ### Polars
+
+In Polars, we can use the [`.shift()`][polars-shift] method to calculate the lag and lead values for the sales amount. This method shifts the values in a column by a specified number of periods, allowing us to create lag and lead columns.
+
+Note that the [`.shift()`][polars-shift] method simply shifts the values in the column by a number of rows up or down, so we can use it to create lag and lead columns. This function itself does not need to be ordered because it assumes that the DataFrame is already ordered. However, if you want it to be ordered, you can use the [`.sort()`][polars-sort] method before applying [`.shift()`][polars-shift].
 
 ```python {.polars linenums="1" title="Calculate lag and lead"}
 daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
@@ -2723,11 +2744,23 @@ shape: (5, 4)
 
 </div>
 
-Now, we can calculate the day-over-day change in sales. This is done by subtracting the previous day's sales from the current day's sales.
+Now, we can calculate the day-over-day change in sales. This is done by subtracting the previous day's sales from the current day's sales. Then secondly, we can calculate the percentage change in sales using the formula:
+
+```txt
+((current_day_sales - previous_day_sales) / previous_day_sales) * 100
+```
 
 ### Pandas
 
-We can also calculate the percentage change in sales using the [`.pct_change()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html) method, which calculates the percentage change between the current and previous values.
+In Pandas, we can calculate the day-over-day change in sales by subtracting the `previous_day_sales` column from the `total_sales` column. This is a fairly straight-forward calculation.
+
+We can also calculate the percentage change in sales using the [`.pct_change()`][pandas-pct_change] method, which calculates the percentage change between the current and previous values. Under the hood, this method calculates the fractional change using the formula:
+
+```txt
+((value_current_row - value_previous_row) / value_previous_row)
+```
+
+So therefore we need to multiple the result by `100`.
 
 ```python {.pandas linenums="1" title="Calculate day-over-day change"}
 daily_sales_pd["day_over_day_change"] = daily_sales_pd["total_sales"] - daily_sales_pd["previous_day_sales"]
@@ -2764,7 +2797,11 @@ Daily Sales with Day-over-Day Change: 100
 
 ### SQL
 
-The day-over-day change calculation is already included in the previous SQL query, so we can use the same result set.
+In SQL, we can calculate the day-over-day change in sales by subtracting the `previous_day_sales` column from the `total_sales` column. We can also calculate the percentage change in sales using the formula:
+
+```txt
+((current_day_sales - previous_day_sales) / previous_day_sales) * 100
+```
 
 ```python {.sql linenums="1" title="Day-over-day change already calculated"}
 dod_change_txt: str = """
@@ -2774,7 +2811,7 @@ dod_change_txt: str = """
         previous_day_sales,
         next_day_sales,
         total_sales - previous_day_sales AS day_over_day_change,
-        (total_sales / NULLIF(previous_day_sales, 0) - 1) * 100 AS pct_change
+        ((total_sales - previous_day_sales) / previous_day_sales) * 100 AS pct_change
     FROM (
         SELECT
             date AS sale_date,
@@ -2819,11 +2856,19 @@ Daily Sales with Day-over-Day Change: 100
 
 ### PySpark
 
+In PySpark, we can calculate the day-over-day change in sales by subtracting the `previous_day_sales` column from the `total_sales` column. We can also calculate the percentage change in sales using the formula:
+
+```txt
+((current_day_sales - previous_day_sales) / previous_day_sales) * 100
+```
+
+Here, we have again shown these calculations using two different methods: using the PySpark API and using the Spark SQL API. Realistically, the results for  both of them can be achieved using either method.
+
 ```python {.pyspark linenums="1" title="Calculate day-over-day change"}
 daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
     {
-        "day_over_day_change": F.expr("total_sales - previous_day_sales"),
-        "pct_change": (F.expr("total_sales / previous_day_sales - 1") * 100).alias("pct_change"),
+        "day_over_day_change": F.col("total_sales") - F.col("previous_day_sales"),
+        "pct_change": F.expr("((total_sales - previous_day_sales) / previous_day_sales) * 100").alias("pct_change"),
     }
 )
 print(f"Daily Sales with Day-over-Day Change: {daily_sales_ps.count()}")
@@ -2861,6 +2906,12 @@ only showing top 5 rows
 </div>
 
 ### Polars
+
+In Polars, we can calculate the day-over-day change in sales by subtracting the `previous_day_sales` column from the `total_sales` column. We can also calculate the percentage change in sales using the formula:
+
+```txt
+((current_day_sales - previous_day_sales) / previous_day_sales) * 100
+```
 
 ```python {.polars linenums="1" title="Calculate day-over-day change"}
 daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
@@ -2903,11 +2954,11 @@ shape: (5, 6)
 
 </div>
 
-Next, we will calculate the rolling average of sales over a 7-day window.
+Next, we will calculate the rolling average of sales over a 7-day window. Rolling averages (aka moving averages) are useful for smoothing out short-term fluctuations and highlighting longer-term trends in the data. This is particularly useful in time series analysis, where we want to understand the underlying trend in the data without being overly influenced by short-term variations. It is also a very common technique used in financial analysis to analyze stock prices, sales data, and other time series data.
 
 ### Pandas
 
-This is done using the [`.rolling()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html) method, which allows us to specify the window size and the minimum number of periods required for the calculation.
+In Pandas, we can calculate the 7-day moving average of sales using the [`.rolling()`][pandas-rolling] method. This method allows us to specify a window size (in this case, `window=7` which is 7 days) and calculate the mean over that window. The `min_periods` parameter ensures that we get a value even if there are fewer than 7 days of data available at the start of the series. Finally, the [`.mean()`][pandas-rolling-mean] method calculates the average over the specified window.
 
 ```python {.pandas linenums="1" title="Calculate 7-day moving average"}
 daily_sales_pd["7d_moving_avg"] = daily_sales_pd["total_sales"].rolling(window=7, min_periods=1).mean()
@@ -2942,6 +2993,16 @@ Daily Sales with 7-Day Moving Average: 100
 </div>
 
 ### SQL
+
+In SQL, we can calculate the 7-day moving average of sales using the `AVG()` window function with the `OVER` clause. It is important to include this `OVER` clause, because it is what the SQL engine uses to determine that it should be a Window function, rather than a regular aggregate function (which is specified using the `GROUP BY` clause).
+
+Here in our example, there are three different parts to the Window function:
+
+1. **The `ORDER BY` clause**: This specifies the order of the rows in the window. In this case, we are ordering by the `sale_date` column.
+2. **The `ROWS BETWEEN` clause**: This specifies the range of rows to include in the window. In this case, we are including the number of rows from 6 preceding rows to the current row. This means that for each row, the window will include the current row and the 6 rows before it, giving us a total of 7 rows in the window. It is important that you specify the `ORDER BY` clause before the `ROWS BETWEEN` clause to ensure that the correct rows are included in the window.
+3. **The `AVG()` function**: This calculates the average of the `total_sales` column over the specified window.
+
+Another perculiarity to note here is around the use of the sub-query. The sub-query is used to first calculate the daily sales, including the previous and next day sales, and the day-over-day change. This is because we need to calculate the moving average over the daily sales, rather than the individual sales transactions. The sub-query allows us to aggregate the sales data by date before calculating the moving average. The only change that we are including in the outer-query is the addition of the moving average calculation.
 
 ```python {.sql linenums="1" title="Calculate 7-day moving average"}
 rolling_avg_txt: str = """
@@ -2999,6 +3060,10 @@ Daily Sales with 7-Day Moving Average: 100
 
 ### PySpark
 
+In PySpark, we can calculate the 7-day moving average of sales using the [`F.avg()`][pyspark-avg] function in combination with the [`Window()`][pyspark-window] class. The [`Window()`][pyspark-window] class allows us to define a window specification for the calculation. We can use the [`.orderBy()`][pyspark-window-orderby] method to specify the order of the rows in the window, and the [`.rowsBetween()`][pyspark-window-rowsbetween] method to specify the range of rows to include in the window. The [`F.avg()`][pyspark-avg] function is then able to calculate the average of the `total_sales` column over the specified window.
+
+As with many aspects of PySpark, there are multiple ways to achieve the same result. In this case, we can use either the [`F.avg()`][pyspark-avg] function with the [`Window()`][pyspark-window] class, or we can use the SQL expression syntax with the [`F.expr()`][pyspark-expr] function. Both methods will yield the same result.
+
 ```python {.pyspark linenums="1" title="Calculate 7-day moving average"}
 daily_sales_ps: psDataFrame = daily_sales_ps.withColumns(
     {
@@ -3042,6 +3107,8 @@ only showing top 5 rows
 
 ### Polars
 
+In Polars, we can calculate the 7-day moving average of sales using the [`.rolling_mean()`][polars-rolling-mean] method. This method allows us to specify a window size (in this case, `window_size=7` which is 7 days) and calculate the mean over that window. The `min_samples=1` parameter ensures that we get a value even if there are fewer than 7 days of data available at the start of the series.
+
 ```python {.polars linenums="1" title="Calculate 7-day moving average"}
 daily_sales_pl: pl.DataFrame = daily_sales_pl.with_columns(
     pl.col("total_sales").rolling_mean(window_size=7, min_samples=1).alias("7d_moving_avg"),
@@ -3084,7 +3151,15 @@ shape: (5, 7)
 
 Finally, we can visualize the daily sales data along with the 7-day moving average using Plotly. This allows us to see the trends in sales over time and how the moving average smooths out the fluctuations in daily sales.
 
+For this, we will again utilise [Plotly][plotly] to create an interactive line chart that displays both the daily sales and the 7-day moving average. The chart will have the date on the x-axis and the sales amount on the y-axis, with two lines representing the daily sales and the moving average.
+
+The graph will be [instantiated][python-class-instantiation] using the [`go.Figure()`][plotly-figure] class, and using the [`.add_trace()`][plotly-add-traces] method we will add two traces to the figure: one for the daily sales and one for the 7-day moving average. The [`go.Scatter()`][plotly-scatter] class is used to create the line traces, by defining `mode="lines"` to display the data as a line chart.
+
+Finally, we will use the [`.update_layout()`][plotly-update_layout] method to set the titles for the chart, and the position of the legend.
+
 ### Pandas
+
+Plotly is easily able to handle Pandas DataFrames, so we can directly parse the columns from the DataFrame to create the traces for the daily sales and the 7-day moving average.
 
 ```python {.pandas linenums="1" title="Plot results"}
 fig: go.Figure = (
@@ -3103,13 +3178,16 @@ fig: go.Figure = (
             y=daily_sales_pd["7d_moving_avg"],
             mode="lines",
             name="7-Day Moving Average",
-            line=dict(width=3),
+            line_width=3,
         ),
     )
     .update_layout(
         title="Daily Sales with 7-Day Moving Average",
         xaxis_title="Date",
         yaxis_title="Sales Amount ($)",
+        legend_orientation="h",
+        legend_yanchor="bottom",
+        legend_y=1,
     )
 )
 fig.write_html("images/pt4_daily_sales_with_7d_avg_pd.html", include_plotlyjs="cdn", full_html=True)
@@ -3122,6 +3200,8 @@ fig.show()
 </div>
 
 ### SQL
+
+Plotly is easily able to handle Pandas DataFrames, so we can directly parse the columns from the DataFrame to create the traces for the daily sales and the 7-day moving average.
 
 ```python {.sql linenums="1" title="Plot results"}
 fig: go.Figure = (
@@ -3140,13 +3220,16 @@ fig: go.Figure = (
             y=window_df_sql["7d_moving_avg"],
             mode="lines",
             name="7-Day Moving Average",
-            line=dict(width=3),
+            line_width=3,
         )
     )
     .update_layout(
         title="Daily Sales with 7-Day Moving Average",
         xaxis_title="Date",
         yaxis_title="Sales Amount ($)",
+        legend_orientation="h",
+        legend_yanchor="bottom",
+        legend_y=1,
     )
 )
 fig.write_html("images/pt4_daily_sales_with_7d_avg_sql.html", include_plotlyjs="cdn", full_html=True)
@@ -3159,6 +3242,8 @@ fig.show()
 </div>
 
 ### PySpark
+
+Plotly is not able to interpret PySpark DataFrames directly, so we need to convert the PySpark DataFrame to a Pandas DataFrame before plotting. This can be done using the [`.toPandas()`][pyspark-topandas] method. We can then parse the columns from the Pandas DataFrame to create the traces for the daily sales and the 7-day moving average.
 
 ```python {.pyspark linenums="1" title="Plot results"}
 fig: go.Figure = (
@@ -3177,13 +3262,16 @@ fig: go.Figure = (
             y=daily_sales_ps.toPandas()["7d_moving_avg"],
             mode="lines",
             name="7-Day Moving Average",
-            line=dict(width=3),
+            line_width=3,
         ),
     )
     .update_layout(
         title="Daily Sales with 7-Day Moving Average",
         xaxis_title="Date",
         yaxis_title="Sales Amount ($)",
+        legend_orientation="h",
+        legend_yanchor="bottom",
+        legend_y=1,
     )
 )
 fig.write_html("images/pt4_daily_sales_with_7d_avg_ps.html", include_plotlyjs="cdn", full_html=True)
@@ -3197,30 +3285,35 @@ fig.show()
 
 ### Polars
 
+Plotly is easily able to handle Polars DataFrames, so we can directly parse the columns from the DataFrame to create the traces for the daily sales and the 7-day moving average.
+
 ```python {.polars linenums="1" title="Plot results"}
 fig: go.Figure = (
     go.Figure()
     .add_trace(
         go.Scatter(
-            x=daily_sales_pl["date"].to_list(),
-            y=daily_sales_pl["total_sales"].to_list(),
+            x=daily_sales_pl["date"],
+            y=daily_sales_pl["total_sales"],
             mode="lines",
             name="Daily Sales",
         )
     )
     .add_trace(
         go.Scatter(
-            x=daily_sales_pl["date"].to_list(),
-            y=daily_sales_pl["7d_moving_avg"].to_list(),
+            x=daily_sales_pl["date"],
+            y=daily_sales_pl["7d_moving_avg"],
             mode="lines",
             name="7-Day Moving Average",
-            line=dict(width=3),
+            line_width=3,
         )
     )
     .update_layout(
         title="Daily Sales with 7-Day Moving Average",
         xaxis_title="Date",
         yaxis_title="Sales Amount ($)",
+        legend_orientation="h",
+        legend_yanchor="bottom",
+        legend_y=1,
     )
 )
 fig.write_html("images/pt4_daily_sales_with_7d_avg_pl.html", include_plotlyjs="cdn", full_html=True)
@@ -3324,9 +3417,7 @@ Customer Spending Summary: 61
 ```python {.pyspark linenums="1" title="Rank customers by total spending"}
 customer_spending_ps: psDataFrame = (
     df_sales_ps.groupBy("customer_id")
-    .agg(
-        F.sum("sales_amount").alias("total_spending"),
-    )
+    .agg(F.sum("sales_amount").alias("total_spending"))
     .withColumn("rank", F.dense_rank().over(Window.orderBy(F.desc("total_spending"))))
     .orderBy("rank")
 )
@@ -3497,9 +3588,7 @@ Product Popularity Summary: 41
 ```python {.pyspark linenums="1" title="Rank products by quantity sold"}
 product_popularity_ps: psDataFrame = (
     df_sales_ps.groupBy("product_id")
-    .agg(
-        F.sum("quantity").alias("total_quantity"),
-    )
+    .agg(F.sum("quantity").alias("total_quantity"))
     .withColumn("rank", F.expr("DENSE_RANK() OVER (ORDER BY total_quantity DESC)"))
     .orderBy("rank")
 )
@@ -3542,9 +3631,7 @@ only showing top 5 rows
 ```python {.polars linenums="1" title="Rank products by quantity sold"}
 product_popularity_pl: pl.DataFrame = (
     df_sales_pl.group_by("product_id")
-    .agg(
-        pl.col("quantity").sum().alias("total_quantity"),
-    )
+    .agg(pl.col("quantity").sum().alias("total_quantity"))
     .with_columns(pl.col("total_quantity").rank(method="dense", descending=True).alias("rank"))
     .sort("rank")
 )
@@ -3599,7 +3686,29 @@ shape: (5, 3)
 
 </div>
 
+
+<!--
+-- ------------------------ --
+--  Shortcuts & Hyperlinks  --
+-- ------------------------ --
+-->
+
+<!-- Python -->
 [python-print]: https://docs.python.org/3/library/functions.html#print
+[python-class-instantiation]: https://docs.python.org/3/tutorial/classes.html#:~:text=example%20class%22.-,Class%20instantiation,-uses%20function%20notation
+[numpy]: https://numpy.org/
+
+<!-- Storage -->
+[hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
+[s3]: https://aws.amazon.com/s3/
+[adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
+[jdbc]: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
+
+<!-- Guides -->
+[analysing-window-functions]: https://docs.snowflake.com/en/user-guide/functions-window-using
+[visualising-window-functions]: https://medium.com/learning-sql/sql-window-function-visualized-fff1927f00f2
+
+<!-- Pandas -->
 [pandas]: https://pandas.pydata.org/
 [pandas-head]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.head.html
 [pandas-read_sql]: https://pandas.pydata.org/docs/reference/api/pandas.read_sql.html
@@ -3611,7 +3720,17 @@ shape: (5, 3)
 [pandas-rename]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename.html
 [pandas-reset_index]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html
 [pandas-merge]: https://pandas.pydata.org/docs/reference/api/pandas.merge.html
-[numpy]: https://numpy.org/
+[pandas-shift]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html
+[pandas-sort_values]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sort_values.html
+[pandas-pct_change]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html
+[pandas-rolling]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html
+[pandas-rolling-mean]: https://pandas.pydata.org/docs/reference/api/pandas.core.window.rolling.Rolling.mean.html
+
+<!-- SQL -->
+[postgresql]: https://www.postgresql.org/
+[mysql]: https://www.mysql.com/
+[t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
+[pl-sql]: https://www.oracle.com/au/database/technologies/appdev/plsql.html
 [sql-wiki]: https://en.wikipedia.org/wiki/SQL
 [sql-iso]: https://www.iso.org/standard/76583.html
 [sqlite]: https://sqlite.org/
@@ -3620,10 +3739,8 @@ shape: (5, 3)
 [sqlite-where]: https://sqlite.org/lang_select.html#whereclause
 [sqlite-select]: https://sqlite.org/lang_select.html
 [sqlite-tutorial-join]: https://www.sqlitetutorial.net/sqlite-join/
-[postgresql]: https://www.postgresql.org/
-[mysql]: https://www.mysql.com/
-[t-sql]: https://learn.microsoft.com/en-us/sql/t-sql/
-[pl-sql]: https://www.oracle.com/au/database/technologies/appdev/plsql.html
+
+<!-- SQL -->
 [spark-sql]: https://spark.apache.org/sql/
 [pyspark]: https://spark.apache.org/docs/latest/api/python/
 [pyspark-sparksession]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html
@@ -3645,10 +3762,15 @@ shape: (5, 3)
 [pyspark-withcolumns]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.DataFrame.withColumns.html
 [pyspark-col]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.col.html
 [pyspark-expr]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.expr.html
-[hdfs]: https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html
-[s3]: https://aws.amazon.com/s3/
-[adls]: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
-[jdbc]: https://spark.apache.org/docs/latest/sql-data-sources-jdbc.html
+[pyspark-lead]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lead.html
+[pyspark-lag]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.lag.html
+[sparksql-lead]: https://spark.apache.org/docs/latest/api/sql/index.html#lead
+[pyspark-window]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.html
+[pyspark-avg]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.avg.html
+[pyspark-window-orderby]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.orderBy.html
+[pyspark-window-rowsbetween]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.rowsBetween.html
+
+<!-- Polars -->
 [polars]: https://www.pola.rs/
 [polars-head]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.head.html
 [polars-filter]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.filter.html
@@ -3660,6 +3782,15 @@ shape: (5, 3)
 [polars-rename]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.rename.html
 [polars-join]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.join.html
 [polars-with-columns]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.with_columns.html
+[polars-shift]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.shift.html
+[polars-sort]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.sort.html
+[polars-rolling-mean]: https://docs.pola.rs/api/python/dev/reference/expressions/api/polars.Expr.rolling_mean.html
+
+<!-- Plotly -->
 [plotly]: https://plotly.com/python/
 [plotly-express]: https://plotly.com/python/plotly-express/
 [plotly-bar]: https://plotly.com/python/bar-charts/
+[plotly-figure]: https://plotly.com/python/creating-and-updating-figures/#figures-as-graph-objects
+[plotly-add-traces]: https://plotly.com/python/creating-and-updating-figures/#adding-traces
+[plotly-scatter]: https://plotly.com/python/line-and-scatter/
+[plotly-update_layout]: https://plotly.com/python/reference/layout/
