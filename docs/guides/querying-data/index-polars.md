@@ -3,11 +3,15 @@
 
 ### A Comprehensive Guide of using Pandas, SQL, PySpark, and Polars for Data Manipulation Techniques, with Practical Examples and Visualisations
 
+If you wanted to run the code yourself, you can download just that Jupyter notebook:
+
 [![](./../../assets/images/dse.png){width=70px}<br>Download<br>- ALL](./index-r.ipynb){ :download .md-button .md-button-fifth }
 [![](./../../assets/icons/pandas.svg){width=100%}<br>Download<br>- Pandas](./index-pandas-r.ipynb){ :download .md-button .md-button-fifth }
 [![](./../../assets/icons/sql.svg){width=100%}<br>Download<br>- SQL](./index-sql-r.ipynb){ :download .md-button .md-button-fifth }
 [![](./../../assets/icons/spark.svg){width=100%}<br>Download<br>- PySpark](./index-pyspark-r.ipynb){ :download .md-button .md-button-fifth }
 [![](./../../assets/icons/polars.svg){width=100%}<br>Download<br>- Polars](./index-polars-r.ipynb){ :download .md-button .md-button-fifth }
+
+Or you can follow along on this page...
 
 
 ## Introduction
@@ -34,7 +38,7 @@ Throughout this article, you can easily switch between the different libraries b
 
 ## Setup
 
-Before we start querying data, we need to set up our environment. This includes importing the necessary libraries, creating sample data, and defining constants that will be used throughout the article. The following sections will guide you through this setup process. The code for this article is also available on GitHub: [querying-data](...) {==**UPDATE URL**==}.
+Before we start querying data, we need to set up our environment. This includes importing the necessary libraries, creating sample data, and defining constants that will be used throughout the article. The following sections will guide you through this setup process. The code for this article is also available on GitHub: [querying-data][querying-data].
 
 === "Polars"
 
@@ -1190,6 +1194,7 @@ Continue practicing with real datasets, explore advanced features of each tool, 
 <!-- Guides -->
 [analysing-window-functions]: https://docs.snowflake.com/en/user-guide/functions-window-using
 [visualising-window-functions]: https://medium.com/learning-sql/sql-window-function-visualized-fff1927f00f2
+[querying-data]: https://github.com/data-science-extensions/data-science-extensions/blob/main/docs/guides/querying-data/index.md
 
 <!-- Pandas -->
 [pandas]: https://pandas.pydata.org/
