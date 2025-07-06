@@ -4,9 +4,11 @@
 
 
 # StdLib Imports
+import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Literal, LiteralString
 
 
 ## --------------------------------------------------------------------------- #
@@ -133,6 +135,128 @@ def check() -> None:
 ## --------------------------------------------------------------------------- #
 
 
+def extract_sections_from_markdown_file(
+    file_path: str,
+    section_name: Literal["pandas", "sql", "pyspark", "polars"],
+) -> None:
+    """
+    Summary:
+        Extracts a specific section from a markdown file and saves it to a new file.
+
+    Details:
+        This function reads a markdown file, searches for tabbed sections defined by `=== "Tab Name"`, and extracts the content of the specified tab section. It then writes the content to a new markdown file with the section name as a suffix.
+
+    Args:
+        file_path (str):
+            Path to the markdown file to process.
+        section_name (Literal["pandas", "sql", "pyspark", "polars"]):
+            The name of the section to extract. This should match the tab name in the markdown file.
+
+    Notes:
+        - The function expects the markdown file to have sections defined with `=== "Tab Name"`.
+        - It will create a new file with the same name as the original but with `-{section_name}` appended before the file extension.
+        - If the specified section is not found, it will print a message and exit without creating a new file.
+        - If the file does not exist or is not a markdown file, it will print an error message and exit.
+        - The function uses regular expressions to find and extract the specified section.
+        - It handles multiple consecutive newlines that may occur after removing sections.
+        - The function is case-insensitive when matching the section name.
+        - The output file will overwrite any existing file with the same name.
+    """
+
+    # Load
+    file = Path(file_path)
+
+    # Check exists
+    if not file.exists():
+        print(f"File {file_path} does not exist.")
+        return
+
+    # Check file extension
+    if not file.suffix == ".md":
+        print(f"File {file_path} is not a markdown file.")
+        return
+
+    # Read the entire file as a single string
+    with open(file, "r", encoding="utf-8") as f:
+        content: str = f.read()
+
+    # Create regex pattern to match tab sections
+    # Pattern explanation:
+    # ^=== "([^"]+)"$   - matches tab header line with captured group for tab name
+    # (.*?)             - non-greedy capture of tab content (including newlines)
+    # (?=^===|^[^\s]|$) - lookahead for next tab, non-indented line, or end of file
+    tab_pattern: re.Pattern[str] = re.compile(
+        pattern=r'^=== "([^"]+)"\s*\n((?:^[ \t]+.*\n*)*)',
+        flags=re.MULTILINE,
+    )
+
+    # Find all tab sections
+    matches: list[re.Match[str]] = list(tab_pattern.finditer(content))
+
+    # Filter to keep only the desired section (case-insensitive)
+    target_section_name: LiteralString = section_name.lower()
+    kept_sections: list[re.Match[str]] = []
+
+    if not matches:
+        print(f"No tab sections found in {file_path}")
+        return
+
+    # Build the new content by replacing tab sections
+    result_content: str = content
+    target_section_name = section_name.lower()
+
+    # Process matches in reverse order to maintain string positions
+    for match in reversed(matches):
+        tab_name: str = match.group(1)
+        full_match: str = match.group(0)
+
+        if tab_name.lower() == target_section_name:
+            # Keep this section - no replacement needed
+            continue
+        else:
+            # Remove this section
+            result_content = result_content.replace(full_match, "", 1)
+
+    # Check if we found any matching sections
+    kept_sections: list[re.Match[str]] = [match for match in matches if match.group(1).lower() == target_section_name]
+
+    if not kept_sections:
+        print(f"No sections found for '{section_name}' in {file_path}")
+        return
+
+    # Clean up any multiple consecutive newlines that might have been created
+    result_content = re.sub(r"\n{4,}", "\n\n\n", result_content)
+
+    # Create output file path with section name as suffix
+    file_stem: str = file.stem
+    file_suffix = file.suffix
+    output_file: Path = file.with_name(f"{file_stem}-{section_name.lower()}{file_suffix}")
+
+    # Write the result (overwrite if exists)
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(result_content)
+
+    print(f"Extracted '{section_name}' sections written to: {output_file}")
+    print(f"Kept {len(kept_sections)} section(s), removed {len(matches) - len(kept_sections)} section(s)")
+
+
+def extract_sections_from_markdown_file_cli() -> None:
+    if len(sys.argv) < 3:
+        print("Usage: extract-sections-from-markdown-file <file_path> <section_name>")
+        sys.exit(1)
+
+    file_path: str = sys.argv[1]
+    section_name: Literal["pandas", "sql", "pyspark", "polars"] = sys.argv[2]
+
+    # Validate section name
+    valid_sections: list[str] = ["pandas", "sql", "pyspark", "polars"]
+    if section_name.lower() not in valid_sections:
+        print(f"Invalid section name '{section_name}'. Valid options are: {', '.join(valid_sections)}")
+        sys.exit(1)
+
+    extract_sections_from_markdown_file(file_path, section_name)
+
+
 def reformat_file(file_path: str) -> str | None:
     """
     Summary:
@@ -157,6 +281,7 @@ def reformat_file(file_path: str) -> str | None:
 
         The CLI entry point you already have will work correctly with this implementation.
     """
+
     # Load
     file = Path(file_path)
 
@@ -232,13 +357,38 @@ def reformat_file_cli() -> None:
 
 
 def convert_markdown_to_notebook(input_file_path: str) -> str | None:
+    """
+    Summary:
+        Converts a markdown file to a Jupyter notebook using jupytext and formats it with black.
+
+    Details:
+        This function checks if the input file exists and is a markdown file. If so, it uses jupytext to convert the markdown file to a Jupyter notebook format, applying black for formatting. The output notebook file will have the same name as the input file but with the `.ipynb` extension.
+
+    Args:
+        input_file_path (str):
+            Path to the markdown file to convert.
+
+    Returns:
+        str | None:
+            The path to the converted Jupyter notebook file, or None if the input file does not exist or is not a markdown file.
+
+    Notes:
+        - The function uses the `jupytext` command-line tool to perform the conversion.
+        - It applies `black` formatting to the notebook after conversion.
+        - If the input file does not exist or is not a markdown file, it prints an error message and returns None.
+        - The output file will be created in the same directory as the input file.
+        - The output file will overwrite any existing file with the same name.
+    """
+
     if not Path(input_file_path).exists():
         print(f"Input file {input_file_path} does not exist.")
         return
     if not input_file_path.endswith(".md"):
         print(f"Input file {input_file_path} is not a markdown file.")
         return
+
     output_file = input_file_path.replace(".md", ".ipynb")
+
     run_command(
         "jupytext",
         "--to=notebook",
@@ -247,7 +397,9 @@ def convert_markdown_to_notebook(input_file_path: str) -> str | None:
         input_file_path,
         f"--output={output_file}",
     )
+
     print(f"Converted {input_file_path} to {output_file}")
+
     return str(output_file)
 
 
@@ -259,8 +411,7 @@ def convert_markdown_to_notebook_cli() -> None:
 
 
 def format_and_convert(file_path: str) -> None:
-    reformatted_file = reformat_file(file_path)
-    assert reformatted_file is not None
+    reformatted_file: str = reformat_file(file_path)
     convert_markdown_to_notebook(reformatted_file)
 
 

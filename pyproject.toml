@@ -47,6 +47,7 @@ check-pytest = "cli.scripts:check_pytest"
 reformat-file = "cli.scripts:reformat_file_cli"
 convert-md-to-ipynb = "cli.scripts:convert_markdown_to_notebook_cli"
 reformat-and-convert-md-to-ipynb = "cli.scripts:format_and_convert_cli"
+extract-sections-from-markdown-file = "cli.scripts:extract_sections_from_markdown_file_cli"
 
 [dependency-groups]
 dev = [

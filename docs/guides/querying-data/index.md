@@ -3852,8 +3852,6 @@ Whether you're analyzing customer behavior, processing sensor data, or building 
 Continue practicing with real datasets, explore advanced features of each tool, and stay curious about emerging technologies in the data processing ecosystem. The skills you've learned here will serve as building blocks for increasingly sophisticated data analysis and engineering tasks.
 
 
-
-
 <!--
 -- ------------------------ --
 --  Shortcuts & Hyperlinks  --
