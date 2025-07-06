@@ -3353,7 +3353,7 @@ The fifth section will demonstrate how to rank and partition data. This is usefu
 
 === "Pandas"
 
-    In Pandas, we can use the [`.rank()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rank.html) method to rank values in a DataFrame. This method allows us to specify the ranking method (e.g., dense, average, min, max) and whether to rank in ascending or descending order.
+    In Pandas, we can use the [`.rank()`][pandas-rank] method to rank values in a DataFrame. This method allows us to specify the ranking method (e.g., dense, average, min, max) and whether to rank in ascending or descending order.
 
     ```py {.pandas linenums="1" title="Rank customers by total spending"}
     customer_spending_pd: pd.DataFrame = df_sales_pd.groupby("customer_id").agg(total_spending=("sales_amount", "sum"))
@@ -3390,6 +3390,8 @@ The fifth section will demonstrate how to rank and partition data. This is usefu
     </div>
 
 === "SQL"
+
+    In SQL, we can use the `DENSE_RANK()` window function to rank values in a query. This function assigns a rank to each row within a partition of a given result set, with no gaps in the ranking values. Note that this function can only be used in congunction with the `OVER` clause, which defines it as a Window function. The `ORDER BY` clause within the `OVER` clause specifies the order in which the rows are ranked.
 
     ```py {.sql linenums="1" title="Rank customers by total spending"}
     customer_spending_txt: str = """
@@ -3434,6 +3436,8 @@ The fifth section will demonstrate how to rank and partition data. This is usefu
 
 === "PySpark"
 
+    In PySpark, we can use the [`F.dense_rank()`][pyspark-dense_rank] function in combination with the [`Window()`][pyspark-window] class to rank values in a DataFrame. The [`Window()`][pyspark-window] class allows us to define a window specification for the calculation, and the [`F.dense_rank()`][pyspark-dense_rank] function calculates the dense rank of each row within that window.
+
     ```py {.pyspark linenums="1" title="Rank customers by total spending"}
     customer_spending_ps: psDataFrame = (
         df_sales_ps.groupBy("customer_id")
@@ -3476,6 +3480,8 @@ The fifth section will demonstrate how to rank and partition data. This is usefu
 
 === "Polars"
 
+    In Polars, we can use the [`.rank()`][polars-rank] method to rank values in a DataFrame. This method allows us to specify the ranking method (e.g., dense, average, min, max) and whether to rank in ascending or descending order.
+
     ```py {.polars linenums="1" title="Rank customers by total spending"}
     customer_spending_pl: pl.DataFrame = (
         df_sales_pl.group_by("customer_id")
@@ -3509,7 +3515,6 @@ The fifth section will demonstrate how to rank and partition data. This is usefu
     │ 60          ┆ 2086.09        ┆ 4    │
     │ 21          ┆ 2016.95        ┆ 5    │
     └─────────────┴────────────────┴──────┘
-
     ```
 
     |      | customer_id | total_spending | rank |
@@ -3522,172 +3527,240 @@ The fifth section will demonstrate how to rank and partition data. This is usefu
 
     </div>
 
-Next, we will rank products based on the quantity sold. This allows us to identify the most popular products in terms of sales volume.
+Next, we will rank products based on the quantity sold, partitioned by the product category. This will help us identify the most popular products within each category.
 
 === "Pandas"
 
-    ```py {.pandas linenums="1" title="Rank products by quantity sold"}
-    product_popularity_pd: pd.DataFrame = df_sales_pd.groupby("product_id").agg(total_quantity=("quantity", "sum"))
-    product_popularity_pd["rank"] = product_popularity_pd["total_quantity"].rank(method="dense", ascending=False)
-    product_popularity_pd: pd.DataFrame = product_popularity_pd.sort_values("rank").reset_index()
+    In Pandas it is first necessary to group the sales data by `category` and `product_id`, then aggregate the data for the [`.sum()`][pandas-groupby-sum] of the `quantity` to find the `total_quantity` sold for each product. After that, we can use the [`.rank()`][pandas-rank] method to rank the products within each category based on the total quantity sold.
+
+    It is important to note here that we are implementing the [`.rank()`][pandas-rank] method from within an [`.assign()`][pandas-assign] method. This is a common pattern in Pandas to create new columns on a DataFrame based on other columns already existing on the DataFrame, while keeping the DataFrame immutable. Here, we are using the [`.groupby()`][pandas-groupby] method to group the DataFrame by `category`, and then applying the [`.rank()`][pandas-rank] method to the `total_quantity` column within each category. In this way, we are creating a partitioned DataFrame that ranks products by quantity sold within each category.
+
+    ```py {.pandas linenums="1" title="Rank products by quantity sold, by category"}
+    product_popularity_pd: pd.DataFrame = (
+        df_sales_pd.groupby(["category", "product_id"])
+        .agg(
+            total_quantity=("quantity", "sum"),
+        )
+        .reset_index()
+        .assign(
+            rank=lambda x: x.groupby("category")["total_quantity"].rank(method="dense", ascending=False),
+        )
+        .sort_values(["rank", "category"])
+        .reset_index(drop=True)
+    )
     print(f"Product Popularity Summary: {len(product_popularity_pd)}")
-    print(product_popularity_pd.head(5))
-    print(product_popularity_pd.head(5).to_markdown())
+    print(product_popularity_pd.head(10))
+    print(product_popularity_pd.head(10).to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
-    Product Popularity Summary: 41
+    Product Popularity Summary: 78
     ```
 
     ```txt
-       product_id  total_quantity  rank
-    0          45              34   1.0
-    1           1              30   2.0
-    2          35              26   3.0
-    3          13              25   4.0
-    4          28              22   5.0
-
+          category  product_id  total_quantity  rank
+    0        Books          11              14   1.0
+    1     Clothing           7               9   1.0
+    2  Electronics          37              16   1.0
+    3         Food          45              34   1.0
+    4         Home           3              10   1.0
+    5        Books          28               9   2.0
+    6     Clothing          35               8   2.0
+    7  Electronics          35              11   2.0
+    8         Food           1              16   2.0
+    9         Home           9               5   2.0
     ```
 
-    |      | product_id | total_quantity | rank |
-    | ---: | ---------: | -------------: | ---: |
-    |    0 |         45 |             34 |    1 |
-    |    1 |          1 |             30 |    2 |
-    |    2 |         35 |             26 |    3 |
-    |    3 |         13 |             25 |    4 |
-    |    4 |         28 |             22 |    5 |
+    |      | category    | product_id | total_quantity | rank |
+    | ---: | :---------- | ---------: | -------------: | ---: |
+    |    0 | Books       |         11 |             14 |    1 |
+    |    1 | Clothing    |          7 |              9 |    1 |
+    |    2 | Electronics |         37 |             16 |    1 |
+    |    3 | Food        |         45 |             34 |    1 |
+    |    4 | Home        |          3 |             10 |    1 |
+    |    5 | Books       |         28 |              9 |    2 |
+    |    6 | Clothing    |         35 |              8 |    2 |
+    |    7 | Electronics |         35 |             11 |    2 |
+    |    8 | Food        |          1 |             16 |    2 |
+    |    9 | Home        |          9 |              5 |    2 |
 
     </div>
 
 === "SQL"
 
-    ```py {.sql linenums="1" title="Rank products by quantity sold"}
+    In SQL, we can use the `RANK()` window function to rank products within each category based on the total quantity sold. The `PARTITION BY` clause allows us to partition the data by `category`, and the `ORDER BY` clause specifies the order in which the rows are ranked within each partition.
+
+    ```py {.sql linenums="1" title="Rank products by quantity sold, by category"}
     product_popularity_txt: str = """
         SELECT
+            category,
             product_id,
-            SUM(s.quantity) AS total_quantity,
-            RANK() OVER (ORDER BY SUM(s.quantity) DESC) AS rank
-        FROM sales s
-        GROUP BY product_id
+            SUM(quantity) AS total_quantity,
+            RANK() OVER (PARTITION BY category ORDER BY SUM(quantity) DESC) AS rank
+        FROM sales
+        GROUP BY category, product_id
         ORDER BY rank
     """
     print(f"Product Popularity: {len(pd.read_sql(product_popularity_txt, conn))}")
-    print(pd.read_sql(product_popularity_txt + "LIMIT 5", conn))
-    print(pd.read_sql(product_popularity_txt + "LIMIT 5", conn).to_markdown())
+    print(pd.read_sql(product_popularity_txt + "LIMIT 10", conn))
+    print(pd.read_sql(product_popularity_txt + "LIMIT 10", conn).to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
-    Product Popularity Summary: 41
+    Product Popularity: 78
     ```
 
     ```txt
-       product_id  total_quantity  rank
-    0          45              34     1
-    1           1              30     2
-    2          35              26     3
-    3          13              25     4
-    4          39              22     5
+          category  product_id  total_quantity  rank
+    0        Books          11              14     1
+    1     Clothing           7               9     1
+    2  Electronics          37              16     1
+    3         Food          45              34     1
+    4         Home           3              10     1
+    5        Books          28               9     2
+    6     Clothing          35               8     2
+    7  Electronics          35              11     2
+    8         Food           1              16     2
+    9         Home          48               5     2
     ```
 
-    |      | product_id | total_quantity | rank |
-    | ---: | ---------: | -------------: | ---: |
-    |    0 |         45 |             34 |    1 |
-    |    1 |          1 |             30 |    2 |
-    |    2 |         35 |             26 |    3 |
-    |    3 |         13 |             25 |    4 |
-    |    4 |         39 |             22 |    5 |
+    |      | category    | product_id | total_quantity | rank |
+    | ---: | :---------- | ---------: | -------------: | ---: |
+    |    0 | Books       |         11 |             14 |    1 |
+    |    1 | Clothing    |          7 |              9 |    1 |
+    |    2 | Electronics |         37 |             16 |    1 |
+    |    3 | Food        |         45 |             34 |    1 |
+    |    4 | Home        |          3 |             10 |    1 |
+    |    5 | Books       |         28 |              9 |    2 |
+    |    6 | Clothing    |         35 |              8 |    2 |
+    |    7 | Electronics |         35 |             11 |    2 |
+    |    8 | Food        |          1 |             16 |    2 |
+    |    9 | Home        |         48 |              5 |    2 |
 
     </div>
 
 === "PySpark"
 
-    ```py {.pyspark linenums="1" title="Rank products by quantity sold"}
+    In PySpark, we can use the [`F.dense_rank()`][pyspark-dense_rank] function in combination with the [`Window()`][pyspark-window] class to rank products within each category based on the total quantity sold. We can define the partitioning by using the [`.partitionBy()`][pyspark-window-partitionby] method and parse'ing in the `"category"` column. We can then define the ordering by using the [`.orderBy()`][pyspark-window-orderby] method and parse'ing in the `"total_quantity"` expression to order the products by total quantity sold in descending order with the [`F.desc()`][pyspark-desc] method.
+
+    Here, we have also provided an alternative way to define the rank by using the Spark SQL method. The outcome is the same, it's simply written in a SQL-like expression.
+
+    ```py {.pyspark linenums="1" title="Rank products by quantity sold, by category"}
     product_popularity_ps: psDataFrame = (
-        df_sales_ps.groupBy("product_id")
+        df_sales_ps.groupBy("category", "product_id")
         .agg(F.sum("quantity").alias("total_quantity"))
-        .withColumn("rank", F.expr("DENSE_RANK() OVER (ORDER BY total_quantity DESC)"))
-        .orderBy("rank")
+        .withColumns(
+            {
+                "rank_p": F.dense_rank().over(Window.partitionBy("category").orderBy(F.desc("total_quantity"))),
+                "rank_s": F.expr("DENSE_RANK() OVER (PARTITION BY category ORDER BY total_quantity DESC)"),
+            }
+        )
+        .orderBy("rank_p")
     )
     print(f"Product Popularity Summary: {product_popularity_ps.count()}")
-    product_popularity_ps.show(5)
-    print(product_popularity_ps.limit(5).toPandas().to_markdown())
+    product_popularity_ps.show(10)
+    print(product_popularity_ps.limit(10).toPandas().to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
-    Product Popularity Summary: 41
+    Product Popularity Summary: 78
     ```
 
     ```txt
-    +----------+--------------+----+
-    |product_id|total_quantity|rank|
-    +----------+--------------+----+
-    |        45|            34|   1|
-    |         1|            30|   2|
-    |        35|            26|   3|
-    |        13|            25|   4|
-    |        15|            22|   5|
-    +----------+--------------+----+
-    only showing top 5 rows
+    +-----------+----------+--------------+------+------+
+    |   category|product_id|total_quantity|rank_p|rank_s|
+    +-----------+----------+--------------+------+------+
+    |   Clothing|         7|             9|     1|     1|
+    |      Books|        11|            14|     1|     1|
+    |Electronics|        37|            16|     1|     1|
+    |       Food|        45|            34|     1|     1|
+    |       Home|         3|            10|     1|     1|
+    |      Books|        28|             9|     2|     2|
+    |Electronics|        35|            11|     2|     2|
+    |       Home|        29|             5|     2|     2|
+    |       Home|        48|             5|     2|     2|
+    |       Home|         9|             5|     2|     2|
+    +-----------+----------+--------------+------+------+
+    only showing top 10 rows
     ```
 
-    |      | product_id | total_quantity | rank |
-    | ---: | ---------: | -------------: | ---: |
-    |    0 |         45 |             34 |    1 |
-    |    1 |          1 |             30 |    2 |
-    |    2 |         35 |             26 |    3 |
-    |    3 |         13 |             25 |    4 |
-    |    4 |         15 |             22 |    5 |
+    |      | category    | product_id | total_quantity | rank_p | rank_s |
+    | ---: | :---------- | ---------: | -------------: | -----: | -----: |
+    |    0 | Clothing    |          7 |              9 |      1 |      1 |
+    |    1 | Books       |         11 |             14 |      1 |      1 |
+    |    2 | Electronics |         37 |             16 |      1 |      1 |
+    |    3 | Food        |         45 |             34 |      1 |      1 |
+    |    4 | Home        |          3 |             10 |      1 |      1 |
+    |    5 | Books       |         28 |              9 |      2 |      2 |
+    |    6 | Clothing    |         35 |              8 |      2 |      2 |
+    |    7 | Electronics |         35 |             11 |      2 |      2 |
+    |    8 | Food        |          1 |             16 |      2 |      2 |
+    |    9 | Home        |         29 |              5 |      2 |      2 |
 
     </div>
 
 === "Polars"
 
-    ```py {.polars linenums="1" title="Rank products by quantity sold"}
+    In Polars, we can use the [`.rank()`][polars-rank] method to rank products within each category based on the total quantity sold. We first group the sales data by `category` and `product_id`, then aggregate the data for the [`.sum()`][polars-groupby-sum] of the `quantity` to find the `total_quantity` sold for each product. After that, we can use the [`.rank()`][polars-rank] method to rank the products within each category based on the total quantity sold. Finally, we can define the partitioning by using the [`.over()`][polars-over] method and parse'ing in `partition_by="category"`.
+
+    ```py {.polars linenums="1" title="Rank products by quantity sold, by category"}
     product_popularity_pl: pl.DataFrame = (
-        df_sales_pl.group_by("product_id")
-        .agg(pl.col("quantity").sum().alias("total_quantity"))
-        .with_columns(pl.col("total_quantity").rank(method="dense", descending=True).alias("rank"))
-        .sort("rank")
+        df_sales_pl.group_by("category", "product_id")
+        .agg(pl.sum("quantity").alias("total_quantity"))
+        .with_columns(
+            pl.col("total_quantity").rank(method="dense", descending=True).over(partition_by="category").alias("rank")
+        )
+        .sort("rank", "category")
     )
     print(f"Product Popularity Summary: {len(product_popularity_pl)}")
-    print(product_popularity_pl.head(5))
-    print(product_popularity_pl.head(5).to_pandas().to_markdown())
+    print(product_popularity_pl.head(10))
+    print(product_popularity_pl.head(10).to_pandas().to_markdown())
     ```
 
     <div class="result" markdown>
 
     ```txt
-    Product Popularity Summary: 41
+    Product Popularity Summary: 78
     ```
 
     ```txt
-    shape: (5, 3)
-    ┌────────────┬────────────────┬──────┐
-    │ product_id ┆ total_quantity ┆ rank │
-    │ ---        ┆ ---            ┆ ---  │
-    │ i64        ┆ i64            ┆ u32  │
-    ╞════════════╪════════════════╪══════╡
-    │ 45         ┆ 34             ┆ 1    │
-    │ 1          ┆ 30             ┆ 2    │
-    │ 35         ┆ 26             ┆ 3    │
-    │ 13         ┆ 25             ┆ 4    │
-    │ 28         ┆ 22             ┆ 5    │
-    └────────────┴────────────────┴──────┘
+    shape: (10, 4)
+    ┌─────────────┬────────────┬────────────────┬──────┐
+    │ category    ┆ product_id ┆ total_quantity ┆ rank │
+    │ ---         ┆ ---        ┆ ---            ┆ ---  │
+    │ str         ┆ i64        ┆ i64            ┆ u32  │
+    ╞═════════════╪════════════╪════════════════╪══════╡
+    │ Books       ┆ 11         ┆ 14             ┆ 1    │
+    │ Clothing    ┆ 7          ┆ 9              ┆ 1    │
+    │ Electronics ┆ 37         ┆ 16             ┆ 1    │
+    │ Food        ┆ 45         ┆ 34             ┆ 1    │
+    │ Home        ┆ 3          ┆ 10             ┆ 1    │
+    │ Books       ┆ 28         ┆ 9              ┆ 2    │
+    │ Clothing    ┆ 35         ┆ 8              ┆ 2    │
+    │ Electronics ┆ 35         ┆ 11             ┆ 2    │
+    │ Food        ┆ 1          ┆ 16             ┆ 2    │
+    │ Home        ┆ 48         ┆ 5              ┆ 2    │
+    └─────────────┴────────────┴────────────────┴──────┘
     ```
 
-    |      | product_id | total_quantity | rank |
-    | ---: | ---------: | -------------: | ---: |
-    |    0 |         45 |             34 |    1 |
-    |    1 |          1 |             30 |    2 |
-    |    2 |         35 |             26 |    3 |
-    |    3 |         13 |             25 |    4 |
-    |    4 |         28 |             22 |    5 |
+    |      | category    | product_id | total_quantity | rank |
+    | ---: | :---------- | ---------: | -------------: | ---: |
+    |    0 | Books       |         11 |             14 |    1 |
+    |    1 | Clothing    |          7 |              9 |    1 |
+    |    2 | Electronics |         37 |             16 |    1 |
+    |    3 | Food        |         45 |             34 |    1 |
+    |    4 | Home        |          3 |             10 |    1 |
+    |    5 | Books       |         28 |              9 |    2 |
+    |    6 | Clothing    |         35 |              8 |    2 |
+    |    7 | Electronics |         35 |             11 |    2 |
+    |    8 | Food        |          1 |             16 |    2 |
+    |    9 | Home        |         48 |              5 |    2 |
 
     </div>
 
@@ -3736,6 +3809,7 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 [pandas-agg]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.agg.html
 [pandas-groupby]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html
 [pandas-groupby-agg]: https://pandas.pydata.org/docs/reference/api/pandas.core.groupby.DataFrameGroupBy.agg.html
+[pandas-groupby-sum]: https://pandas.pydata.org/docs/reference/api/pandas.core.groupby.DataFrameGroupBy.sum.html
 [pandas-columns]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.columns.html
 [pandas-rename]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename.html
 [pandas-reset_index]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html
@@ -3745,6 +3819,8 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 [pandas-pct_change]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html
 [pandas-rolling]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html
 [pandas-rolling-mean]: https://pandas.pydata.org/docs/reference/api/pandas.core.window.rolling.Rolling.mean.html
+[pandas-rank]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rank.html
+[pandas-assign]: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.assign.html
 
 <!-- SQL -->
 [postgresql]: https://www.postgresql.org/
@@ -3788,7 +3864,10 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 [pyspark-window]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.html
 [pyspark-avg]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.avg.html
 [pyspark-window-orderby]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.orderBy.html
+[pyspark-window-partitionby]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.partitionBy.html
 [pyspark-window-rowsbetween]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Window.rowsBetween.html
+[pyspark-dense_rank]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.dense_rank.html
+[pyspark-desc]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.desc.html
 
 <!-- Polars -->
 [polars]: https://www.pola.rs/
@@ -3805,6 +3884,8 @@ Next, we will rank products based on the quantity sold. This allows us to identi
 [polars-shift]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.shift.html
 [polars-sort]: https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.sort.html
 [polars-rolling-mean]: https://docs.pola.rs/api/python/dev/reference/expressions/api/polars.Expr.rolling_mean.html
+[polars-rank]: https://docs.pola.rs/api/python/dev/reference/expressions/api/polars.Expr.rank.html
+[polars-over]: https://docs.pola.rs/api/python/dev/reference/expressions/api/polars.Expr.over.html
 
 <!-- Plotly -->
 [plotly]: https://plotly.com/python/
