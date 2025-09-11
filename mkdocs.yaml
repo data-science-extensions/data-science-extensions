@@ -130,6 +130,7 @@ nav:
       - Python Toolbox: toolboxes/toolbox-python.md
       - PySpark Toolbox: toolboxes/toolbox-pyspark.md
       - Synthetic Data Generators: toolboxes/synthetic-data-generators.md
+      - Docstring Format Checker: toolboxes/docstring-format-checker.md
   - Guides:
       - guides/index.md
       - Querying Data: guides/querying-data/index.md
