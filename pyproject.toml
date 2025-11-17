@@ -1,5 +1,5 @@
 [build-system]
-requires = ["uv_build>=0.7.3,<0.8.0"]
+requires = ["uv_build>=0.9.5,<0.10.0"]
 build-backend = "uv_build"
 
 [project]
@@ -17,13 +17,12 @@ maintainers = [
 classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing :: Unit",
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Intended Audience :: Developers",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Software Development :: Testing :: Unit",
     "Topic :: Utilities",
 ]
 requires-python = ">=3.13,<4.0"
@@ -55,11 +54,11 @@ dev = [
     "black==25.*",
     "blacken-docs==1.*",
     "codespell==2.*",
-    "ipykernel==6.*",
-    "isort==6.*",
+    "ipykernel==7.*",
+    "isort==7.*",
     "pre-commit==4.*",
     "pycln==2.*",
-    "pylint==3.*",
+    "pylint==4.*",
     "pyupgrade==3.*",
 ]
 docs = [
@@ -69,22 +68,30 @@ docs = [
     "mike==2.*",
     "mkdocs==1.*",
     "mkdocs-autorefs==1.*",
-    "mkdocs-coverage==1.*",
+    "mkdocs-coverage==2.*",
     "mkdocs-material==9.*",
     "mkdocstrings==0.*",
     "mkdocstrings-python==1.*",
     "jupytext==1.*",  # <-- Used to convert notebooks to markdown
+    "tqdm==4.*",  # <-- Used to show progress bars for long operations
 ]
 docs-dev = [
     "numpy==2.*",
     "pandas==2.*",
     "tabulate==0.*",
     "plotly==6.*",
-    "pyspark==3.*",
+    "pyspark==4.*",
     "polars==1.*",
-    "pyarrow==20.*",  # <-- Used for converting from polars to pandas
-    "setuptools==80.*",  # <-- Dependency for pyspark
+    "pyarrow==22.*",  # <-- Used for converting from polars to pandas
+    "streamlit==1.*",
+    "scipy==1.*",
+    "synthetic-data-generators==1.*",
+    "pmdarima==2.*,!=2.1.0",
+    "scikit-learn==1.*",
 ]
+
+[tool.uv.extra-build-dependencies]
+pmdarima = ["numpy"]
 
 [tool.black]
 color = true
