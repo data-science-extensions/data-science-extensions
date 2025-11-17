@@ -39,6 +39,7 @@ Changelog = "https://github.com/data-science-extensions/website/releases"
 Issues = "https://github.com/data-science-extensions/website/issues"
 
 [project.scripts]
+docs-serve-static = "cli.scripts:docs_serve_static"
 lint = "cli.scripts:lint"
 check = "cli.scripts:check"
 lint-check = "cli.scripts:lint_check"

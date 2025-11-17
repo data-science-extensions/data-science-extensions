@@ -8,7 +8,18 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Literal, LiteralString
+from textwrap import dedent
+from typing import Literal, LiteralString, Union
+
+
+## --------------------------------------------------------------------------- #
+##  Constants                                                               ####
+## --------------------------------------------------------------------------- #
+
+
+PACKAGE_NAME: str = "data-science-extensions"
+DIRECTORY_NAME: str = PACKAGE_NAME.replace("-", "_")
+UV_CONSTANTS: list[str] = ["UV_NO_SYNC=true", "UV_LINK_MODE=copy", "UV_NATIVE_TLS=true", "UV_ENV_FILE=.env"]
 
 
 ## --------------------------------------------------------------------------- #
@@ -16,13 +27,22 @@ from typing import Literal, LiteralString
 ## --------------------------------------------------------------------------- #
 
 
-def run_command(*command) -> None:
-    print("\n", " ".join(command), sep="", flush=True)
-    subprocess.run(command, check=True)
+def expand_space(lst: Union[list[str], tuple[str, ...]]) -> list[str]:
+    return [item for element in lst for item in element.split()]
+
+
+def run_command(*command, expand: bool = True) -> None:
+    _command: list[str] = expand_space(command) if expand else list(command)
+    print("\n", " ".join(_command), sep="", flush=True)
+    # subprocess.run(UV_CONSTANTS + _command, check=True, encoding="utf-8")
+    subprocess.run(_command, check=True, encoding="utf-8")
+
+
+run = run_command
 
 
 def uv_sync() -> None:
-    run_command("uv", "sync", "--all-groups", "--native-tls", "--link-mode=copy")
+    run("uv", "sync", "--all-groups", "--native-tls", "--link-mode=copy")
 
 
 def lint_check() -> None:
@@ -44,23 +64,23 @@ def get_all_files(*suffixes) -> list[str]:
 
 
 def run_black() -> None:
-    run_command("black", "--config=pyproject.toml", "./")
+    run("black", "--config=pyproject.toml", "./")
 
 
 def run_blacken_docs() -> None:
-    run_command("blacken-docs", "--line-length=120", *get_all_files(".md", ".py", ".ipynb"))
+    run("blacken-docs", "--line-length=120", *get_all_files(".md", ".py", ".ipynb"))
 
 
 def run_isort() -> None:
-    run_command("isort", "--settings-file=pyproject.toml", "./")
+    run("isort", "--settings-file=pyproject.toml", "./")
 
 
 def run_pycln() -> None:
-    run_command("pycln", "--config=pyproject.toml", "src/")
+    run("pycln", "--config=pyproject.toml", "src/")
 
 
 def run_pyupgrade() -> None:
-    run_command("pyupgrade", "--py3-plus", *get_all_files(".py"))
+    run("pyupgrade", "--py3-plus", *get_all_files(".py"))
 
 
 def lint() -> None:
@@ -76,45 +96,68 @@ def lint() -> None:
 
 
 def check_black() -> None:
-    run_command("black", "--check", "--config=pyproject.toml", "./")
+    run("black", "--check", "--config=pyproject.toml", "./")
 
 
 def check_blacken_docs() -> None:
-    run_command("blacken-docs", "--check", "--line-length=120", *get_all_files(".md", ".py", ".ipynb"))
+    run("blacken-docs", "--check", "--line-length=120", *get_all_files(".md", ".py", ".ipynb"))
 
 
 def check_mypy() -> None:
-    run_command("mypy", "--install-types", "--non-interactive", "--config-file=pyproject.toml", "./src")
+    run(
+        "mypy",
+        "--install-types",
+        "--non-interactive",
+        "--config-file=pyproject.toml",
+        f"./src/{DIRECTORY_NAME}",
+    )
 
 
 def check_isort() -> None:
-    run_command("isort", "--check", "--settings-file=pyproject.toml", "./")
+    run("isort", "--check", "--settings-file=pyproject.toml", "./")
 
 
 def check_codespell() -> None:
-    run_command("codespell", "--toml=pyproject.toml", "src/", "*.py")
+    run("codespell", "--toml=pyproject.toml", "src/", "*.py")
 
 
 def check_pylint() -> None:
-    run_command("pylint", "--rcfile=pyproject.toml", "src/")
+    run(f"pylint --rcfile=pyproject.toml src/{DIRECTORY_NAME}")
 
 
 def check_pycln() -> None:
-    run_command("pycln", "--config=pyproject.toml", "src/")
+    run("pycln", "--config=pyproject.toml", "src/")
 
 
 def check_build() -> None:
-    run_command("uv", "build", "--out-dir=dist")
-    run_command("rm", "--recursive", "dist")
+    run("uv", "build", "--out-dir=dist")
+    run("rm", "--recursive", "dist")
 
 
 def check_mkdocs() -> None:
-    run_command("mkdocs", "build", "--site-dir=temp")
-    run_command("rm", "--recursive", "temp")
+    run("mkdocs", "build", "--site-dir=temp")
+    run("rm", "--recursive", "temp")
 
 
 def check_pytest() -> None:
-    run_command("pytest", "--config-file=pyproject.toml")
+    run("pytest", "--config-file=pyproject.toml")
+
+
+def check_docstrings() -> None:
+    run(f"dfc --output=table ./src/{DIRECTORY_NAME}")
+
+
+def check_complexity() -> None:
+    notes: str = dedent(
+        """
+        Notes from: https://rohaquinlop.github.io/complexipy/#running-the-analysis
+        - Complexity <= 5: Simple, easy to understand
+        - Complexity 6-15: Moderate, acceptable for most cases
+        - Complexity >= 15: Complex, consider refactoring into simpler functions
+        """
+    )
+    print(notes)
+    run(f"complexipy ./src/{DIRECTORY_NAME}")
 
 
 def check() -> None:
@@ -123,11 +166,100 @@ def check() -> None:
     # check_mypy()
     check_isort()
     check_codespell()
-    check_pylint()
     check_pycln()
+    check_pylint()
+    # check_complexity()
+    # check_docstrings()
     # check_mkdocs()
     # check_build()
     # check_pytest()
+
+
+## --------------------------------------------------------------------------- #
+##  Docs                                                                    ####
+## --------------------------------------------------------------------------- #
+
+
+def docs_serve_static() -> None:
+    run("mkdocs serve")
+
+
+def docs_serve_versioned() -> None:
+    run("mike serve --branch=docs-site")
+
+
+def docs_build_static() -> None:
+    run("mkdocs build --clean")
+
+
+def docs_build_versioned(version: str) -> None:
+    run("git config --global --list")
+    run("git config --local --list")
+    run("git remote --verbose")
+    run(f"mike --debug deploy --update-aliases --branch=docs-site --push {version} latest")
+
+
+def docs_build_versioned_cli() -> None:
+    if len(sys.argv) < 2:
+        print("Requires argument: <version>")
+        sys.exit(1)
+    docs_build_versioned(sys.argv[2])
+
+
+def update_git_docs(version: str) -> None:
+    run("git add .")
+    run("git", "commit", f'--message="Build docs `{version}` [skip ci]"', expand=False)
+    run("git push --force --no-verify --push-option ci.skip")
+
+
+def update_git_docs_cli() -> None:
+    if len(sys.argv) < 2:
+        print("Requires argument: <version>")
+        sys.exit(1)
+    update_git_docs(sys.argv[2])
+
+
+def docs_check_versions() -> None:
+    run("mike --debug list --branch=docs-site")
+
+
+def docs_delete_version(version: str) -> None:
+    run(f"mike --debug delete --branch=docs-site {version}")
+
+
+def docs_delete_version_cli() -> None:
+    if len(sys.argv) < 2:
+        print("Requires argument: <version>")
+        sys.exit(1)
+    docs_delete_version(sys.argv[2])
+
+
+def docs_set_default() -> None:
+    run("mike --debug set-default --branch=docs-site --push latest")
+
+
+def build_static_docs(version: str) -> None:
+    docs_build_static()
+    update_git_docs(version)
+
+
+def build_static_docs_cli() -> None:
+    if len(sys.argv) < 2:
+        print("Requires argument: <version>")
+        sys.exit(1)
+    build_static_docs(sys.argv[2])
+
+
+def build_versioned_docs(version: str) -> None:
+    docs_build_versioned(version)
+    docs_set_default()
+
+
+def build_versioned_docs_cli() -> None:
+    if len(sys.argv) < 2:
+        print("Requires argument: <version>")
+        sys.exit(1)
+    build_versioned_docs(sys.argv[2])
 
 
 ## --------------------------------------------------------------------------- #
@@ -387,9 +519,11 @@ def convert_markdown_to_notebook(input_file_path: str) -> str | None:
         print(f"Input file {input_file_path} is not a markdown file.")
         return
 
-    output_file = input_file_path.replace(".md", ".ipynb")
+    output_file: str = input_file_path.replace(".md", ".ipynb")
 
-    run_command(
+    run("blacken-docs", "--line-length=120", "--skip-errors", input_file_path)
+
+    run(
         "jupytext",
         "--to=notebook",
         "--update",
