@@ -54,3 +54,11 @@ article div.doc-class {
 .md-typeset table:not([class]) td {
     padding: .2em .5em !important;
 }
+
+
+/* Tables */
+
+.md-typeset table:not([class]) td,
+.md-typeset table:not([class]) th {
+    min-width: 10px;
+}
