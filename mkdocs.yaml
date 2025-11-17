@@ -50,6 +50,7 @@ markdown_extensions:
   - meta
   - attr_list
   - md_in_html
+  - footnotes
   - toc:
       permalink: "🔗"
   - pymdownx.emoji:
@@ -134,6 +135,7 @@ nav:
   - Guides:
       - guides/index.md
       - Querying Data: guides/querying-data/index.md
+      - Handling Missing Data: guides/handling-missing-data/index.md
 
 exclude_docs: |
   guides/querying-data/index-r.md
