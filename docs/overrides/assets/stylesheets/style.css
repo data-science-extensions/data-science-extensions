@@ -47,18 +47,11 @@ article div.doc-class {
     margin-bottom: 100px;
 }
 
-.md-typeset table:not([class]) th {
-    padding: .2em .5em !important;
-}
-
-.md-typeset table:not([class]) td {
-    padding: .2em .5em !important;
-}
-
 
 /* Tables */
 
 .md-typeset table:not([class]) td,
 .md-typeset table:not([class]) th {
+    padding: .2em .5em !important;
     min-width: 10px;
 }
