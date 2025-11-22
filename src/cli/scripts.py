@@ -389,7 +389,10 @@ def extract_sections_from_markdown_file_cli() -> None:
     extract_sections_from_markdown_file(file_path, section_name)
 
 
-def reformat_file(file_path: str) -> str | None:
+def reformat_file(
+    file_path: str,
+    replace_tab_with_header: Literal["##", "###", "####", "h2", "h3", "h4"] = "h3",
+) -> str | None:
     """
     Summary:
         Dedent code blocks in a markdown file and save to a new file with 'reformatted' in the name.
@@ -400,6 +403,8 @@ def reformat_file(file_path: str) -> str | None:
     Params:
         file_path (str):
             Path to the markdown file to process
+        replace_tab_with_header (Literal["##", "###", "####", "h2", "h3", "h4"]):
+            The markdown header level to replace tab markers with (default is `"h3"`).
 
     Notes:
         This function:
@@ -433,42 +438,45 @@ def reformat_file(file_path: str) -> str | None:
 
     # Process the content
     in_code_block = False
+    in_tab_block = False
 
     # Clean lines
     for index, line in enumerate(lines):
 
         line: str
 
-        # Check for code block start
-        if not in_code_block:
+        if len(line.strip()) == 0:
+            continue
 
-            # Dedent lines
+        # Dedent lines in Tab blocks
+        if in_tab_block:
             if line.startswith("    "):
                 line = line[4:]
+            else:
+                in_tab_block = False
 
-            # Handle code block start
-            if line.startswith("```py"):
-                in_code_block = True
-                line = line.replace("```py", "```python")
+        # Convert headings for Tab blocks
+        if line.startswith("==="):
+            in_tab_block = True
+            if replace_tab_with_header.startswith("h"):
+                level: int = int(replace_tab_with_header[1])
+                line = line.replace("=== ", "#" * level + " ").replace('"', "")
+            else:
+                line = line.replace("=== ", replace_tab_with_header.strip() + " ").replace('"', "")
 
-            # Convert headings
-            if line.startswith("==="):
-                line = line.replace("=== ", "### ").replace('"', "")
+        # Handle code block start
+        if line.startswith("```py") and not line.startswith("```python"):
+            in_code_block = True
+            line = line.replace("```py", "```python")
 
-            # Drop lines
-            if "--8<--" in line:
-                line = ""
-
-        # Check for code block end
-        elif in_code_block:
-
-            # Handle code block end
+        if in_code_block:
             if line.strip().startswith("```"):
                 in_code_block = False
 
-            # Dedent code block content
-            if line.startswith("    "):
-                line = line[4:]
+        # Remove special markers outside code blocks
+        if not in_code_block:
+            if "--8<--" in line:
+                line = ""
 
         lines[index] = line
 
@@ -485,7 +493,10 @@ def reformat_file_cli() -> None:
     if len(sys.argv) < 2:
         print("Usage: reformat-file <file_path>")
         sys.exit(1)
-    reformat_file(sys.argv[1])
+    if sys.argv[2]:
+        reformat_file(sys.argv[1], sys.argv[2])
+    else:
+        reformat_file(sys.argv[1])
 
 
 def convert_markdown_to_notebook(input_file_path: str) -> str | None:
@@ -544,8 +555,11 @@ def convert_markdown_to_notebook_cli() -> None:
     convert_markdown_to_notebook(sys.argv[1])
 
 
-def format_and_convert(file_path: str) -> None:
-    reformatted_file: str = reformat_file(file_path)
+def format_and_convert(
+    file_path: str,
+    replace_tab_with_header: Literal["##", "###", "####", "h2", "h3", "h4"] = "h3",
+) -> None:
+    reformatted_file: str = reformat_file(file_path=file_path, replace_tab_with_header=replace_tab_with_header)
     convert_markdown_to_notebook(reformatted_file)
 
 
@@ -553,4 +567,7 @@ def format_and_convert_cli() -> None:
     if len(sys.argv) < 2:
         print("Usage: format-and-convert <file_path>")
         sys.exit(1)
-    format_and_convert(sys.argv[1])
+    if sys.argv[2]:
+        format_and_convert(sys.argv[1], sys.argv[2])
+    else:
+        format_and_convert(sys.argv[1])
