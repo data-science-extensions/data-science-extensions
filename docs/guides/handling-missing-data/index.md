@@ -198,9 +198,20 @@ Mechanisms/examples:
 
 ### Set up
 
+Before we begin, it is necessary to set up our environment and create a sample data set with missing values. Click on "Show code" to see the full code for all sections on this page. Click "No code" at any time to hide the code.
+
 === "No code"
 
 === "Show code"
+
+    For this guide, we will use a number of libraries to show the functionality. The important ones are:
+
+    - [`numpy`] and [`pandas`] for data manipulation
+    - [`synthetic_data_generators`] to create sample time series data
+    - [`plotly`] for visualisation
+    - [`pmdarima`] for ARIMA modelling
+    - [`sklearn`] for machine learning models
+    - [`tqdm`] for progress bars
 
     ```python
     # StdLib Imports
@@ -222,6 +233,7 @@ Mechanisms/examples:
     from tqdm import tqdm
     ```
 
+    After importing the necessary libraries, we can set up some global settings which will be used throughout the guide. This includes setting a random seed for reproducibility (`RANDOM_SEED`), defining the number of periods for our time series data (`NUM_PERIODS`), and configuring Plotly's default template for visualizations (`pio.templates.default`). We also instantiate the `TimeSeriesGenerator()` class, assigning a constant seed for reproducibility (`TSG`). Additionally, we will suppress certain warnings to keep the output clean.
 
     ```python
     # Constants, Settings, Instantiations
@@ -236,6 +248,7 @@ Mechanisms/examples:
     warnings.filterwarnings("ignore", category=PerformanceWarning)
     ```
 
+    In this guide, we will constantly be plotting our data to visualise the effects of missing data handling techniques. Therefore, we define a single helper function `plot_data()` that we can reuse for convenience and consistent formatting. It takes in a DataFrame and various parameters to create a line plot comparing the original data with missing values and the filled data. The function also allows for customization of titles, subtitles, output file saving, and whether to show or return the figure.
 
     ```python
     def plot_data(
@@ -293,6 +306,7 @@ Mechanisms/examples:
             raise ValueError(f"Invalid value for `show_or_return`: '{show_or_return}'. Must be either: 'show' or 'return'")
     ```
 
+    Now that we have our environment set up, we can create a sample time series data set with missing values. We will generate seasonal data with a yearly seasonality pattern and then randomly remove 50% of the data points to simulate missing data.
 
     ```python
     # Set data parameters
@@ -340,12 +354,35 @@ Mechanisms/examples:
     )
     ```
 
+    When we inspect the generated data, we can see the number of missing values in the "Missing" column and a preview of the first 10 rows.
 
     ```python
     # Check data
     print(data.isna().sum().to_frame("Num Missing").to_markdown())
     print(data.head(10).to_markdown())
     ```
+        
+    |         | Missing Values |
+    | :------ | -------------: |
+    | index   |              0 |
+    | Date    |              0 |
+    | Value   |              0 |
+    | Missing |            182 |
+
+    |      | index               | Date                |   Value | Missing |
+    | ---: | :------------------ | :------------------ | ------: | ------: |
+    |    0 | 2023-01-01 00:00:00 | 2023-01-01 00:00:00 | 245.059 | 245.059 |
+    |    1 | 2023-01-02 00:00:00 | 2023-01-02 00:00:00 | 196.839 | 196.839 |
+    |    2 | 2023-01-03 00:00:00 | 2023-01-03 00:00:00 | 191.966 |     nan |
+    |    3 | 2023-01-04 00:00:00 | 2023-01-04 00:00:00 | 208.287 | 208.287 |
+    |    4 | 2023-01-05 00:00:00 | 2023-01-05 00:00:00 | 216.724 | 216.724 |
+    |    5 | 2023-01-06 00:00:00 | 2023-01-06 00:00:00 | 197.463 | 197.463 |
+    |    6 | 2023-01-07 00:00:00 | 2023-01-07 00:00:00 | 217.824 | 217.824 |
+    |    7 | 2023-01-08 00:00:00 | 2023-01-08 00:00:00 | 205.426 | 205.426 |
+    |    8 | 2023-01-09 00:00:00 | 2023-01-09 00:00:00 | 201.368 |     nan |
+    |    9 | 2023-01-10 00:00:00 | 2023-01-10 00:00:00 | 192.668 |     nan |
+
+    We can also visualise the data using our `plot_data()` function, which shows the seasonal pattern along with the missing data points.
 
     ```python
     # Plot data
@@ -360,6 +397,7 @@ Mechanisms/examples:
     )
     ```
 
+    As you can see with the below plot, the data exhibits a clear seasonal pattern, but there are several missing data points scattered throughout the time series.
 
     --8<-- "docs/guides/handling-missing-data/images/00_seasonal_data_with_missing.html"
 
@@ -1291,3 +1329,13 @@ When to use:
 
 
 [^munchhausen-trilemma]: The Münchhausen trilemma asserts that there are only three ways of completing a proof; by circular argument, regressive argument, and dogmatic argument. Baron Münchhausen proposed a thought experiment where he tried to prove it was theoretically possible to free himself out of being stuck in the mud by pulling himself out with his own hair.
+
+
+[`numpy`]: https://numpy.org/
+[`pandas`]: https://pandas.pydata.org/
+[`synthetic_data_generators`]: https://data-science-extensions.com/toolboxes/synthetic-data-generators/
+[`plotly`]: https://plotly.com/python/
+[`pmdarima`]: https://alkaline-ml.com/pmdarima/
+[`sklearn`]: https://scikit-learn.org/
+[`tqdm`]: https://tqdm.github.io/
+
