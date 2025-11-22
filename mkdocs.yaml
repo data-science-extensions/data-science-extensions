@@ -147,3 +147,4 @@ exclude_docs: |
   guides/querying-data/index-sql-r.md
   guides/querying-data/index-pyspark-r.md
   guides/querying-data/index-polars-r.md
+  guides/handling-missing-data/index-r.md
