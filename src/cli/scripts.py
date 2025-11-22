@@ -278,7 +278,7 @@ def extract_sections_from_markdown_file(
     Details:
         This function reads a markdown file, searches for tabbed sections defined by `=== "Tab Name"`, and extracts the content of the specified tab section. It then writes the content to a new markdown file with the section name as a suffix.
 
-    Args:
+    Params:
         file_path (str):
             Path to the markdown file to process.
         section_name (Literal["pandas", "sql", "pyspark", "polars"]):
@@ -397,7 +397,7 @@ def reformat_file(file_path: str) -> str | None:
     Details:
         Finds all Python code blocks that start with ```py and removes 4 spaces of indentation from each line within the block.
 
-    Args:
+    Params:
         file_path (str):
             Path to the markdown file to process
 
@@ -496,7 +496,7 @@ def convert_markdown_to_notebook(input_file_path: str) -> str | None:
     Details:
         This function checks if the input file exists and is a markdown file. If so, it uses jupytext to convert the markdown file to a Jupyter notebook format, applying black for formatting. The output notebook file will have the same name as the input file but with the `.ipynb` extension.
 
-    Args:
+    Params:
         input_file_path (str):
             Path to the markdown file to convert.
 
