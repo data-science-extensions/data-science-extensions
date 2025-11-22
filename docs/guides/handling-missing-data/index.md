@@ -1,9 +1,4 @@
 # Handling Missing Time Series Data
-# Handling Missing Time Series Data
-
-## Causes / Reasons
-
-Some examples:
 
 <style>
     .center {
@@ -19,6 +14,16 @@ Some examples:
         background-color: rgba(144, 238, 144, 0.2);
     }
 </style>
+
+
+## Introduction
+
+TODO
+
+
+## Causes / Reasons
+
+Some examples:
 
 | <div class="center">Reason</div> | <div class="center">Comment</div>                                                           | <div class="center">Score</div>                                                     |
 | -------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
@@ -184,8 +189,6 @@ Mechanisms/examples:
 </table>
 
 
-## Dealing with Missing Data
-
 ### Set up
 
 ```python
@@ -344,6 +347,10 @@ plot_data(
 ```
 
 --8<-- "docs/guides/handling-missing-data/images/00_seasonal_data_with_missing.html"
+
+
+## Dealing with Missing Data
+
 
 ### Dropping
 
@@ -599,6 +606,7 @@ plot_data(
 
 --8<-- "docs/guides/handling-missing-data/images/01_filling_using_random_distribution.html"
 
+
 ### Filling using Feed-Forward
 
 Eg. take the most recent value, and feed it forward to fill the gaps.
@@ -679,6 +687,7 @@ plot_data(
 ```
 
 --8<-- "docs/guides/handling-missing-data/images/02_filling_using_feed_forward.html"
+
 
 ### Filling using Imputation ($σ$ or $x~$)
 
@@ -855,6 +864,7 @@ plot_data(
 ```
 
 --8<-- "docs/guides/handling-missing-data/images/04_filling_using_interpolation.html"
+
 
 ### Filling using Time-Series Prediction
 
@@ -1042,6 +1052,7 @@ def build_lag_features(df: pd.DataFrame, target_col: str) -> pd.DataFrame:
     return tmp.assign(**{f"Lag_{lag}": tmp[target_col].shift(lag) for lag in lags if lag != 0})
 ```
 
+
 #### One at a Time
 
 ```python
@@ -1104,6 +1115,7 @@ plot_data(
 ```
 
 --8<-- "docs/guides/handling-missing-data/images/06_filling_using_machine_learning_1.html"
+
 
 #### All at Once
 
