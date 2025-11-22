@@ -1,6 +1,14 @@
 # Handling Missing Time Series Data
 
 <style>
+    table td {
+        vertical-align: middle;
+        position: relative;
+    }
+    table td p {
+        display: inline-block;
+        vertical-align: middle;
+    }
     .center {
         text-align: center;
     }
@@ -9,7 +17,6 @@
         justify-content: space-between;
         align-items: center;
     }
-    .data {}
     .green {
         background-color: rgba(144, 238, 144, 0.2);
     }
@@ -49,7 +56,7 @@ Mechanisms/examples:
     <tr>
         <td>
             <div class="center"><b>Source</b></div>
-            <table class="data">
+            <table>
                 <tr><th>t</th><th>y</th><th>x1</th><th>x2</th></tr>
                 <tr><td>2023-01-01</td><td>9.8</td><td>18.2</td><td>1.2</td></tr>
                 <tr><td>2023-01-02</td><td>10.3</td><td>18.6</td><td>2.3</td></tr>
@@ -63,8 +70,8 @@ Mechanisms/examples:
                 <tr><td>2023-01-10</td><td>11.4</td><td>21.9</td><td>1.0</td></tr>
             </table>
         </td>
-        <td>
-            <div class="center">Completely<br>random<br>➡️</div>
+        <td class="center">
+            Completely<br>random<br>➡️
         </td>
         <td>
             <div class="center"><b>Result</b></div>
@@ -483,7 +490,7 @@ When to use:
                 <tr><td>2023-01-02</td><td>10.3</td><td>18.6</td><td>2.3</td></tr>
                 <tr><td>2023-01-03</td><td>24.6</td><td>49.2</td><td>0.5</td></tr>
                 <tr><td>2023-01-04</td><td>7.5</td><td>14.4</td><td>0.7</td></tr>
-                <tr><td>2023-01-05</td><td>11.1</td><td>&nbsp;</td><td>&nbsp;</td></td></tr>
+                <tr><td>2023-01-05</td><td>11.1</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                 <tr><td>2023-01-06</td><td>10.0</td><td>18.9</td><td>1.1</td></tr>
                 <tr><td>2023-01-07</td><td>9.9</td><td>19.1</td><td>0.8</td></tr>
                 <tr><td>2023-01-08</td><td>8.7</td><td>&nbsp;</td><td>0.8</td></tr>
@@ -492,7 +499,7 @@ When to use:
             </table>
         </td>
         <td>
-            <div class="center">Something</b><br>➡️</div>
+            <div class="center">Something<br>➡️</div>
         </td>
         <td>
             <div class="center"><b>Result</b></div>
