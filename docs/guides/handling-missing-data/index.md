@@ -198,162 +198,170 @@ Mechanisms/examples:
 
 ### Set up
 
-```python
-# StdLib Imports
-import warnings
-from datetime import datetime
-from functools import partial
-from typing import Literal
+=== "No code"
 
-# Third Party Imports
-import numpy as np
-import pandas as pd
-from pandas.errors import PerformanceWarning
-from plotly import express as px, graph_objects as go, io as pio
-from pmdarima import auto_arima
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.exceptions import DataConversionWarning
-from sklearn.metrics import (
-    mean_absolute_percentage_error as mape,
-    root_mean_squared_error as rmse,
-)
-from synthetic_data_generators.time_series import TimeSeriesGenerator
-from tqdm import tqdm
+=== "Show code"
 
+    ```python
+    # StdLib Imports
+    import warnings
+    from datetime import datetime
+    from functools import partial
+    from typing import Literal
 
-# Add Settings
-pio.templates.default = "simple_white+gridon"
-RANDOM_SEED = 42
-TSG = TimeSeriesGenerator(seed=RANDOM_SEED)
-n_periods = 1096
+    # Third Party Imports
+    import numpy as np
+    import pandas as pd
+    from pandas.errors import PerformanceWarning
+    from plotly import express as px, graph_objects as go, io as pio
+    from pmdarima import auto_arima
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.exceptions import DataConversionWarning
+    from sklearn.metrics import mean_absolute_percentage_error as mape
+    from synthetic_data_generators.time_series import TimeSeriesGenerator
+    from tqdm import tqdm
+    ```
 
 
-# Ignore warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore", category=DataConversionWarning)
-warnings.filterwarnings("ignore", category=PerformanceWarning)
-```
+    ```python
+    # Constants, Settings, Instantiations
+    RANDOM_SEED = 42
+    NUM_PERIODS = 1096
+    pio.templates.default = "simple_white+gridon"
+    TSG = TimeSeriesGenerator(seed=RANDOM_SEED)
 
-```python
-def plot_data(
-    data: pd.DataFrame,
-    date_col: str,
-    missing_col: str,
-    fill_col: str,
-    title: str,
-    subtitle: str | None = None,
-    output_file: str | None = None,
-    show_or_return: Literal["show", "return"] = "show",
-) -> go.Figure | None:
-    fig: go.Figure = (
-        px.line(title=f"{title}<br><sup>{subtitle}</sup>" if subtitle else title)
-        .add_scatter(
-            name="filled",
-            x=data[date_col],
-            y=data[fill_col],
-            mode="lines+markers",
-            line_color="crimson",
-            line_width=1,
-            marker_size=4,
+    # Ignore warnings
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    warnings.filterwarnings("ignore", category=DataConversionWarning)
+    warnings.filterwarnings("ignore", category=PerformanceWarning)
+    ```
+
+
+    ```python
+    def plot_data(
+        data: pd.DataFrame,
+        date_col: str,
+        missing_col: str,
+        fill_col: str,
+        title: str,
+        subtitle: str | None = None,
+        output_file: str | None = None,
+        show_or_return: Literal["show", "return"] = "show",
+    ) -> go.Figure | None:
+        fig: go.Figure = (
+            px.line(title=f"{title}<br><sup>{subtitle}</sup>" if subtitle else title)
+            .add_scatter(
+                name="filled",
+                x=data[date_col],
+                y=data[fill_col],
+                mode="lines+markers",
+                line_color="crimson",
+                line_width=1,
+                marker_size=4,
+            )
+            .add_scatter(
+                name="original",
+                x=data[date_col],
+                y=data[missing_col],
+                mode="lines+markers",
+                line_color="cornflowerblue",
+            )
+            .update_layout(
+                xaxis_title="Date",
+                yaxis_title="Value",
+                legend=dict(orientation="h", yanchor="bottom", y=1, xanchor="left", x=0, traceorder="reversed"),
+                xaxis_range=[
+                    data[date_col].min() - pd.offsets.Day(3),
+                    data[date_col].max() + pd.offsets.Day(3),
+                ],
+                title=dict(
+                    x=0.5,
+                    xanchor="center",
+                    yanchor="top",
+                ),
+            )
         )
-        .add_scatter(
-            name="original",
-            x=data[date_col],
-            y=data[missing_col],
-            mode="lines+markers",
-            line_color="cornflowerblue",
+
+        if output_file:
+            fig.write_html(output_file, include_plotlyjs="cdn")
+
+        if show_or_return == "show":
+            fig.show()
+        elif show_or_return == "return":
+            return fig
+        else:
+            raise ValueError(f"Invalid value for `show_or_return`: '{show_or_return}'. Must be either: 'show' or 'return'")
+    ```
+
+
+    ```python
+    # Set data parameters
+    start_date = datetime(2023, 1, 1)
+    NUM_PERIODS = 365
+    interpolation_nodes: tuple[list[int], ...] = ([0, 160], [7, 160], [14, 160], [34, 160])
+    level_breaks: list[list[int]] = []
+    randomwalk_scale: float = 0
+    season_eff: float = 0.7
+    noise_scale: float = 15
+    season_conf: dict[str, int | str] = {
+        "style": "sin",
+        "period_length": 28 * 6,
+        "start_index": 2,
+        "amplitude": 2,
+    }
+
+    # Build data set
+    data: pd.DataFrame = (
+        TSG.create_time_series(
+            start_date=start_date,
+            n_periods=NUM_PERIODS,
+            interpolation_nodes=interpolation_nodes,
+            level_breaks=level_breaks,
+            randomwalk_scale=randomwalk_scale,
+            season_conf=season_conf,
+            season_eff=season_eff,
+            noise_scale=noise_scale,
+            seed=RANDOM_SEED,
         )
-        .update_layout(
-            xaxis_title="Date",
-            yaxis_title="Value",
-            legend=dict(orientation="h", yanchor="bottom", y=1, xanchor="left", x=0, traceorder="reversed"),
-            xaxis_range=[
-                data[date_col].min() - pd.offsets.Day(3),
-                data[date_col].max() + pd.offsets.Day(3),
-            ],
-            title=dict(
-                x=0.5,
-                xanchor="center",
-                yanchor="top",
+        .assign(
+            Missing=lambda df: np.where(
+                df.index.isin(
+                    np.random.default_rng(seed=RANDOM_SEED).choice(
+                        df.index,
+                        size=len(df) // 2,
+                        replace=False,
+                    )
+                ),
+                np.nan,
+                df["Value"],
             ),
         )
+        .reset_index()
     )
+    ```
 
-    if output_file:
-        fig.write_html(output_file, include_plotlyjs="cdn")
 
-    if show_or_return == "show":
-        fig.show()
-    elif show_or_return == "return":
-        return fig
-    else:
-        raise ValueError(f"Invalid value for `show_or_return`: '{show_or_return}'. Must be either: 'show' or 'return'")
-```
+    ```python
+    # Check data
+    print(data.isna().sum().to_frame("Num Missing").to_markdown())
+    print(data.head(10).to_markdown())
+    ```
 
-```python
-# Set data parameters
-start_date = datetime(2023, 1, 1)
-n_periods = 365
-interpolation_nodes: tuple[list[int], ...] = ([0, 160], [7, 160], [14, 160], [34, 160])
-level_breaks: list[list[int]] = []
-randomwalk_scale: float = 0
-season_eff: float = 0.7
-noise_scale: float = 15
-season_conf: dict[str, int | str] = {
-    "style": "sin",
-    "period_length": 28 * 6,
-    "start_index": 2,
-    "amplitude": 2,
-}
-
-# Build data set
-data: pd.DataFrame = (
-    TSG.create_time_series(
-        start_date=start_date,
-        n_periods=n_periods,
-        interpolation_nodes=interpolation_nodes,
-        level_breaks=level_breaks,
-        randomwalk_scale=randomwalk_scale,
-        season_conf=season_conf,
-        season_eff=season_eff,
-        noise_scale=noise_scale,
-        seed=RANDOM_SEED,
+    ```python
+    # Plot data
+    plot_data(
+        data=data,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Value",
+        title="Seasonal Data - With missing data points",
+        subtitle="(using synthetic data)",
+        output_file="./images/00_seasonal_data_with_missing.html",
     )
-    .assign(
-        Missing=lambda df: np.where(
-            df.index.isin(
-                np.random.default_rng(seed=RANDOM_SEED).choice(
-                    df.index,
-                    size=len(df) // 2,
-                    replace=False,
-                )
-            ),
-            np.nan,
-            df["Value"],
-        ),
-    )
-    .reset_index()
-)
-```
+    ```
 
-```python
-# Check data
-display(data.isna().sum())
-display(data.head(10))
 
-# Plot data
-plot_data(
-    data=data,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Value",
-    title="Seasonal Data - With missing data points",
-    subtitle="(using synthetic data)",
-    output_file="./images/00_seasonal_data_with_missing.html",
-)
-```
-
---8<-- "docs/guides/handling-missing-data/images/00_seasonal_data_with_missing.html"
+    --8<-- "docs/guides/handling-missing-data/images/00_seasonal_data_with_missing.html"
 
 
 ## Dealing with Missing Data
@@ -581,37 +589,42 @@ When to use:
     </tr>
 </table>
 
-```python
-### Do fill ----
-nml: np.ndarray = np.random.default_rng(seed=42).normal(
-    loc=data["Missing"].mean(),
-    scale=data["Missing"].std(),
-    size=len(data),
-)
-data_random: pd.DataFrame = data.copy().assign(
-    Fill=lambda df: np.where(
-        df["Missing"].isna(),
-        nml,
-        df["Missing"],
+
+=== "No code"
+
+=== "Show code"
+
+    ```python
+    ### Do fill ----
+    nml: np.ndarray = np.random.default_rng(seed=42).normal(
+        loc=data["Missing"].mean(),
+        scale=data["Missing"].std(),
+        size=len(data),
     )
-)
-```
+    data_random: pd.DataFrame = data.copy().assign(
+        Fill=lambda df: np.where(
+            df["Missing"].isna(),
+            nml,
+            df["Missing"],
+        )
+    )
+    ```
 
-```python
-### Plot data ----
-score_random: float = mape(data_random[["Value"]], data_random[["Fill"]]) * 100
-plot_data(
-    data=data_random,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Fill",
-    title="Filling using Random Distribution",
-    subtitle=f"MAPE={score_random:.2f}%",
-    output_file="./images/01_filling_using_random_distribution.html",
-)
-```
+    ```python
+    ### Plot data ----
+    score_random: float = mape(data_random[["Value"]], data_random[["Fill"]]) * 100
+    plot_data(
+        data=data_random,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Fill",
+        title="Filling using Random Distribution",
+        subtitle=f"MAPE={score_random:.2f}%",
+        output_file="./images/01_filling_using_random_distribution.html",
+    )
+    ```
 
---8<-- "docs/guides/handling-missing-data/images/01_filling_using_random_distribution.html"
+    --8<-- "docs/guides/handling-missing-data/images/01_filling_using_random_distribution.html"
 
 
 ### Filling using Feed-Forward
@@ -672,28 +685,33 @@ When to use:
     </tr>
 </table>
 
-```python
-### Do fill ----
-data_ffill: pd.DataFrame = data.assign(
-    Fill=lambda df: df["Missing"].ffill(),
-)
-```
 
-```python
-### Plot data ----
-score_ffill: float = mape(data_ffill[["Value"]], data_ffill[["Fill"]]) * 100
-plot_data(
-    data=data_ffill,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Fill",
-    title="Filling using Feed-Forward",
-    subtitle=f"MAPE={score_ffill:.2f}%",
-    output_file="./images/02_filling_using_feed_forward.html",
-)
-```
+=== "No code"
 
---8<-- "docs/guides/handling-missing-data/images/02_filling_using_feed_forward.html"
+=== "Show code"
+
+    ```python
+    ### Do fill ----
+    data_ffill: pd.DataFrame = data.assign(
+        Fill=lambda df: df["Missing"].ffill(),
+    )
+    ```
+
+    ```python
+    ### Plot data ----
+    score_ffill: float = mape(data_ffill[["Value"]], data_ffill[["Fill"]]) * 100
+    plot_data(
+        data=data_ffill,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Fill",
+        title="Filling using Feed-Forward",
+        subtitle=f"MAPE={score_ffill:.2f}%",
+        output_file="./images/02_filling_using_feed_forward.html",
+    )
+    ```
+
+    --8<-- "docs/guides/handling-missing-data/images/02_filling_using_feed_forward.html"
 
 
 ### Filling using Imputation ($σ$ or $x~$)
@@ -758,32 +776,37 @@ When to use:
     </tr>
 </table>
 
-```python
-### Do fill ----
-data_stats: pd.DataFrame = data.assign(
-    Fill=lambda df: np.where(
-        df["Missing"].isna(),
-        df["Missing"].mean(),
-        df["Missing"],
-    ),
-)
-```
 
-```python
-### Plot data ----
-score_stats: float = mape(data_stats[["Value"]], data_stats[["Fill"]]) * 100
-plot_data(
-    data=data_stats,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Fill",
-    title="Filling using Imputation (average value)",
-    subtitle=f"MAPE={score_stats:.2f}%",
-    output_file="./images/03_filling_using_imputation.html",
-)
-```
+=== "No code"
 
---8<-- "docs/guides/handling-missing-data/images/03_filling_using_imputation.html"
+=== "Show code"
+
+    ```python
+    ### Do fill ----
+    data_stats: pd.DataFrame = data.assign(
+        Fill=lambda df: np.where(
+            df["Missing"].isna(),
+            df["Missing"].mean(),
+            df["Missing"],
+        ),
+    )
+    ```
+
+    ```python
+    ### Plot data ----
+    score_stats: float = mape(data_stats[["Value"]], data_stats[["Fill"]]) * 100
+    plot_data(
+        data=data_stats,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Fill",
+        title="Filling using Imputation (average value)",
+        subtitle=f"MAPE={score_stats:.2f}%",
+        output_file="./images/03_filling_using_imputation.html",
+    )
+    ```
+
+    --8<-- "docs/guides/handling-missing-data/images/03_filling_using_imputation.html"
 
 
 ### Filling using Interpolation
@@ -849,28 +872,32 @@ When to use:
 </table>
 
 
-```python
-### Do fill ----
-data_interpolation: pd.DataFrame = data.assign(
-    Fill=lambda df: df["Missing"].interpolate(),
-)
-```
+=== "No code"
 
-```python
-### Plot data ----
-score_interpolation: float = mape(data_interpolation[["Value"]], data_interpolation[["Fill"]]) * 100
-plot_data(
-    data=data_interpolation,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Fill",
-    title="Filling using Interpolation",
-    subtitle=f"MAPE={score_interpolation:.2f}%",
-    output_file="./images/04_filling_using_interpolation.html",
-)
-```
+=== "Show code"
 
---8<-- "docs/guides/handling-missing-data/images/04_filling_using_interpolation.html"
+    ```python
+    ### Do fill ----
+    data_interpolation: pd.DataFrame = data.assign(
+        Fill=lambda df: df["Missing"].interpolate(),
+    )
+    ```
+
+    ```python
+    ### Plot data ----
+    score_interpolation: float = mape(data_interpolation[["Value"]], data_interpolation[["Fill"]]) * 100
+    plot_data(
+        data=data_interpolation,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Fill",
+        title="Filling using Interpolation",
+        subtitle=f"MAPE={score_interpolation:.2f}%",
+        output_file="./images/04_filling_using_interpolation.html",
+    )
+    ```
+
+    --8<-- "docs/guides/handling-missing-data/images/04_filling_using_interpolation.html"
 
 
 ### Filling using Time-Series Prediction
@@ -934,39 +961,43 @@ When to use:
 </table>
 
 
-```python
-### Do fill ----
-data_forecast: pd.DataFrame = data.copy().assign(Fill=data["Missing"])
-indexes_of_missing: list[int] = data_forecast[data_forecast["Fill"].isna()].index.to_list()
-for idx in tqdm(indexes_of_missing):
-    tmp: pd.DataFrame = data_forecast.loc[:idx]
-    fcst_values: np.ndarray = tmp[["Fill"]].values[:-1]
-    tmp_modl = auto_arima(
-        fcst_values if len(fcst_values) > 2 else np.append(fcst_values[1], fcst_values),
-        random_state=RANDOM_SEED,
-        seasonal=True,
-        stepwise=True,
-        error_action="ignore",
+=== "No code"
+
+=== "Show code"
+
+    ```python
+    ### Do fill ----
+    data_forecast: pd.DataFrame = data.copy().assign(Fill=data["Missing"])
+    indexes_of_missing: list[int] = data_forecast[data_forecast["Fill"].isna()].index.to_list()
+    for idx in tqdm(indexes_of_missing):
+        tmp: pd.DataFrame = data_forecast.loc[:idx]
+        fcst_values: np.ndarray = tmp[["Fill"]].values[:-1]
+        tmp_modl = auto_arima(
+            fcst_values if len(fcst_values) > 2 else np.append(fcst_values[1], fcst_values),
+            random_state=RANDOM_SEED,
+            seasonal=True,
+            stepwise=True,
+            error_action="ignore",
+        )
+        fcst = tmp_modl.predict(n_periods=1, return_conf_int=False)
+        data_forecast.loc[idx, "Fill"] = fcst[0]
+    ```
+
+    ```python
+    ### Plot data ----
+    score_forecast: float = mape(data_forecast["Value"], data_forecast["Fill"]) * 100
+    plot_data(
+        data=data_forecast,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Fill",
+        title="Filling using Time-Series Forecasting (ARIMA)",
+        subtitle=f"MAPE={score_forecast:.2f}%",
+        output_file="./images/05_filling_using_arima_forecasting.html",
     )
-    fcst = tmp_modl.predict(n_periods=1, return_conf_int=False)
-    data_forecast.loc[idx, "Fill"] = fcst[0]
-```
+    ```
 
-```python
-### Plot data ----
-score_forecast: float = mape(data_forecast["Value"], data_forecast["Fill"]) * 100
-plot_data(
-    data=data_forecast,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Fill",
-    title="Filling using Time-Series Forecasting (ARIMA)",
-    subtitle=f"MAPE={score_forecast:.2f}%",
-    output_file="./images/05_filling_using_arima_forecasting.html",
-)
-```
-
---8<-- "docs/guides/handling-missing-data/images/05_filling_using_arima_forecasting.html"
+    --8<-- "docs/guides/handling-missing-data/images/05_filling_using_arima_forecasting.html"
 
 
 ### Filling using Algorithmic Prediction (Classification & Regression)
@@ -1037,58 +1068,131 @@ Classical ML algorithms like Random Forest, XGBoost, or Linear Regression treat 
     </tr>
 </table>
 
-```python
-def build_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
-    assert "Date" in df.columns, "DataFrame must contain 'Date' column"
-    tmp: pd.DataFrame = df.copy()
-    return tmp.assign(
-        Year=lambda df: df["Date"].dt.year,
-        MonthOfYear=lambda df: df["Date"].dt.month,
-        DayOfMonth=lambda df: df["Date"].dt.day,
-        DayOfYear=lambda df: df["Date"].dt.day_of_year,
-        DayOfWeek=lambda df: df["Date"].dt.day_of_week + 1,
-        QuarterOfYear=lambda df: df["Date"].dt.quarter,
-        IsWeekend=lambda df: df["Date"].dt.dayofweek.isin([5, 6]).astype(int),
-        IsWeekday=lambda df: (~df["Date"].dt.dayofweek.isin([5, 6])).astype(int),
-    ).drop(columns=["Date"])
+
+=== "No code"
+
+=== "Show code"
+
+    ```python
+    def build_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
+        assert "Date" in df.columns, "DataFrame must contain 'Date' column"
+        tmp: pd.DataFrame = df.copy()
+        return tmp.assign(
+            Year=lambda df: df["Date"].dt.year,
+            MonthOfYear=lambda df: df["Date"].dt.month,
+            DayOfMonth=lambda df: df["Date"].dt.day,
+            DayOfYear=lambda df: df["Date"].dt.day_of_year,
+            DayOfWeek=lambda df: df["Date"].dt.day_of_week + 1,
+            QuarterOfYear=lambda df: df["Date"].dt.quarter,
+            IsWeekend=lambda df: df["Date"].dt.dayofweek.isin([5, 6]).astype(int),
+            IsWeekday=lambda df: (~df["Date"].dt.dayofweek.isin([5, 6])).astype(int),
+        ).drop(columns=["Date"])
 
 
-def build_lag_features(df: pd.DataFrame, target_col: str) -> pd.DataFrame:
-    tmp: pd.DataFrame = df.copy()
-    lags: list[int] = tmp.index.to_list()
-    return tmp.assign(**{f"Lag_{lag}": tmp[target_col].shift(lag) for lag in lags if lag != 0})
-```
+    def build_lag_features(df: pd.DataFrame, target_col: str) -> pd.DataFrame:
+        tmp: pd.DataFrame = df.copy()
+        lags: list[int] = tmp.index.to_list()
+        return tmp.assign(**{f"Lag_{lag}": tmp[target_col].shift(lag) for lag in lags if lag != 0})
+    ```
 
 
 #### One at a Time
 
-```python
-### Do fill, one record at a time ----
+=== "No code"
 
-# Partially create RandomForestRegressor
-RFR: partial[RandomForestRegressor] = partial(
-    RandomForestRegressor,
-    n_estimators=1000,
-    n_jobs=-1,
-    random_state=RANDOM_SEED,
-)
+=== "Show code"
 
-# Reassign dataframe
-data_algorithmic_1: pd.DataFrame = data.copy().assign(Fill=data["Missing"])
+    ```python
+    ### Do fill, one record at a time ----
 
-# Identify indexes of missing values
-indexes_of_missing: list[int] = data_algorithmic_1[data_algorithmic_1["Fill"].isna()].index.to_list()
+    # Partially create RandomForestRegressor
+    RFR: partial[RandomForestRegressor] = partial(
+        RandomForestRegressor,
+        n_estimators=1000,
+        n_jobs=-1,
+        random_state=RANDOM_SEED,
+    )
 
-# Iterate over indexes of missing values
-for idx in tqdm(indexes_of_missing):
+    # Reassign dataframe
+    data_algorithmic_1: pd.DataFrame = data.copy().assign(Fill=data["Missing"])
+
+    # Identify indexes of missing values
+    indexes_of_missing: list[int] = data_algorithmic_1[data_algorithmic_1["Fill"].isna()].index.to_list()
+
+    # Iterate over indexes of missing values
+    for idx in tqdm(indexes_of_missing):
+
+        tmp_df: pd.DataFrame = (
+            # Assign temporary dataframe
+            data_algorithmic_1.copy()
+            # Drop unnecessary columns
+            .drop(columns=["index", "Value", "Missing"])
+            # Filter table up until the index of the target missing value
+            .iloc[: idx + 1]
+            # Build temporal features
+            .pipe(build_temporal_features)
+            # Assign lag features
+            .pipe(build_lag_features, target_col="Fill")
+        )
+
+        # Split data into train and test
+        data_trn_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[:-1].values
+        data_trn_y: np.ndarray = tmp_df[["Fill"]].iloc[:-1].values
+        data_tst_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[-1:].values
+
+        # Instantiate, fit, predict model
+        pred: float = RFR().fit(data_trn_X, data_trn_y).predict(data_tst_X)[0]
+
+        # Assign prediction
+        data_algorithmic_1.loc[idx, "Fill"] = pred
+    ```
+
+    ```python
+    ### Plot data ----
+    score_algorithmic_1: float = mape(data_algorithmic_1["Value"], data_algorithmic_1["Fill"]) * 100
+    plot_data(
+        data=data_algorithmic_1,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Fill",
+        title="Filling using Machine Learning (Random Forest Regression)",
+        subtitle=f"MAPE={score_algorithmic_1:.2f}%",
+        output_file="./images/06_filling_using_machine_learning_1.html",
+    )
+    ```
+
+    --8<-- "docs/guides/handling-missing-data/images/06_filling_using_machine_learning_1.html"
+
+
+#### All at Once
+
+=== "No code"
+
+=== "Show code"
+
+    ```python
+    ### Do fill, all at once ----
+
+    # Reassign dataframe
+    data_algorithmic_2: pd.DataFrame = data.copy().assign(Fill=data["Missing"])
+
+    # Identify indexes of missing values
+    indexes_of_missing: list[int] = data_algorithmic_2[data_algorithmic_2["Fill"].isna()].index.to_list()
+    indexes_of_existing: list[int] = data_algorithmic_2[data_algorithmic_2["Fill"].notna()].index.to_list()
+
+    # Partially create RandomForestRegressor
+    RFR: partial[RandomForestRegressor] = partial(
+        RandomForestRegressor,
+        n_estimators=1000,
+        n_jobs=-1,
+        random_state=RANDOM_SEED,
+    )
 
     tmp_df: pd.DataFrame = (
         # Assign temporary dataframe
-        data_algorithmic_1.copy()
+        data_algorithmic_2.copy()
         # Drop unnecessary columns
         .drop(columns=["index", "Value", "Missing"])
-        # Filter table up until the index of the target missing value
-        .iloc[: idx + 1]
         # Build temporal features
         .pipe(build_temporal_features)
         # Assign lag features
@@ -1096,92 +1200,32 @@ for idx in tqdm(indexes_of_missing):
     )
 
     # Split data into train and test
-    data_trn_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[:-1].values
-    data_trn_y: np.ndarray = tmp_df[["Fill"]].iloc[:-1].values
-    data_tst_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[-1:].values
+    data_trn_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[indexes_of_existing, :].values
+    data_trn_y: np.ndarray = tmp_df.loc[indexes_of_existing, ["Fill"]].values
+    data_tst_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[indexes_of_missing, :].values
 
     # Instantiate, fit, predict model
-    pred: float = RFR().fit(data_trn_X, data_trn_y).predict(data_tst_X)[0]
+    pred: np.ndarray = RFR().fit(data_trn_X, data_trn_y).predict(data_tst_X)
 
     # Assign prediction
-    data_algorithmic_1.loc[idx, "Fill"] = pred
-```
+    data_algorithmic_2.loc[indexes_of_missing, "Fill"] = pred
+    ```
 
-```python
-### Plot data ----
-score_algorithmic_1: float = mape(data_algorithmic_1["Value"], data_algorithmic_1["Fill"]) * 100
-plot_data(
-    data=data_algorithmic_1,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Fill",
-    title="Filling using Machine Learning (Random Forest Regression)",
-    subtitle=f"MAPE={score_algorithmic_1:.2f}%",
-    output_file="./images/06_filling_using_machine_learning_1.html",
-)
-```
+    ```python
+    ### Plot data ----
+    score_algorithmic_2: float = mape(data_algorithmic_2["Value"], data_algorithmic_2["Fill"]) * 100
+    plot_data(
+        data=data_algorithmic_2,
+        date_col="Date",
+        missing_col="Missing",
+        fill_col="Fill",
+        title="Filling using Machine Learning (Random Forest Regression)",
+        subtitle=f"MAPE={score_algorithmic_2:.2f}%",
+        output_file="./images/06_filling_using_machine_learning_2.html",
+    )
+    ```
 
---8<-- "docs/guides/handling-missing-data/images/06_filling_using_machine_learning_1.html"
-
-
-#### All at Once
-
-```python
-### Do fill, all at once ----
-
-# Reassign dataframe
-data_algorithmic_2: pd.DataFrame = data.copy().assign(Fill=data["Missing"])
-
-# Identify indexes of missing values
-indexes_of_missing: list[int] = data_algorithmic_2[data_algorithmic_2["Fill"].isna()].index.to_list()
-indexes_of_existing: list[int] = data_algorithmic_2[data_algorithmic_2["Fill"].notna()].index.to_list()
-
-# Partially create RandomForestRegressor
-RFR: partial[RandomForestRegressor] = partial(
-    RandomForestRegressor,
-    n_estimators=1000,
-    n_jobs=-1,
-    random_state=RANDOM_SEED,
-)
-
-tmp_df: pd.DataFrame = (
-    # Assign temporary dataframe
-    data_algorithmic_2.copy()
-    # Drop unnecessary columns
-    .drop(columns=["index", "Value", "Missing"])
-    # Build temporal features
-    .pipe(build_temporal_features)
-    # Assign lag features
-    .pipe(build_lag_features, target_col="Fill")
-)
-
-# Split data into train and test
-data_trn_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[indexes_of_existing, :].values
-data_trn_y: np.ndarray = tmp_df.loc[indexes_of_existing, ["Fill"]].values
-data_tst_X: np.ndarray = tmp_df.drop(columns=["Fill"]).iloc[indexes_of_missing, :].values
-
-# Instantiate, fit, predict model
-pred: np.ndarray = RFR().fit(data_trn_X, data_trn_y).predict(data_tst_X)
-
-# Assign prediction
-data_algorithmic_2.loc[indexes_of_missing, "Fill"] = pred
-```
-
-```python
-### Plot data ----
-score_algorithmic_2: float = mape(data_algorithmic_2["Value"], data_algorithmic_2["Fill"]) * 100
-plot_data(
-    data=data_algorithmic_2,
-    date_col="Date",
-    missing_col="Missing",
-    fill_col="Fill",
-    title="Filling using Machine Learning (Random Forest Regression)",
-    subtitle=f"MAPE={score_algorithmic_2:.2f}%",
-    output_file="./images/06_filling_using_machine_learning_2.html",
-)
-```
-
---8<-- "docs/guides/handling-missing-data/images/06_filling_using_machine_learning_2.html"
+    --8<-- "docs/guides/handling-missing-data/images/06_filling_using_machine_learning_2.html"
 
 
 ### Embedding
