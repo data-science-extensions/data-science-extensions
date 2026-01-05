@@ -1,0 +1,85 @@
+:root>* {
+    --dim: 1.5em;
+}
+
+.highlight span.filename {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-size: 1em;
+}
+
+.py span.filename::before,
+.python span.filename::before {
+    content: '';
+    display: inline-block;
+    width: var(--dim);
+    height: var(--dim);
+    margin-right: 1em;
+    background-size: var(--dim) var(--dim);
+    background-image: url('./../icons/python.svg');
+}
+
+.pandas span.filename::before {
+    content: '';
+    display: inline-block;
+    width: var(--dim);
+    height: var(--dim);
+    margin-right: 1em;
+    background-size: var(--dim) var(--dim);
+    background-image: url('./../icons/pandas.svg');
+}
+
+.pyspark span.filename::before,
+.spark span.filename::before {
+    content: '';
+    display: inline-block;
+    width: var(--dim);
+    height: var(--dim);
+    margin-right: 1em;
+    background-size: var(--dim) var(--dim);
+    background-image: url('./../icons/spark.svg');
+}
+
+.polars span.filename::before {
+    content: '';
+    display: inline-block;
+    width: var(--dim);
+    height: var(--dim);
+    margin-right: 1em;
+    background-size: var(--dim) var(--dim);
+    background-image: url('./../icons/polars.svg');
+}
+
+.sql span.filename::before {
+    content: '';
+    display: inline-block;
+    width: var(--dim);
+    height: var(--dim);
+    margin-right: 1em;
+    background-size: var(--dim) var(--dim);
+    background-image: url('./../icons/sql.svg');
+}
+
+.txt span.filename::before,
+.text span.filename::before,
+.shell span.filename::before,
+.sh span.filename::before {
+    content: '';
+    display: inline-block;
+    width: var(--dim);
+    height: var(--dim);
+    margin-right: 1em;
+    background-size: var(--dim) var(--dim);
+    background-image: url('./../icons/shell.svg');
+}
+
+.log span.filename::before {
+    content: '';
+    display: inline-block;
+    width: var(--dim);
+    height: var(--dim);
+    margin-right: 1em;
+    background-size: var(--dim) var(--dim);
+    background-image: url('./../icons/log.svg');
+}
