@@ -432,6 +432,9 @@ def reformat_file(
     file_suffix: str = file.suffix  # Get file extension
     output_file: Path = file.with_name(f"{file_stem}-r{file_suffix}")
 
+    # Fix linting before converting
+    run("blacken-docs", "--line-length=120", "--skip-errors", file_path)
+
     # Read the file
     with open(file, "r") as f:
         lines: list[str] = f.readlines()
