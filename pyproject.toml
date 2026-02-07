@@ -73,25 +73,32 @@ docs = [
     "mkdocstrings==0.*",
     "mkdocstrings-python==1.*",
     "jupytext==1.*",  # <-- Used to convert notebooks to markdown
-    "tqdm==4.*",  # <-- Used to show progress bars for long operations
 ]
 docs-dev = [
+    # "scipy==1.*",
+]
+guides-querying-data = [
     "numpy==2.*",
     "pandas==2.*",
-    "tabulate==0.*",
     "plotly==6.*",
     "pyspark==4.*",
     "polars==1.*",
     "pyarrow==22.*",  # <-- Used for converting from polars to pandas
-    "streamlit==1.*",
-    "scipy==1.*",
-    "synthetic-data-generators==1.*",
+]
+guide-missing-data = [
+    "numpy==2.*",
+    "pandas==2.*",
+    "plotly==6.*",
     "pmdarima==2.*,!=2.1.0",
     "scikit-learn==1.*",
+    "synthetic-data-generators==1.*",
+    "tabulate==0.*",  # <-- Used to render pandas tables to markdown
+    "tqdm==4.*",  # <-- Used to show progress bars for long operations
+    "tensorflow==2.*",
 ]
 
-[tool.uv.extra-build-dependencies]
-pmdarima = ["numpy"]
+# [tool.uv.extra-build-dependencies]
+# pmdarima = ["numpy"]
 
 [tool.black]
 color = true
