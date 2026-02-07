@@ -71,7 +71,6 @@ Mechanisms/examples:
             </table>
         </td>
         <td class="center">
-            <!-- <div class="center">Completely<br>random<br>➡️</div> -->
             Completely<br>random<br>➡️
         </td>
         <td>
@@ -207,12 +206,12 @@ Before we begin, it is necessary to set up our environment and create a sample d
 
 For this guide, we will use a number of libraries to show the functionality. The important ones are:
 
-- [`numpy`] and [`pandas`] for data manipulation
-- [`synthetic_data_generators`] to create sample time series data
-- [`plotly`] for visualisation
-- [`pmdarima`] for ARIMA modelling
-- [`sklearn`] for machine learning models
-- [`tqdm`] for progress bars
+- [`numpy`][`numpy`] and [`pandas`][`pandas`] for data manipulation
+- [`synthetic_data_generators`][`synthetic_data_generators`] to create sample time series data
+- [`plotly`][`plotly`] for visualisation
+- [`pmdarima`][`pmdarima`] for ARIMA modelling
+- [`sklearn`][`sklearn`] for machine learning models
+- [`tqdm`][`tqdm`] for progress bars
 
 ```python
 # StdLib Imports
@@ -283,7 +282,14 @@ def plot_data(
         .update_layout(
             xaxis_title="Date",
             yaxis_title="Value",
-            legend=dict(orientation="h", yanchor="bottom", y=1, xanchor="left", x=0, traceorder="reversed"),
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1,
+                xanchor="left",
+                x=0,
+                traceorder="reversed",
+            ),
             xaxis_range=[
                 data[date_col].min() - pd.offsets.Day(3),
                 data[date_col].max() + pd.offsets.Day(3),
@@ -399,6 +405,240 @@ plot_data(
 ```
 
 As you can see with the below plot, the data exhibits a clear seasonal pattern, but there are several missing data points scattered throughout the time series.
+
+
+
+## Interpolation / Extrapolation
+
+Interpolation and extrapolation are techniques used to estimate missing values in a time series data set. Interpolation is used to fill in missing values within the range of existing data, while extrapolation is used to estimate values outside the range of existing data.
+
+
+### Interpolation
+
+- Definition: there is always at least one value somewhere before and at least one somewhere after the missing value
+- Under certain assumptions (e.g. the true but unknown function is continuous or differentiable) it is mathematically proven that the interpolation gets better and better with increasing polynomial degree and density of known nodes (proven to converge)
+
+#### No code
+
+#### Show code
+
+```python
+dat = pd.DataFrame(
+    {
+        "time": [1, 2, 3, 4, 5, 6],
+        "all": [1, 7.5, 5.5, 4.8, 5.5, 7],
+        "missing": [False, False, True, True, False, False],
+    },
+).assign(
+    value=lambda df: np.where(df["missing"], np.nan, df["all"]),
+    missing=lambda df: np.where(df["missing"], df["all"], np.nan),
+)
+
+fig = (
+    px.line()
+    .add_scatter(
+        x=dat["time"],
+        y=dat["all"],
+        mode="lines",
+        name="all",
+        line=dict(shape="spline", smoothing=1.3, color="teal", width=3),
+    )
+    .add_scatter(
+        x=dat["time"],
+        y=dat["value"],
+        mode="markers",
+        name="value",
+        marker=dict(color="teal", size=50),
+    )
+    .add_scatter(
+        x=dat["time"],
+        y=dat["missing"],
+        mode="markers",
+        name="missing",
+        marker=dict(
+            symbol="circle",
+            color="lightgrey",
+            size=50,
+            line=dict(
+                color="teal",
+                width=2,
+                # dash="dash",  #<-- feature request: plotly/plotly.py#5443
+            ),
+        ),
+    )
+    .add_annotation(
+        ax=3.4,
+        ay=2,
+        x=3,
+        y=5.5,
+        xref="x",
+        yref="y",
+        axref="x",
+        ayref="y",
+        text="Missing Data",
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=2,
+        arrowcolor="grey",
+        bgcolor="white",
+        standoff=30,
+        startstandoff=10,
+    )
+    .add_annotation(
+        ax=3.4,
+        ay=2,
+        x=4,
+        y=4.8,
+        xref="x",
+        yref="y",
+        axref="x",
+        ayref="y",
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=2,
+        arrowcolor="grey",
+        standoff=30,
+        startstandoff=15,
+    )
+    .add_annotation(
+        ax=6,
+        ay=7,
+        x=7,
+        y=9,
+        xref="x",
+        yref="y",
+        axref="x",
+        ayref="y",
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=3,
+        arrowcolor="teal",
+        startstandoff=25,
+    )
+    .update_layout(
+        showlegend=False,
+        xaxis=dict(showgrid=False, showticklabels=False, showline=False, ticks=""),
+        yaxis=dict(showgrid=False, showticklabels=False, showline=False, ticks=""),
+    )
+)
+fig.write_html("./images/00_interpolation.html", include_plotlyjs="cdn")
+fig.show(editable=True)
+```
+
+
+
+### Extrapolation
+
+- Definition: there is no other known node left or right of the missing value (example: typical forecast situation)
+- In this case it is not guaranteed that we can converge to the truth with more historical information or higher degree
+- In other words extrapolation is "guessing"
+- This is why trend extrapolation in forecasting is always a delicate/shaky thing and requires external assumptions on future trend behaviour
+
+#### No code
+
+#### Show code
+
+```python
+dat = pd.DataFrame(
+    {
+        "time": [1, 2, 3, 4, 5, 5],
+        "all": [1, 7.5, 5.5, 4.2, 5.5, 3],
+        "missing": [False, False, False, False, True, True],
+    },
+).assign(
+    value=lambda df: np.where(df["missing"], np.nan, df["all"]),
+    missing=lambda df: np.where(df["missing"], df["all"], np.nan),
+)
+
+fig = (
+    px.line()
+    .add_scatter(
+        x=list(dat["time"][:5]) + [6],
+        y=list(dat["all"][:5]) + [7.5],
+        mode="lines+markers",
+        name="all",
+        line=dict(shape="spline", smoothing=1.3, color="teal", width=3),
+        marker=dict(size=20, symbol="arrow-up", angleref="previous"),
+    )
+    .add_scatter(
+        x=[4, 5, 6],
+        y=[4.2, 3, 2.5],
+        mode="lines+markers",
+        name="highlight",
+        line=dict(shape="spline", smoothing=1.3, color="teal", width=3, dash="dash"),
+        marker=dict(size=20, symbol="arrow-up", angleref="previous"),
+    )
+    .add_scatter(
+        x=dat["time"],
+        y=dat["value"],
+        mode="markers",
+        name="value",
+        marker=dict(color="teal", size=50),
+    )
+    .add_scatter(
+        x=dat["time"],
+        y=dat["missing"],
+        mode="markers",
+        name="missing",
+        marker=dict(
+            symbol="circle",
+            color="lightgrey",
+            size=50,
+            line=dict(
+                color="teal",
+                width=2,
+                # dash="dash",  #<-- feature request: plotly/plotly.py#5443
+            ),
+        ),
+    )
+    .add_annotation(
+        ax=4.2,
+        ay=0.5,
+        x=5,
+        y=5.5,
+        xref="x",
+        yref="y",
+        axref="x",
+        ayref="y",
+        text="Missing Data",
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=2,
+        arrowcolor="grey",
+        bgcolor="white",
+        standoff=30,
+        startstandoff=5,
+    )
+    .add_annotation(
+        ax=4.2,
+        ay=0.5,
+        x=5,
+        y=3,
+        xref="x",
+        yref="y",
+        axref="x",
+        ayref="y",
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=2,
+        arrowcolor="grey",
+        standoff=30,
+        startstandoff=15,
+    )
+    .update_layout(
+        showlegend=False,
+        xaxis=dict(showgrid=False, showticklabels=False, showline=False, ticks=""),
+        yaxis=dict(showgrid=False, showticklabels=False, showline=False, ticks=""),
+    )
+)
+fig.write_html("./images/00_extrapolation.html", include_plotlyjs="cdn")
+fig.show(editable=True)
+```
 
 
 
@@ -1261,7 +1501,14 @@ plot_data(
 
 ### Embedding
 
-Embedding methods are primarily used to remove noise and focus on the main information in the data. It can also be used to fill gaps just like de-noising, once the embedding has been identified. Can use generalised models like GLRM, or even autoencoders like MIDAS.
+Embedding methods are primarily used to remove noise and focus on the main information in the data. It can also be used to fill gaps just like de-noising, once the embedding has been identified. Can use generalised models like GLRM (Generalised Low Rank Models), or even autoencoders like MIDAS (Mixed Data Sampling).
+
+In this example, we use a **Denoising Autoencoder** to learn the underlying manifold of the data. The process involves:
+
+1.  **Data Preparation**: Scaling the data and filling missing values with a placeholder (e.g., -1) to allow input into the network.
+2.  **Architecture**: A neural network with an Encoder (compressing input to a lower-dimensional embedding) and a Decoder (reconstructing the original input).
+3.  **Training**: The model is trained on the complete records to learn the relationships between features.
+4.  **Imputation**: The model predicts (reconstructs) the missing values based on the learned patterns.
 
 Advantages:
 
@@ -1271,7 +1518,7 @@ Advantages:
 Disadvantages:
 
 - Not very established method (compared to others mentioned)
-- Have to use specific packages to implement
+- Have to use specific packages to implement (e.g., TensorFlow/Keras)
 
 When to use:
 
@@ -1318,13 +1565,101 @@ When to use:
 </table>
 
 
+#### No code
+
+#### Show code
+
+```python
+### Do fill using Autoencoder ----
+import tensorflow as tf
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense, Dropout, LayerNormalization
+from tensorflow.keras.optimizers import Adam
+from sklearn.preprocessing import StandardScaler
+
+# Reassign dataframe
+data_embedding: pd.DataFrame = data.copy().assign(Fill=data["Missing"])
+
+# Feature Engineering (reuse functions from previous section)
+tmp_df: pd.DataFrame = (
+    data_embedding.copy()
+    .drop(columns=["index", "Value", "Missing"])
+    .pipe(build_temporal_features)
+    .pipe(build_lag_features, target_col="Fill")
+)
+
+# Identify indexes
+indexes_of_missing: list[int] = data_embedding[data_embedding["Fill"].isna()].index.to_list()
+indexes_of_existing: list[int] = data_embedding[data_embedding["Fill"].notna()].index.to_list()
+
+# Prepare Data
+# Fill NaNs with a placeholder for scaling (though we train on existing)
+scaler = StandardScaler()
+tmp_df_filled = tmp_df.fillna(-1)
+X_scaled = scaler.fit_transform(tmp_df_filled)
+
+X_train = X_scaled[indexes_of_existing]
+X_missing = X_scaled[indexes_of_missing]
+
+# Define Model
+input_dim = X_train.shape[1]
+input_layer = Input(shape=(input_dim,))
+
+# Encoder
+encoded = Dense(64, activation="relu")(input_layer)
+encoded = LayerNormalization()(encoded)
+encoded = Dropout(0.2)(encoded)
+encoded = Dense(32, activation="relu")(encoded)
+
+# Bottleneck
+embedding = Dense(16, activation="relu", name="embedding")(encoded)
+
+# Decoder
+decoded = Dense(32, activation="relu")(embedding)
+decoded = LayerNormalization()(decoded)
+decoded = Dropout(0.2)(decoded)
+decoded = Dense(64, activation="relu")(decoded)
+
+# Output
+output_layer = Dense(input_dim, activation="linear")(decoded)
+
+autoencoder = Model(input_layer, output_layer)
+autoencoder.compile(optimizer=Adam(learning_rate=0.001), loss="mse")
+
+# Train
+autoencoder.fit(X_train, X_train, epochs=50, batch_size=32, shuffle=True, verbose=0)
+
+# Predict
+reconstructed = autoencoder.predict(X_missing)
+
+# Inverse Transform
+reconstructed_original = scaler.inverse_transform(reconstructed)
+
+# Assign
+fill_col_idx = tmp_df.columns.get_loc("Fill")
+data_embedding.loc[indexes_of_missing, "Fill"] = reconstructed_original[:, fill_col_idx]
+
+### Plot data ----
+score_embedding: float = mape(data_embedding["Value"], data_embedding["Fill"]) * 100
+plot_data(
+    data=data_embedding,
+    date_col="Date",
+    missing_col="Missing",
+    fill_col="Fill",
+    title="Filling using Autoencoder Embedding",
+    subtitle=f"MAPE={score_embedding:.2f}%",
+    output_file="./images/07_filling_using_embedding.html",
+)
+```
+
+
 ## Summary
 
 
 [^munchhausen-trilemma]: The Münchhausen trilemma asserts that there are only three ways of completing a proof; by circular argument, regressive argument, and dogmatic argument. Baron Münchhausen proposed a thought experiment where he tried to prove it was theoretically possible to free himself out of being stuck in the mud by pulling himself out with his own hair.
 
 
-[`numpy]: https://numpy.org/
+[`numpy`]: https://numpy.org/
 [`pandas`]: https://pandas.pydata.org/
 [`synthetic_data_generators`]: https://data-science-extensions.com/toolboxes/synthetic-data-generators/
 [`plotly`]: https://plotly.com/python/

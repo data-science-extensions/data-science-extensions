@@ -120,7 +120,7 @@ exclude = '''
 '''
 
 [tool.codespell]
-ignore-words-list = "demog"
+ignore-words-list = "demog,mape"
 
 [tool.isort]
 import_heading_future = "Future Library Imports"
