@@ -4,3 +4,4 @@ web/
 .vscode/
 .env
 __pycache__/
+.temp/
