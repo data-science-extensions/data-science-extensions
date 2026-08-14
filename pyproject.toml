@@ -77,14 +77,14 @@ docs = [
 docs-dev = [
     # "scipy==1.*",
 ]
-guides-querying-data = [
-    "numpy==2.*",
-    "pandas==2.*",
-    "plotly==6.*",
-    "pyspark==4.*",
-    "polars==1.*",
-    "pyarrow==22.*",  # <-- Used for converting from polars to pandas
-]
+# guides-querying-data = [
+#     "numpy==2.*",
+#     "pandas==2.*",
+#     "plotly==6.*",
+#     "pyspark==4.*",
+#     "polars==1.*",
+#     "pyarrow==22.*",  # <-- Used for converting from polars to pandas
+# ]
 guide-missing-data = [
     "numpy==2.*",
     "pandas==2.*",
