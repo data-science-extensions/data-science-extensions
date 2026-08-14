@@ -135,7 +135,7 @@ nav:
       - Time Series Statistical Tests: toolboxes/ts-stat-tests.md
   - Guides:
       - guides/index.md
-      - Querying Data: guides/querying-data/index.md
+      - Querying Data: guides/querying-data.md
       - Handling Missing Data: guides/handling-missing-data/index.md
 
 exclude_docs: |
