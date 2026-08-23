@@ -114,6 +114,9 @@ split_on_trailing_comma = true
 combine_as_imports = true
 lines_after_imports = 2
 
+[tool.uv]
+link-mode = "copy"
+
 [build-system]
 requires = ["uv_build>=0.7.3,<0.8.0"]
 build-backend = "uv_build"
