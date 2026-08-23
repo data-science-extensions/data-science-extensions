@@ -113,6 +113,11 @@ link = "https://github.com/user/repo"
 # icon = "fontawesome/brands/mastodon"
 # link = "https://fosstodon.org/@user"
 
+[project.extra.version]
+provider = "mike"
+default = "latest"
+alias = true
+
 [project.markdown_extensions]
 abbr = {}
 admonition = {}
