@@ -63,3 +63,5 @@ repos:
     rev: v0.0.72
     hooks:
       - id: ty
+        pass_filenames: true
+        always_run: false
