@@ -70,6 +70,7 @@ docs = [
     # "mkdocstrings-python==1.*",
     "jupytext==1.*",  # <-- Used to convert notebooks to markdown
     "zensical==0.*",
+    "mike @ git+https://github.com/squidfunk/mike.git",
 ]
 docs-dev = [
     "numpy==2.*",
