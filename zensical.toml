@@ -1,0 +1,148 @@
+[project]
+site_name = "Data Science Extensions"
+site_description = "The Data Science Extensions provides helpful utilities and extensions for data science projects."
+site_url = "https://data-science-extensions.com/"
+site_author = "[Chris Mahoney](mailto:chris@mahoneyconsultingservices.com)"
+
+# copyright = "Copyright &copy; 2026 Your name"
+
+repo_url = "https://github.com/data-science-extensions/data-science-extensions"
+repo_name = "data-science-extensions"
+edit_uri = "edit/main/docs/"
+# remote_branch = "docs-site"
+
+extra_css = [
+  "overrides/stylesheets/style.css",
+  "overrides/stylesheets/admonitions.css",
+  "overrides/stylesheets/code_chunks.css",
+  "overrides/stylesheets/columns.css",
+  "https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css",
+]
+# extra_javascript = ["javascripts/extra.js"]
+
+docs_dir = "docs"
+site_dir = "web"
+
+nav = [
+  { "Home" = "index.md" },
+  { "Toolboxes" = [
+      { "Python Toolbox" = "toolboxes/toolbox-python.md" },
+      { "PySpark Toolbox" = "toolboxes/toolbox-pyspark.md" },
+      { "Synthetic Data Generators" = "toolboxes/synthetic-data-generators.md" },
+      { "Docstring Format Checker" = "toolboxes/docstring-format-checker.md" },
+      { "Time Series Statistical Tests" = "toolboxes/ts-stat-tests.md" },
+    ]},
+  { "Guides" = [
+      "guides/index.md",
+      { "Querying Data" = "guides/querying-data/index.md" },
+    ]}
+]
+
+[project.theme]
+variant = "classic"
+custom_dir = "docs/overrides"
+coverpage_icon = "icons/dse.svg"
+favicon = "icons/dse.svg"
+logo = "icons/dse.svg"
+language = "en"
+features = [
+  "announce.dismiss",
+  "content.action.edit",
+  "content.action.view",
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+  "header.autohide",
+  "navigation.expand",
+  # "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.instant.progress",
+  "navigation.path",
+  "navigation.prune",
+  "navigation.sections",
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "toc.follow",
+  "toc.integrate",
+]
+
+[project.theme.icon]
+logo = "icons/dse.svg"
+repo = "fontawesome/brands/github"
+
+[project.theme.font]
+code = "Consolas, 'Courier New', monospace"
+# text = "Inter"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+primary = "blue grey"
+accent = "indigo"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "blue grey"
+accent = "indigo"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "blue grey"
+accent = "indigo"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/user/repo"
+
+# [[project.extra.social]]
+# icon = "fontawesome/brands/mastodon"
+# link = "https://fosstodon.org/@user"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.arithmatex.generic = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.emoji.options.custom_icons = [
+  "overrides/.icons"
+]
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+# pymdownx.snippets.base_path = "includes"
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}
