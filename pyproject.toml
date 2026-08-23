@@ -52,7 +52,7 @@ dev = [
     "codespell==2.*",
     "ipykernel==6.*",
     "isort==6.*",
-    "pre-commit==4.*",
+    "prek==0.*",
     "pycln==2.*",
     "pylint==3.*",
     "pyupgrade==3.*",
