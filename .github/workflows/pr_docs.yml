@@ -1,0 +1,124 @@
+name: PR Docs Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pr-docs-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Build and Publish PR Preview
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR head commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: latest
+          pyproject-file: pyproject.toml
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: uv sync --link-mode=copy --no-cache --all-groups
+
+      - name: Setup Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Compute PR docs version
+        id: ver
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          BASE_VERSION=$(python - <<'PY'
+          import pathlib, tomllib
+          data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
+          print(data["project"]["version"])
+          PY
+          )
+          PR_VERSION="${BASE_VERSION}pr${PR_NUMBER}"
+          echo "base_version=${BASE_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "pr_version=${PR_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish PR docs version with mike
+        run: |
+          uv run mike --debug deploy --branch=docs-site --push "${{ steps.ver.outputs.pr_version }}"
+
+      - name: Add job summary with preview URL
+        run: |
+          PREVIEW_URL="https://data-science-extensions.com/${{ steps.ver.outputs.pr_version }}/"
+          {
+            echo "## PR Docs Preview"
+            echo ""
+            echo "- Version: ${{ steps.ver.outputs.pr_version }}"
+            echo "- URL: ${PREVIEW_URL}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  cleanup:
+    name: Delete PR Preview After Merge
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR head commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Setup UV
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: latest
+          pyproject-file: pyproject.toml
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: uv sync --link-mode=copy --no-cache --all-groups
+
+      - name: Setup Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Compute PR docs version
+        id: ver
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          BASE_VERSION=$(python - <<'PY'
+          import pathlib, tomllib
+          data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
+          print(data["project"]["version"])
+          PY
+          )
+          PR_VERSION="${BASE_VERSION}pr${PR_NUMBER}"
+          echo "pr_version=${PR_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Delete PR docs version with mike
+        run: |
+          uv run mike --debug delete --branch=docs-site --push "${{ steps.ver.outputs.pr_version }}"
