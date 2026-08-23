@@ -1,7 +1,7 @@
 ---
 title: Python Toolbox
 subtitle: Helper files/functions/classes for generic Python processes
-icon: simple/python
+icon: python
 hide:
     - toc
 ---

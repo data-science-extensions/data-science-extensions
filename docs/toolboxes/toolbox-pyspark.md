@@ -1,7 +1,7 @@
 ---
 title: PySpark Toolbox
 subtitle: Helper files/functions/classes for generic PySpark processes
-icon: simple/apachespark
+icon: spark
 hide:
     - toc
 ---
