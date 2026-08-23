@@ -56,6 +56,12 @@
         border-color: var(--md-accent-fg-color)
     }
 
+    .tx-hero .md-button--secondary {
+        background-color: var(--md-primary-bg-color);
+        color: #000000de;
+        border-color: #000000de
+    }
+
     .tx-hero .md-button:focus,
     .tx-hero .md-button:hover {
         background-color: var(--md-accent-fg-color);
@@ -223,9 +229,9 @@
     <div class="md-grid md-typeset">
         <div class="tx-hero">
             <div class="tx-hero__image">
-                <img style="display: block; margin-left: auto; margin-right: auto; width: 100%;" alt="Site icon" src="{{ config.theme.coverpage_icon }}" draggable="false">
+                <img style="display: block; margin-left: auto; margin-right: auto; width: 100%;" alt="Site icon" src="{{ config.theme.logo }}" draggable="false">
                 <p style="color:black; text-align:center;">(<a
-                    href="{{ config.theme.coverpage_icon }}">image source</a>)</p>
+                    href="{{ config.theme.logo }}">image source</a>)</p>
             </div>
             <div class="tx-hero__content" style="text-align: center;">
                 <h1>{{ config.site_name }}</h1>
@@ -234,7 +240,7 @@
                     class="md-button md-button--primary">
                     Get started
                 </a>
-                <a href="{{ config.repo_url }}" title="{{ lang.t('source.link.title') }}" class="md-button">
+                <a href="{{ config.repo_url }}" title="{{ lang.t('source.link.title') }}" class="md-button md-button--secondary">
                     Go to Repo
                 </a>
             </div>
