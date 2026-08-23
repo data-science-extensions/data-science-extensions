@@ -29,7 +29,7 @@ div.doc-object div.doc-function {
 
 .anchor {
     transition: all .3s;
-    background: url(/assets/icon_link.svg) 50%/contain no-repeat;
+    background: url(/../icons/icon_link.svg) 50%/contain no-repeat;
     /* background: url(/assets/images/icon_anchor.svg) 50%/contain no-repeat; */
     /* opacity: 1; */
     display: inline-block;
