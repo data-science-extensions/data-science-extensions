@@ -69,18 +69,19 @@ docs = [
     # "mkdocstrings==0.*",
     # "mkdocstrings-python==1.*",
     "jupytext==1.*",  # <-- Used to convert notebooks to markdown
+    # "pytz",
     "zensical==0.*",
     "mike @ git+https://github.com/squidfunk/mike.git",
 ]
 docs-dev = [
     "numpy==2.*",
-    "pandas==2.*",
+    # "pandas==2.*",
     "tabulate==0.*",
-    "plotly==6.*",
-    "pyspark==3.*",
-    "polars==1.*",
-    "pyarrow==20.*",  # <-- Used for converting from polars to pandas
-    "setuptools==80.*",  # <-- Dependency for pyspark
+    # "plotly==6.*",
+    # "pyspark==3.*",
+    # "polars==1.*",
+    # "pyarrow==20.*",  # <-- Used for converting from polars to pandas
+    # "setuptools==80.*",  # <-- Dependency for pyspark
 ]
 
 [tool.black]
