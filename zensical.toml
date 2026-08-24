@@ -107,7 +107,7 @@ toggle.name = "Switch to system preference"
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
-link = "https://github.com/user/repo"
+link = "https://github.com/data-science-extensions/data-science-extensions"
 
 # [[project.extra.social]]
 # icon = "fontawesome/brands/mastodon"
