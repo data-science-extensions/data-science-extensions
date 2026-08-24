@@ -1,7 +1,3 @@
-[build-system]
-requires = ["uv_build>=0.7.3,<0.8.0"]
-build-backend = "uv_build"
-
 [project]
 name = "data-science-extensions"
 version = "1.5.1"
@@ -26,7 +22,7 @@ classifiers = [
     "Topic :: Software Development :: Testing :: Unit",
     "Topic :: Utilities",
 ]
-requires-python = ">=3.13,<4.0"
+requires-python = ">=3.14,<4.0"
 dependencies = [
     "typeguard==4.*",
 ]
@@ -56,7 +52,7 @@ dev = [
     "codespell==2.*",
     "ipykernel==6.*",
     "isort==6.*",
-    "pre-commit==4.*",
+    "prek==0.*",
     "pycln==2.*",
     "pylint==3.*",
     "pyupgrade==3.*",
@@ -65,24 +61,27 @@ docs = [
     "black==25.*",
     "docstring-inheritance==2.*",
     "livereload==2.*",
-    "mike==2.*",
-    "mkdocs==1.*",
-    "mkdocs-autorefs==1.*",
-    "mkdocs-coverage==1.*",
-    "mkdocs-material==9.*",
-    "mkdocstrings==0.*",
-    "mkdocstrings-python==1.*",
+    # "mike==2.*",
+    # "mkdocs==1.*",
+    # "mkdocs-autorefs==1.*",
+    # "mkdocs-coverage==1.*",
+    # "mkdocs-material==9.*",
+    # "mkdocstrings==0.*",
+    # "mkdocstrings-python==1.*",
     "jupytext==1.*",  # <-- Used to convert notebooks to markdown
+    # "pytz",
+    "zensical==0.*",
+    "mike @ git+https://github.com/squidfunk/mike.git",
 ]
 docs-dev = [
     "numpy==2.*",
-    "pandas==2.*",
+    # "pandas==2.*",
     "tabulate==0.*",
-    "plotly==6.*",
-    "pyspark==3.*",
-    "polars==1.*",
-    "pyarrow==20.*",  # <-- Used for converting from polars to pandas
-    "setuptools==80.*",  # <-- Dependency for pyspark
+    # "plotly==6.*",
+    # "pyspark==3.*",
+    # "polars==1.*",
+    # "pyarrow==20.*",  # <-- Used for converting from polars to pandas
+    # "setuptools==80.*",  # <-- Dependency for pyspark
 ]
 
 [tool.black]
@@ -117,3 +116,10 @@ profile = "black"
 split_on_trailing_comma = true
 combine_as_imports = true
 lines_after_imports = 2
+
+[tool.uv]
+link-mode = "copy"
+
+[build-system]
+requires = ["uv_build>=0.7.3,<0.8.0"]
+build-backend = "uv_build"

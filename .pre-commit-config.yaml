@@ -58,3 +58,10 @@ repos:
       args:
         - "--toml=pyproject.toml"
         - "--skip=*.js,*.html,*.css,./docs/assets/coverage/*"
+
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: v0.0.72
+    hooks:
+      - id: ty
+        pass_filenames: true
+        always_run: false

@@ -12,7 +12,7 @@ on:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
 
@@ -117,7 +117,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.14'
 
       - name: Setup UV
         id: install-uv
@@ -125,7 +125,7 @@ jobs:
         with:
           version: 'latest'
           pyproject-file: 'pyproject.toml'
-          python-version: '3.13'
+          python-version: '3.14'
 
       - name: Install Dependencies
         id: install-dependencies
@@ -146,6 +146,25 @@ jobs:
           git status --verbose
           git branch --list --verbose
           git tag --list --sort=-creatordate
+
+      - name: Validate packages
+        id: validate-packages
+        run: |
+
+          # `mike` should have been installed by the `uv sync` command above.
+
+          if ! MIKE_VERSION=$(uv run mike --version 2>&1); then
+            echo "Error: uv run mike --version failed."
+            echo "${MIKE_VERSION}"
+            exit 1
+          fi
+
+          if [ -z "${MIKE_VERSION}" ]; then
+            echo "Error: uv run mike --version returned no version."
+            exit 1
+          fi
+
+          echo "${MIKE_VERSION}"
 
       - name: Bump Version
         id: bump-version
