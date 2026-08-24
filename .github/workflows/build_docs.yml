@@ -125,7 +125,7 @@ jobs:
         with:
           version: 'latest'
           pyproject-file: 'pyproject.toml'
-          python-version: '3.13'
+          python-version: '3.14'
 
       - name: Install Dependencies
         id: install-dependencies
