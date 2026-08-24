@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/</loc>
+      </url>
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/toolboxes/toolbox-python/</loc>
+      </url>
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/toolboxes/toolbox-pyspark/</loc>
+      </url>
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/toolboxes/synthetic-data-generators/</loc>
+      </url>
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/toolboxes/docstring-format-checker/</loc>
+      </url>
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/toolboxes/ts-stat-tests/</loc>
+      </url>
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/guides/</loc>
+      </url>
+      <url>
+        <loc>https://data-science-extensions.com/1.5.1pr24/guides/querying-data/</loc>
+      </url>
+</urlset>
